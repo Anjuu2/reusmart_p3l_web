@@ -202,7 +202,7 @@
 
         .populer-produk{
             text-align: left;
-            margin-top: 20px;
+            margin-top: 30px;
             margin-left: 125px;
         }
 
@@ -210,6 +210,201 @@
             font-size: 16px;
             font-weight: 600;
             color: #333;
+        }
+
+        .product-container {
+            display: flex;  /* Menggunakan Flexbox */
+            justify-content: space-between;  /* Membuat produk bersebelahan dengan jarak yang sama */
+            gap: 10px;  /* Memberikan jarak antar produk */
+            margin-top: 5px;
+            flex-wrap: wrap;  /* Memastikan produk akan membungkus ke baris berikutnya jika ruang tidak cukup */
+            margin-left: 125px;
+            margin-right: 125px;
+        }
+
+        /* Kartu Produk */
+        .product-card {
+            background-color: #fff;
+            border-radius: 10px;
+            box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.1);
+            width: 200px;
+            text-align: center;
+            margin: 10px auto;
+            padding: 10px;
+            display: block;
+            text-decoration: none;
+            color: inherit;
+            border: 2px solid #f1f1f1;
+            width: calc(20% - 10px);
+            margin-bottom: 10px; 
+            height: 400px;
+        }
+
+        .product-card:hover {
+            transform: scale(1.05); /* Memperbesar produk sedikit saat hover */
+        }
+
+        /* Gambar Produk */
+        .product-image {
+            width: 100%;
+            height: 190px;
+            border-radius: 10px;
+            margin-top: 10px;
+            object-fit: cover;
+        }
+
+        /* Informasi Produk */
+        .product-info {
+            margin-top: 15px;
+        }
+
+        /* Nama Kategori Produk */
+        .product-category {
+            font-size: 10px;
+            color: #777;
+            text-align: left;
+        }
+
+        /* Nama Produk */
+        .product-name {
+            font-size: 14px;
+            font-weight: 600;
+            color: #333;
+            margin: 10px 0;
+        }
+
+        /* Rating Produk */
+        .product-rating {
+            font-size: 10px;
+            color: #ff5a5f;
+        }
+
+        /* Nama Merek Produk */
+        .product-brand {
+            font-size: 11px;
+            color: #777;
+        }
+
+        /* Harga Produk */
+        .product-price {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-top: 10px;
+        }
+
+        /* Harga Produk (Di kiri) */
+        .price-container {
+            flex: 1;
+            text-align: left;
+        }
+
+        .current-price {
+            font-size: 13px;
+            font-weight: bold;
+            color: #333;
+            flex-direction: column;
+        }
+
+        .add-to-cart-container {
+            display: flex;
+            justify-content: flex-end;
+        }
+
+        /* Tombol Add to Cart */
+        .add-to-cart {
+            background-color: #F0FFF0;
+            color: #28a745;
+            padding: 5px 10px;
+            border: 2px solid #F0FFF0;;
+            border-radius: 6px;
+            display: flex;
+            align-items: center;
+            font-size: 11px;
+            cursor: pointer;
+        }
+
+        .add-to-cart img {
+            margin-right: 10px; /* Jarak antara ikon cart dan teks Add */
+        }
+
+        .add-to-cart:hover {
+            background-color: #ACE1AF;
+        }
+        
+        /* Footer Container */
+        .footer-container {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 10px 20px;
+            background-color: #f4f4f4;
+            border-top: 1px solid #333;
+            height: 100px;
+        }
+
+        .footer-left, .footer-middle, .footer-right {
+            flex: 1;
+        }
+
+        /* Footer Left - Copyright */
+        .footer-left p {
+            margin: 0;
+            font-size: 12px;
+            color: grey;
+        }
+
+        /* Footer Middle - Social Icons */
+        .footer-middle p {
+            font-size: 14px;
+            font-weight: 600;
+            color: #333;
+        }
+
+        .social-icons {
+            display: flex;
+            gap: 15px;
+            margin-top: 5px;
+        }
+
+        .social-icon img {
+            width: 25px;
+            height: 25px;
+            transition: transform 0.3s;
+        }
+
+        .social-icon:hover img {
+            transform: scale(1.2);
+        }
+
+        /* Footer Right - Discount Information */
+        .footer-right p {
+            font-size: 10px;
+            color:rgb(187, 223, 196);
+            text-align: right;
+        }
+
+        /* Back to Top Button */
+        .back-to-top {
+            position: fixed;
+            bottom: 10px;
+            right: 10px;
+            background-color:rgb(187, 223, 196);
+            padding: 10px;
+            border-radius: 50%;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+        }
+
+        .back-to-top img {
+            width: 20px;
+            height: 20px;
+            color: white;
+        }
+
+        /* Hover Effect for Back to Top */
+        .back-to-top:hover {
+            background-color: #218838;
+            cursor: pointer;
         }
 
         /* Responsive Design */
@@ -246,6 +441,72 @@
 
             .category-card {
                 height: 90px;
+            }
+
+            .populer-produk{
+                text-align: left;
+                margin-top: 20px;
+                margin-left: 65px;
+            }
+
+            .product-container {
+                margin-left: 60px;
+                margin-right: 60px;
+                gap: 1px;
+            }
+
+            .product-card {
+                width: calc(20% - 10px); /* Produk akan lebih besar pada layar kecil */
+                height: 400px;
+                margin-bottom: 10px; /* Menambahkan jarak antara produk */
+                height: 280px;
+            }
+
+            /* Gambar Produk */
+            .product-image {
+                width: 100%;
+                height: 80px;
+                object-fit: cover;
+            }
+
+            /* Nama Kategori Produk */
+            .product-category {
+                font-size: 6px;
+            }
+
+            /* Nama Produk */
+            .product-name {
+                font-size: 9px;
+            }
+
+            /* Rating Produk */
+            .product-rating {
+                font-size: 9px;
+            }
+
+            /* Nama Merek Produk */
+            .product-brand {
+                font-size: 8px;
+            }
+
+            .current-price {
+                font-size: 8px;
+            }
+
+            /* Tombol Add to Cart */
+            .add-to-cart {
+                padding: 2px 4px;
+                font-size: 8px;
+            }
+
+            .add-to-cart img {
+                margin-right: 5px; 
+                width: 10px;
+                height: 10px;
+            }
+
+            .add-to-cart:hover {
+                background-color: #ACE1AF;
             }
         }
     </style>
@@ -397,8 +658,151 @@
         <div class="populer-produk">
             <h2>Produk Terpopuler</h2>
         </div>
+        <div class="product-container">
+            <a href="{{ url('product-detail-page') }}" class="product-card">
+                <img src="{{ asset('images/stroller.png') }}" alt="Chicco Trolleyme Stroller" class="product-image">
+                <div class="product-info">
+                    <p class="product-category">Perlengkapan Bayi & Anak</p>
+                    <h3 class="product-name">JOIE Muze Travel System Stroller</h3>
+                    <div class="product-rating">
+                        <span>★ (4.0)</span>
+                    </div>
+                    <p class="product-brand">By StevenAndre</p>
+                </div>
+                <!-- Harga dan Tombol Add -->
+                <div class="product-price">
+                    <div class="price-container">
+                        <span class="current-price">Rp2.896.000,00</span>
+                    </div>
+                    <div class="add-to-cart-container">
+                        <button class="add-to-cart">
+                            <img src="https://img.icons8.com/material/24/007848/shopping-cart.png" alt="Cart">
+                                Add
+                        </button>
+                    </div>
+                </div>
+            </a>
 
+            <a href="{{ url('product-detail-page') }}" class="product-card">
+                <img src="{{ asset('images/sofa.png') }}" alt="sofa" class="product-image">
+                <div class="product-info">
+                    <p class="product-category">Perabotan Rumah Tangga</p>
+                    <h3 class="product-name">Ashley Brise Sofa L Sectional Fabric</h3>
+                    <div class="product-rating">
+                        <span>★ (4.5)</span>
+                    </div>
+                    <p class="product-brand">By DionXius</p>
+                </div>
+                <!-- Harga dan Tombol Add -->
+                <div class="product-price">
+                    <div class="price-container">
+                        <span class="current-price">Rp1.276.000,00</span>
+                    </div>
+                    <div class="add-to-cart-container">
+                        <button class="add-to-cart">
+                            <img src="https://img.icons8.com/material/24/007848/shopping-cart.png" alt="Cart">
+                                Add
+                        </button>
+                    </div>
+                </div>
+            </a>
+
+            <a href="{{ url('product-detail-page') }}" class="product-card">
+                <img src="{{ asset('images/sepatu.png') }}" alt="sepatu" class="product-image">
+                <div class="product-info">
+                    <p class="product-category">Pakaian & Aksesori</p>
+                    <h3 class="product-name">New Balance 327 Women's Sneakers</h3>
+                    <div class="product-rating">
+                        <span>★ (4.7)</span>
+                    </div>
+                    <p class="product-brand">By XaveriusJohn</p>
+                </div>
+                <!-- Harga dan Tombol Add -->
+                <div class="product-price">
+                    <div class="price-container">
+                        <span class="current-price">Rp3.024.000,00</span>
+                    </div>
+                    <div class="add-to-cart-container">
+                        <button class="add-to-cart">
+                            <img src="https://img.icons8.com/material/24/007848/shopping-cart.png" alt="Cart">
+                                Add
+                        </button>
+                    </div>
+                </div>
+            </a>
+
+            <a href="{{ url('product-detail-page') }}" class="product-card">
+                <img src="{{ asset('images/kamera.png') }}" alt="kamera" class="product-image">
+                <div class="product-info">
+                    <p class="product-category">Elektronik & Gadget </p>
+                    <h3 class="product-name">Canon EOS 3000D Kit EF-S 18-55mm f/3.5-5.6 III</h3>
+                    <div class="product-rating">
+                        <span>★ (4.3)</span>
+                    </div>
+                    <p class="product-brand">By MarcelaCan</p>
+                </div>
+                <!-- Harga dan Tombol Add -->
+                <div class="product-price">
+                    <div class="price-container">
+                        <span class="current-price">Rp5.985.000,00</span>
+                    </div>
+                    <div class="add-to-cart-container">
+                        <button class="add-to-cart">
+                            <img src="https://img.icons8.com/material/24/007848/shopping-cart.png" alt="Cart">
+                                Add
+                        </button>
+                    </div>
+                </div>
+            </a>
+
+            <a href="{{ url('product-detail-page') }}" class="product-card">
+                <img src="{{ asset('images/kalkulator.png') }}" alt="kalkulator" class="product-image">
+                <div class="product-info">
+                    <p class="product-category"> Buku, Alat Tulis, & Peralatan Sekolah</p>
+                    <h3 class="product-name">Casio Kalkulator Saintifik FX-991</h3>
+                    <div class="product-rating">
+                        <span>★ (4.5)</span>
+                    </div>
+                    <p class="product-brand">By AntonTung</p>
+                </div>
+                <!-- Harga dan Tombol Add -->
+                <div class="product-price">
+                    <div class="price-container">
+                        <span class="current-price">Rp210.000,00</span>
+                    </div>
+                    <div class="add-to-cart-container">
+                        <button class="add-to-cart">
+                            <img src="https://img.icons8.com/material/24/007848/shopping-cart.png" alt="Cart">
+                                Add
+                        </button>
+                    </div>
+                </div>
+            </a>
+        </div>
     </main>
+
+    <!-- Footer Section -->
+    <footer>
+        <div class="footer-container">
+            <div class="footer-left">
+                <p>© 2024 Reusemart. All rights reserved.</p>
+            </div>
+            <div class="footer-middle">
+                <p>Follow Us</p>
+                <div class="social-icons">
+                    <a href="#" class="social-icon"><img src="https://img.icons8.com/material/24/000000/facebook.png" alt="Facebook"></a>
+                    <a href="#" class="social-icon"><img src="https://img.icons8.com/material/24/000000/twitter.png" alt="Twitter"></a>
+                    <a href="#" class="social-icon"><img src="https://img.icons8.com/material/24/000000/instagram.png" alt="Instagram"></a>
+                    <a href="#" class="social-icon"><img src="https://img.icons8.com/material/24/000000/pinterest.png" alt="Pinterest"></a>
+                    <a href="#" class="social-icon"><img src="https://img.icons8.com/material/24/000000/youtube.png" alt="YouTube"></a>
+                </div>
+            </div>
+        </div>
+        <!-- Back to Top Button -->
+        <div class="back-to-top">
+            <a href="#top"><img src="https://img.icons8.com/ios-filled/50/000000/up.png" alt="Back to Top"></a>
+        </div>
+    </footer>
 
     <!-- Bootstrap JS and dependencies (Popper.js and Bootstrap JS) -->
     <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.11.6/dist/umd/popper.min.js"></script>
