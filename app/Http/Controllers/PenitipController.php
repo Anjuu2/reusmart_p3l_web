@@ -38,13 +38,13 @@ class PenitipController extends Controller
             ]);
 
             $penitip = Penitip::create(attributes:[
-                'no_ktp' => $request['no_ktp'],
-                'nama_penitip' => $request['nama_penitip'],
-                'username' => $request['username'],
-                'password' => Hash::make($request['password']),
-                'alamat' => $request['alamat'],
-                'email' => $request['email'],
-                'notelp' => $request['notelp'],
+                'no_ktp' => $request->no_ktp,
+                'nama_penitip' => $request->nama_penitip,
+                'username' => $request->username,
+                'password' => Hash::make($request->password),
+                'alamat' => $request->alamat,
+                'email' => $request->email,
+                'notelp' => $request->notelp,
                 'poin' => 0,
                 'saldo_penitip' => 0,
                 'status_aktif' => 1,
@@ -151,11 +151,11 @@ class PenitipController extends Controller
             ]);
 
             $penitip->update([
-                'nama_penitip' => $request->input('nama_penitip'),
-                'username' => $request->input('username'),
-                'alamat' => $request->input('alamat'),
-                'email' => $request->input('email'),
-                'notelp' => $request->input('notelp'),
+                'nama_penitip' => $request->nama_penitip,
+                'username' => $request->username,
+                'alamat' => $request->alamat,
+                'email' => $request->email,
+                'notelp' => $request->notelp,
             ]);
 
             return response()->json([

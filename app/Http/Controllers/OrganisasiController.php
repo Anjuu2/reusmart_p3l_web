@@ -32,9 +32,9 @@ class OrganisasiController extends Controller
             ]);
 
             $organisasi = Organisasi::create(attributes:[
-                'nama_organisasi' => $request['nama_organisasi'],
-                'alamat' => $request['alamat'],
-                'password' => Hash::make($request['password']),
+                'nama_organisasi' => $request->nama_organisasi,
+                'alamat' => $request->alamat,
+                'password' => Hash::make($request->password),
                 'status_aktif' => 1,
             ]);
 
@@ -137,8 +137,8 @@ class OrganisasiController extends Controller
         if ($organisasi) {
             // Update organization details
             $organisasi->update([
-                'nama_organisasi' => $request->input('nama_organisasi'),
-                'alamat' => $request->input('alamat'),
+                'nama_organisasi' => $request->nama_organisasi,
+                'alamat' => $request->alamat,
             ]);
 
             return response()->json([
