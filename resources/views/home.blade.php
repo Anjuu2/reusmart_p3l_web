@@ -164,34 +164,51 @@
         /* Container untuk Kategori */
         .category-container {
             display: grid;
-            grid-template-columns: repeat(10, 1fr);
+            grid-template-columns: repeat(auto-fit, minmax(85px, max-content));
             gap: 10px;
             justify-items: center;
             margin-top: 20px;
+            width: 80%;
+            margin-left: auto;
+            margin-right: auto;
         }
 
         /* Setiap Kartu Kategori */
         .category-card {
             background-color: #f9f9f9;
-            padding: 10px;
+            padding: 8px;
             border-radius: 15px;
             text-align: center;
             box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.1);
-            width: 100px; 
             height: 100px;
             margin: 0;
+            text-decoration: none;
         }
 
         .category-card img {
-            width: 60%;
-            height: 60px;
+            width: 75%;
+            height: 65px;
             object-fit: cover;
             border-radius: 10px;
         }
 
         .category-card h3 {
             margin-top: 5px;
+            margin: 2px 0 0 0;
             font-size: 8px;
+            color: #333;
+            text-decoration: none;
+        }
+
+        .populer-produk{
+            text-align: left;
+            margin-top: 20px;
+            margin-left: 125px;
+        }
+
+        .populer-produk h2 {
+            font-size: 16px;
+            font-weight: 600;
             color: #333;
         }
 
@@ -219,7 +236,16 @@
             }
 
             .category-container {
-                grid-template-columns: repeat(2, 1fr); /* 2 kolom pada layar kecil */
+                grid-template-columns: repeat(6, 1fr);
+            }
+
+            .category-card img {
+                width: 65%;
+                height: 45px;
+            }
+
+            .category-card {
+                height: 90px;
             }
         }
     </style>
@@ -317,56 +343,61 @@
         <!-- Featured Categories -->
         <div class="category-container">
             <!-- Category 1 -->
-            <div class="category-card">
+            <a href="{{ url('kategori') }}" class="category-card">
                 <img src="{{ asset('images/kategori/laptop.png') }}" alt="Elektronik & Gadget">
                 <h3>Elektronik & Gadget</h3>
-            </div>
+            </a>
             <!-- Category 2 -->
-            <div class="category-card">
+            <a href="{{ url('kategori') }}" class="category-card">
                 <img src="{{ asset('images/kategori/baju.png') }}" alt="Pakaian & Aksesori">
                 <h3>Pakaian & Aksesori</h3>
-            </div>
+            </a>
             <!-- Category 3 -->
-            <div class="category-card">
+            <a href="{{ url('kategori') }}" class="category-card">
                 <img src="{{ asset('images/kategori/sofa.png') }}" alt="Perabotan Rumah Tangga">
                 <h3>Perabotan Rumah Tangga</h3>
-            </div>
+            </a>
             <!-- Category 4 -->
-            <div class="category-card">
+            <a href="{{ url('kategori') }}" class="category-card">
                 <img src="{{ asset('images/kategori/tas.png') }}" alt="Buku & Peralatan Sekolah">
                 <h3>Buku, Alat Tulis, Peralatan Sekolah</h3>
-            </div>
+            </a>
             <!-- Category 5 -->
-            <div class="category-card">
+            <a href="{{ url('kategori') }}" class="category-card">
                 <img src="{{ asset('images/kategori/mainan.png') }}" alt="Hobi & Mainan">
                 <h3>Hobi, Mainan, Koleksi</h3>
-            </div>
+            </a>
             <!-- Category 6 -->
-            <div class="category-card">
+            <a href="{{ url('kategori') }}" class="category-card">
                 <img src="{{ asset('images/kategori/bayi.png') }}" alt="Perlengkapan Bayi & Anak">
                 <h3>Perlengkapan Bayi & Anak</h3>
-            </div>
+            </a>
             <!-- Category 7 -->
-            <div class="category-card">
+            <a href="{{ url('kategori') }}" class="category-card">
                 <img src="{{ asset('images/kategori/roda.png') }}" alt="Otomotif & Aksesori">
                 <h3>Otomotif & Aksesori</h3>
-            </div>
+            </a>
             <!-- Category 8 -->
-            <div class="category-card">
+            <a href="{{ url('kategori') }}" class="category-card">
                 <img src="{{ asset('images/kategori/tenda.png') }}" alt="Perlengkapan Taman & Outdoor">
                 <h3>Perlengkapan Taman & Outdoor</h3>
-            </div>
+            </a>
             <!-- Category 9 -->
-            <div class="category-card">
+            <a href="{{ url('kategori') }}" class="category-card">
                 <img src="{{ asset('images/kategori/kantor.png') }}" alt="Peralatan Kantor & Industri">
                 <h3>Peralatan Kantor & Industri</h3>
-            </div>
+            </a>
             <!-- Category 10 -->
-            <div class="category-card">
+            <a href="{{ url('kategori') }}" class="category-card">
                 <img src="{{ asset('images/kategori/cermin.png') }}" alt="Kosmetik & Perawatan Diri">
                 <h3>Kosmetik & Perawatan Diri</h3>
-            </div>
+            </a>
         </div>
+
+        <div class="populer-produk">
+            <h2>Produk Terpopuler</h2>
+        </div>
+
     </main>
 
     <!-- Bootstrap JS and dependencies (Popper.js and Bootstrap JS) -->
