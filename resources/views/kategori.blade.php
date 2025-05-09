@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>ReUseMart - Home</title>
+    <title>ReUseMart - Collection</title>
 
     <!-- Bootstrap CSS -->
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/css/bootstrap.min.css" rel="stylesheet">
@@ -108,59 +108,6 @@
             margin-bottom: 5px;
         }
 
-        #carouselExampleCaptions {
-            max-height: 500px;
-            overflow: hidden;
-        }
-
-        .carousel-item {
-            height: 400px;
-            position: relative;
-        }
-
-        .carousel-item img {
-            height: 100%;
-            width: 100%;
-            object-fit: cover;
-        }
-
-        .carousel-item a:hover img {
-            box-shadow: 0px 4px 20px rgba(0, 0, 0, 0.2);
-            cursor: pointer; /* Menambahkan pointer saat hover */
-        }
-
-        .carousel-caption {
-            position: absolute;
-            bottom: 0;
-            left: 0;
-            right: 0;
-            padding: 15px 30px;
-            background: rgba(0, 0, 0, 0.5); /* latar belakang transparan gelap */
-            color: white;
-            text-align: left;
-        }
-
-        /* Garis Pemisah di Bawah Carousel */
-        .carousel-divider {
-            width: 80%;
-            height: 1px; /* tebal garis */
-            background-color: #333; /* warna garis */
-            margin: 20px auto; /* jarak dari carousel */
-            box-shadow: 0px 2px 4px rgba(0, 0, 0, 0.1); /* bayangan untuk garis */
-        }
-
-        /* Judul Kategori */
-        .category-title {
-            text-align: center;
-            margin-top: 20px;
-        }
-
-        .category-title h2 {
-            font-size: 28px;
-            font-weight: 600;
-            color: #333;
-        }
-
         /* Container untuk Kategori */
         .category-container {
             display: grid;
@@ -168,28 +115,23 @@
             gap: 10px;
             justify-items: center;
             margin-top: 20px;
-            width: 80%;
             margin-left: auto;
             margin-right: auto;
+            width: 80%;
         }
 
         /* Setiap Kartu Kategori */
         .category-card {
             background-color: #f9f9f9;
             padding: 8px;
-            border-radius: 15px;
+            border-radius: 5px !important;
             text-align: center;
+            justify-items: center;
             box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.1);
-            height: 100px;
+            height: 40px !important;
             margin: 0;
             text-decoration: none;
-        }
-
-        .category-card img {
-            width: 75%;
-            height: 65px;
-            object-fit: cover;
-            border-radius: 10px;
+            width: 100%;
         }
 
         .category-card h3 {
@@ -200,21 +142,63 @@
             text-decoration: none;
         }
 
-        .populer-produk{
-            text-align: left;
-            margin-top: 30px;
-            margin-left: 125px;
+        .carousel-divider {
+            width: 80%;
+            height: 1px; 
+            background-color: grey; 
+            margin: 20px auto; 
+            box-shadow: 0px 2px 4px rgba(0, 0, 0, 0.1);
         }
 
-        .populer-produk h2 {
-            font-size: 16px;
+        footer {
+            background-color: #f4f4f4;
+            padding: 10px 50px;  
+            border-top: 1px solid #333;
+            font-size: 14px;
+        }
+
+        .footer-container {
+            display: flex;
+            justify-content: space-between;  /* Menempatkan elemen di kiri dan kanan */
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 10px;  
+        }
+
+        .footer-left p {
+            margin: 0;
+            font-size: 14px;
             font-weight: 600;
             color: #333;
         }
 
+        /* Footer Middle - Social Icons */
+        .footer-middle {
+            display: flex;
+            justify-content: right;
+            flex: 1;
+        }
+
+        .social-icons {
+            display: flex;
+            gap: 15px;
+            margin-top: 10px;
+        }
+
+        .social-icon img {
+            width: 21px;
+            height: 21px;
+            transition: transform 0.3s;
+        }
+
+        .social-icon:hover img {
+            transform: scale(1.2);
+        }
+
         .product-container {
             display: flex;  /* Menggunakan Flexbox */
-            justify-content: space-between;  /* Membuat produk bersebelahan dengan jarak yang sama */
+            justify-content: flex-start;  /* Membuat produk bersebelahan dengan jarak yang sama */
+            align-items: flex-start;
             gap: 10px;  /* Memberikan jarak antar produk */
             margin-top: 5px;
             flex-wrap: wrap;  /* Memastikan produk akan membungkus ke baris berikutnya jika ruang tidak cukup */
@@ -332,51 +316,6 @@
             background-color: #ACE1AF;
         }
 
-        footer {
-            background-color: #f4f4f4;
-            padding: 10px 50px;  
-            border-top: 1px solid #333;
-            font-size: 14px;
-        }
-
-        .footer-container {
-            display: flex;
-            justify-content: space-between;  /* Menempatkan elemen di kiri dan kanan */
-            align-items: center;
-            flex-wrap: wrap;
-            gap: 10px;  
-        }
-
-        .footer-left p {
-            margin: 0;
-            font-size: 14px;
-            font-weight: 600;
-            color: #333;
-        }
-
-        /* Footer Middle - Social Icons */
-        .footer-middle {
-            display: flex;
-            justify-content: right;
-            flex: 1;
-        }
-
-        .social-icons {
-            display: flex;
-            gap: 15px;
-            margin-top: 10px;
-        }
-
-        .social-icon img {
-            width: 21px;
-            height: 21px;
-            transition: transform 0.3s;
-        }
-
-        .social-icon:hover img {
-            transform: scale(1.2);
-        }
-
         /* Responsive Design */
         @media (max-width: 768px) {
             .container {
@@ -400,23 +339,32 @@
                 display: none;
             }
 
-            .category-container {
-                grid-template-columns: repeat(6, 1fr);
+            footer {
+                padding: 5px 40px;  
             }
 
-            .category-card img {
-                width: 65%;
-                height: 45px;
+            .footer-left p {
+                font-size: 10px;
+            }
+
+            .social-icon img {
+                width: 14px;
+                height: 14px;
+            }
+
+            .category-container {
+                grid-template-columns: repeat(6, 1fr);
+                margin-left: 20px;
+                margin-right: auto;
+                gap: 5px;
             }
 
             .category-card {
-                height: 90px;
+                height: 30px;
             }
 
-            .populer-produk{
-                text-align: left;
-                margin-top: 20px;
-                margin-left: 65px;
+            .category-card h3 {
+                font-size: 7px;
             }
 
             .product-container {
@@ -530,114 +478,52 @@
     
     <!-- Main Section -->
     <main>
-        <div id="carouselExampleCaptions" class="carousel slide">
-            <div class="carousel-indicators">
-                <button type="button" data-bs-target="#carouselExampleCaptions" data-bs-slide-to="0" class="active" aria-current="true" aria-label="Slide 1"></button>
-                <button type="button" data-bs-target="#carouselExampleCaptions" data-bs-slide-to="1" aria-label="Slide 2"></button>
-                <button type="button" data-bs-target="#carouselExampleCaptions" data-bs-slide-to="2" aria-label="Slide 3"></button>
-            </div>
-            <div class="carousel-inner">
-                <div class="carousel-item active">
-                    <a href="{{ url('product-detail-page') }}"> <!-- Ganti URL sesuai halaman detail produk -->
-                        <img src="{{ asset('images/laptop.jpg') }}" class="d-block w-100" alt="Laptop">
-                    </a>
-                    <div class="carousel-caption d-none d-md-block">
-                        <h5>Acer Swift X14</h5>
-                        <p>Ditenagai prosesor AMD Ryzen 7 dan SSD cepat, cocok untuk kerja kreatif, kuliah, hingga hiburan.</p>
-                    </div>
-                </div>
-                <div class="carousel-item">
-                    <a href="{{ url('product-detail-page') }}"> <!-- Ganti URL sesuai halaman detail produk -->
-                        <img src="{{ asset('images/printer.jpg') }}" class="d-block w-100" alt="Printer">
-                    </a>
-                    <div class="carousel-caption d-none d-md-block">
-                        <h5>Printer Canon PIXMA MG2577s</h5>
-                        <p>Nikmati kemudahan cetak, scan, dan copy di rumah atau kantor dengan printer hemat tinta dan hasil cetak tajam.</p>
-                    </div>
-                </div>
-                <div class="carousel-item">
-                    <a href="{{ url('product-detail-page') }}"> <!-- Ganti URL sesuai halaman detail produk -->
-                        <img src="{{ asset('images/meja_kursi_kantor.jpg') }}" class="d-block w-100" alt="MejaKursiKantor">
-                    </a>
-                    <div class="carousel-caption d-none d-md-block">
-                        <h5>Set Meja & Kursi Kantor Ergonomis</h5>
-                        <p>Didesain untuk produktivitas dan kenyamanan, cocok untuk ruang kerja profesional maupun home office.</p>
-                    </div>
-                </div>
-            </div>
-            <button class="carousel-control-prev" type="button" data-bs-target="#carouselExampleCaptions" data-bs-slide="prev">
-                <span class="carousel-control-prev-icon" aria-hidden="true"></span>
-                <span class="visually-hidden">Previous</span>
-            </button>
-            <button class="carousel-control-next" type="button" data-bs-target="#carouselExampleCaptions" data-bs-slide="next">
-                <span class="carousel-control-next-icon" aria-hidden="true"></span>
-                <span class="visually-hidden">Next</span>
-            </button>
-        </div>
-
-        <div class="carousel-divider"></div>
-
-        <div class="category-title">
-            <h2>Kategori</h2>
-        </div>
-
         <!-- Featured Categories -->
         <div class="category-container">
             <!-- Category 1 -->
             <a href="{{ url('kategori') }}" class="category-card">
-                <img src="{{ asset('images/kategori/laptop.png') }}" alt="Elektronik & Gadget">
                 <h3>Elektronik & Gadget</h3>
             </a>
             <!-- Category 2 -->
             <a href="{{ url('kategori') }}" class="category-card">
-                <img src="{{ asset('images/kategori/baju.png') }}" alt="Pakaian & Aksesori">
                 <h3>Pakaian & Aksesori</h3>
             </a>
             <!-- Category 3 -->
             <a href="{{ url('kategori') }}" class="category-card">
-                <img src="{{ asset('images/kategori/sofa.png') }}" alt="Perabotan Rumah Tangga">
                 <h3>Perabotan Rumah Tangga</h3>
             </a>
             <!-- Category 4 -->
             <a href="{{ url('kategori') }}" class="category-card">
-                <img src="{{ asset('images/kategori/tas.png') }}" alt="Buku & Peralatan Sekolah">
                 <h3>Buku, Alat Tulis, Peralatan Sekolah</h3>
             </a>
             <!-- Category 5 -->
             <a href="{{ url('kategori') }}" class="category-card">
-                <img src="{{ asset('images/kategori/mainan.png') }}" alt="Hobi & Mainan">
                 <h3>Hobi, Mainan, Koleksi</h3>
             </a>
             <!-- Category 6 -->
             <a href="{{ url('kategori') }}" class="category-card">
-                <img src="{{ asset('images/kategori/bayi.png') }}" alt="Perlengkapan Bayi & Anak">
                 <h3>Perlengkapan Bayi & Anak</h3>
             </a>
             <!-- Category 7 -->
             <a href="{{ url('kategori') }}" class="category-card">
-                <img src="{{ asset('images/kategori/roda.png') }}" alt="Otomotif & Aksesori">
                 <h3>Otomotif & Aksesori</h3>
             </a>
             <!-- Category 8 -->
             <a href="{{ url('kategori') }}" class="category-card">
-                <img src="{{ asset('images/kategori/tenda.png') }}" alt="Perlengkapan Taman & Outdoor">
                 <h3>Perlengkapan Taman & Outdoor</h3>
             </a>
             <!-- Category 9 -->
             <a href="{{ url('kategori') }}" class="category-card">
-                <img src="{{ asset('images/kategori/kantor.png') }}" alt="Peralatan Kantor & Industri">
                 <h3>Peralatan Kantor & Industri</h3>
             </a>
             <!-- Category 10 -->
             <a href="{{ url('kategori') }}" class="category-card">
-                <img src="{{ asset('images/kategori/cermin.png') }}" alt="Kosmetik & Perawatan Diri">
                 <h3>Kosmetik & Perawatan Diri</h3>
             </a>
         </div>
 
-        <div class="populer-produk">
-            <h2>Produk Terpopuler</h2>
-        </div>
+        <div class="carousel-divider"></div>
+
         <div class="product-container">
             <a href="{{ url('product-detail-page') }}" class="product-card">
                 <img src="{{ asset('images/stroller.png') }}" alt="Chicco Trolleyme Stroller" class="product-image">
@@ -758,14 +644,63 @@
                     </div>
                 </div>
             </a>
+
+            <a href="{{ url('product-detail-page') }}" class="product-card">
+                <img src="{{ asset('images/kalkulator.png') }}" alt="kalkulator" class="product-image">
+                <div class="product-info">
+                    <p class="product-category"> Buku, Alat Tulis, & Peralatan Sekolah</p>
+                    <h3 class="product-name">Casio Kalkulator Saintifik FX-991</h3>
+                    <div class="product-rating">
+                        <span>★ (4.5)</span>
+                    </div>
+                    <p class="product-brand">By AntonTung</p>
+                </div>
+                <!-- Harga dan Tombol Add -->
+                <div class="product-price">
+                    <div class="price-container">
+                        <span class="current-price">Rp210.000,00</span>
+                    </div>
+                    <div class="add-to-cart-container">
+                        <button class="add-to-cart">
+                            <img src="https://img.icons8.com/material/24/007848/shopping-cart.png" alt="Cart">
+                                Add
+                        </button>
+                    </div>
+                </div>
+            </a>
+
+            <a href="{{ url('product-detail-page') }}" class="product-card">
+                <img src="{{ asset('images/kalkulator.png') }}" alt="kalkulator" class="product-image">
+                <div class="product-info">
+                    <p class="product-category"> Buku, Alat Tulis, & Peralatan Sekolah</p>
+                    <h3 class="product-name">Casio Kalkulator Saintifik FX-991</h3>
+                    <div class="product-rating">
+                        <span>★ (4.5)</span>
+                    </div>
+                    <p class="product-brand">By AntonTung</p>
+                </div>
+                <!-- Harga dan Tombol Add -->
+                <div class="product-price">
+                    <div class="price-container">
+                        <span class="current-price">Rp210.000,00</span>
+                    </div>
+                    <div class="add-to-cart-container">
+                        <button class="add-to-cart">
+                            <img src="https://img.icons8.com/material/24/007848/shopping-cart.png" alt="Cart">
+                                Add
+                        </button>
+                    </div>
+                </div>
+            </a>
         </div>
+
     </main>
 
     <!-- Footer Section -->
     <footer>
         <div class="footer-container">
             <div class="footer-left">
-                <p>© 2025 ReUseMart. All rights reserved.</p>
+                <p>© 2024 Reusemart. All rights reserved.</p>
             </div>
             <div class="footer-middle">
                 <div class="social-icons">
