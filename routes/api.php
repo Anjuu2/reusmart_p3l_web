@@ -18,7 +18,6 @@ Route::middleware('auth:sanctum')->group(function (){
     Route::get('/PenitipShow/{id}', [PenitipController::class, 'show']);
     Route::post('/PenitipUpdate/{id}', [PenitipController::class, 'update']);
 
-    Route::get('/OrganisasiIndex', [OrganisasiController::class, 'index']);
     Route::get('/OrganisasiShow/{id}', [OrganisasiController::class, 'show']);
     Route::post('/OrganisasiUpdate/{id}', [OrganisasiController::class, 'update']);
     Route::post('/OrganisasiNonaktif/{id}', [OrganisasiController::class, 'nonaktif']);
@@ -30,3 +29,4 @@ Route::middleware('auth:sanctum')->group(function (){
     Route::post('/AlamatUpdate/{id}', [AlamatController::class, 'update']);
     Route::delete('/AlamatDestroy/{id}', [AlamatController::class, 'destroy']);
 });
+Route::get('/OrganisasiIndex', [OrganisasiController::class, 'index']);
