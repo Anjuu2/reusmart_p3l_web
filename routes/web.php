@@ -1,6 +1,5 @@
 <?php
 
-use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\LoginController;
 use App\Http\Controllers\PembeliController;
 
@@ -31,5 +30,5 @@ Route::middleware('auth:pegawai')->get('/dashboard/pegawai', fn() => view('dashb
 
 Route::middleware('auth:pembeli')->get('/profile/pembeli', [PembeliController::class, 'profilePembeli'])->name('pembeli.profil');
 
-
 Route::post('logout', [LoginController::class, 'logout'])->name('logout');
+
