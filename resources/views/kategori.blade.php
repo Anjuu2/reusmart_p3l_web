@@ -196,12 +196,12 @@
         }
 
         .product-container {
-            display: flex;  /* Menggunakan Flexbox */
-            justify-content: flex-start;  /* Membuat produk bersebelahan dengan jarak yang sama */
+            display: flex;  
+            justify-content: flex-start; 
             align-items: flex-start;
-            gap: 10px;  /* Memberikan jarak antar produk */
+            gap: 10px;  
             margin-top: 5px;
-            flex-wrap: wrap;  /* Memastikan produk akan membungkus ke baris berikutnya jika ruang tidak cukup */
+            flex-wrap: wrap;  
             margin-left: 125px;
             margin-right: 125px;
         }
@@ -354,7 +354,7 @@
 
             .category-container {
                 grid-template-columns: repeat(6, 1fr);
-                margin-left: 20px;
+                margin-left: 60px;
                 margin-right: auto;
                 gap: 5px;
             }
@@ -371,12 +371,13 @@
                 margin-left: 60px;
                 margin-right: 60px;
                 gap: 1px;
+                
             }
 
             .product-card {
-                width: calc(20% - 10px); /* Produk akan lebih besar pada layar kecil */
+                width: calc(20% - 10px);
                 height: 400px;
-                margin-bottom: 10px; /* Menambahkan jarak antara produk */
+                margin-bottom: 10px;
                 height: 280px;
                 flex-direction: column;
             }
@@ -456,8 +457,7 @@
             <nav>
                 <ul>
                     <li><a href="/kategori">Collection</a></li>
-                    <li><a href="#">Contact Us</a></li>
-                    <li><a href="#">About Us</a></li>
+                    <li><a href="/about">About Us</a></li>
                 </ul>
             </nav>
             <!-- Cart, Search, and Location -->
@@ -645,6 +645,77 @@
                 </div>
             </a>
 
+            <a href="{{ url('product-detail-page') }}" class="product-card">
+                <img src="{{ asset('images/kalkulator.png') }}" alt="kalkulator" class="product-image">
+                <div class="product-info">
+                    <p class="product-category"> Buku, Alat Tulis, & Peralatan Sekolah</p>
+                    <h3 class="product-name">Casio Kalkulator Saintifik FX-991</h3>
+                    <div class="product-rating">
+                        <span>★ (4.5)</span>
+                    </div>
+                    <p class="product-brand">By AntonTung</p>
+                </div>
+                <!-- Harga dan Tombol Add -->
+                <div class="product-price">
+                    <div class="price-container">
+                        <span class="current-price">Rp210.000,00</span>
+                    </div>
+                    <div class="add-to-cart-container">
+                        <button class="add-to-cart">
+                            <img src="https://img.icons8.com/material/24/007848/shopping-cart.png" alt="Cart">
+                                Add
+                        </button>
+                    </div>
+                </div>
+            </a>
+
+            <a href="{{ url('product-detail-page') }}" class="product-card">
+                <img src="{{ asset('images/kalkulator.png') }}" alt="kalkulator" class="product-image">
+                <div class="product-info">
+                    <p class="product-category"> Buku, Alat Tulis, & Peralatan Sekolah</p>
+                    <h3 class="product-name">Casio Kalkulator Saintifik FX-991</h3>
+                    <div class="product-rating">
+                        <span>★ (4.5)</span>
+                    </div>
+                    <p class="product-brand">By AntonTung</p>
+                </div>
+                <!-- Harga dan Tombol Add -->
+                <div class="product-price">
+                    <div class="price-container">
+                        <span class="current-price">Rp210.000,00</span>
+                    </div>
+                    <div class="add-to-cart-container">
+                        <button class="add-to-cart">
+                            <img src="https://img.icons8.com/material/24/007848/shopping-cart.png" alt="Cart">
+                                Add
+                        </button>
+                    </div>
+                </div>
+            </a>
+
+            <a href="{{ url('product-detail-page') }}" class="product-card">
+                <img src="{{ asset('images/kalkulator.png') }}" alt="kalkulator" class="product-image">
+                <div class="product-info">
+                    <p class="product-category"> Buku, Alat Tulis, & Peralatan Sekolah</p>
+                    <h3 class="product-name">Casio Kalkulator Saintifik FX-991</h3>
+                    <div class="product-rating">
+                        <span>★ (4.5)</span>
+                    </div>
+                    <p class="product-brand">By AntonTung</p>
+                </div>
+                <!-- Harga dan Tombol Add -->
+                <div class="product-price">
+                    <div class="price-container">
+                        <span class="current-price">Rp210.000,00</span>
+                    </div>
+                    <div class="add-to-cart-container">
+                        <button class="add-to-cart">
+                            <img src="https://img.icons8.com/material/24/007848/shopping-cart.png" alt="Cart">
+                                Add
+                        </button>
+                    </div>
+                </div>
+            </a>
             <a href="{{ url('product-detail-page') }}" class="product-card">
                 <img src="{{ asset('images/kalkulator.png') }}" alt="kalkulator" class="product-image">
                 <div class="product-info">
