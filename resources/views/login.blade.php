@@ -81,33 +81,66 @@
         <div class="row gx-lg-5 align-items-center mb-5">
             <div class="col-lg-6 mb-5 mb-lg-0">
                 <h1 class="my-5 display-5 fw-bold">
-                    Hadir Untuk Anda, Bersama Membangun Masa Depan Anda
+                    Hadir Untuk Anda, Bersama Mengolah Ulang
                 </h1>
             </div>
             <div class="col-lg-5 mb-5 mb-lg-0 position-relative ms-auto">
                 <div class="card bg-glass">
                     <div class="card-body px-4 py-5 px-md-5">
-                        <form class="form" action="{{url('/login')}}" method="POST">
-                            @csrf
-                            <div>
-                                <h4 class="mb-3 fw-bold text-start">Selamat Datang</h4>
-                            </div>
+                    <form class="form" action="{{ url('login') }}" method="POST">
+                        @csrf
+                        <div>
+                            <h4 class="mb-3 fw-bold text-start">Selamat Datang</h4>
+                        </div>
 
-                            <div class="form-floating">
-                                <input type="email" name="email" class="form-control mb-4" id="floatingInput" placeholder="Email" required />
-                                <label for="floatingInput">Email</label>
-                            </div>
+                        <div class="form-floating mb-4">
+                            <select name="tipe_user" class="form-select" id="floatingTipeUser" required>
+                                <option value="" selected disabled>Pilih Tipe Pengguna</option>
+                                <option value="pembeli">Pembeli</option>
+                                <option value="penitip">Penitip</option>
+                                <option value="organisasi">Organisasi</option>
+                                <option value="pegawai">Pegawai</option>
+                            </select>
+                            <label for="floatingTipeUser">Tipe Pengguna</label>
+                        </div>
 
-                            <div class="form-floating">
-                                <input type="password" name="pass" class="form-control mb-4" id="floatingPassword" placeholder="Kata Sandi" required />
-                                <label for="floatingPassword">Kata Sandi</label>
-                            </div>
+                        <!-- Input Email -->
+                        <div class="form-floating mb-4" id="emailField">
+                            <input type="email" name="email" class="form-control" id="floatingInput" placeholder="Email" />
+                            <label for="floatingInput">Email</label>
+                        </div>
 
-                            <button type="submit" style="width:100%;" class="btn btn-dark btn-block mb-2 mt-3">Login</button>
-                            <div class="d-flex justify-content-center mt-2">
-                                <a href="{{ url('register') }}" class="link-dark" style="font-size: 22px;">Buat Akun ReUseMart</a>
+                        <!-- Select Organisasi -->
+                        <div class="form-floating mb-4 d-none" id="organisasiSelectWrapper">
+                            <select name="id_organisasi" class="form-select" id="organisasiSelect">
+                                <option value="" disabled selected>Pilih Organisasi</option>
+                                @foreach($organisasiList as $org)
+                                    <option value="{{ $org->id_organisasi }}">{{ $org->nama_organisasi }}</option>
+                                @endforeach
+                            </select>
+                            <label for="organisasiSelect">Nama Organisasi</label>
+                        </div>
+
+                        <div class="form-floating">
+                            <input type="password" name="password" class="form-control mb-4" id="floatingPassword" placeholder="Kata Sandi" required />
+                            <label for="floatingPassword">Kata Sandi</label>
+                        </div>
+
+                        @if ($errors->any())
+                            <div class="alert alert-danger">
+                                <ul>
+                                    @foreach ($errors->all() as $error)
+                                        <li>{{ $error }}</li>
+                                    @endforeach
+                                </ul>
                             </div>
-                        </form>
+                        @endif
+
+                        <button type="submit" style="width:100%;" class="btn btn-dark btn-block mb-2 mt-3">Login</button>
+                        <div class="d-flex justify-content-center mt-2">
+                            <a href="{{ url('register') }}" class="link-dark" style="font-size: 22px;">Buat Akun ReUseMart</a>
+                        </div>
+                    </form>
                     </div>
                 </div>
             </div>
@@ -117,6 +150,23 @@
 
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.min.js"
         integrity="sha384-C6RzsynM9kwDrMNeT87bh95OGNyZPhcTNXj1NW7RuBCsyN/o0jlpcV8Qyq46cDfL"
-        crossorigin="anonymous"></script>
+        crossorigin="anonymous">
+</script>
+<script>
+    const tipeUserSelect = document.getElementById('floatingTipeUser');
+    const emailField = document.getElementById('emailField');
+    const orgWrapper = document.getElementById('organisasiSelectWrapper');
+
+    tipeUserSelect.addEventListener('change', function () {
+        if (this.value === 'organisasi') {
+            emailField.classList.add('d-none');
+            orgWrapper.classList.remove('d-none');
+        } else {
+            emailField.classList.remove('d-none');
+            orgWrapper.classList.add('d-none');
+        }
+    });
+</script>
+
 </body>
 </html>
