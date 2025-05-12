@@ -9,45 +9,61 @@
         :root {
             --primary-color: rgba(111, 143, 70, 1);
         }
+
         body {
-            background-color: #f4f6fc;
+            background-color: #f5f8f2;
             font-family: 'Segoe UI', sans-serif;
         }
+
         h2 {
             color: var(--primary-color);
             font-weight: 700;
         }
+
         .btn-success {
             background-color: var(--primary-color);
             border-color: var(--primary-color);
         }
+
         .btn-success:hover {
             background-color: #5c7e3e;
             border-color: #5c7e3e;
         }
+
         .table thead {
             background-color: var(--primary-color);
             color: white;
         }
+
         .badge.bg-success {
             background-color: var(--primary-color) !important;
         }
+
         .modal-header {
             background-color: #e7f0da;
         }
+
         .modal-title {
             color: var(--primary-color);
             font-weight: 600;
         }
+
         .btn-outline-primary {
             border-color: var(--primary-color);
             color: var(--primary-color);
         }
+
         .btn-outline-primary:hover {
             background-color: var(--primary-color);
             color: white;
         }
-        
+
+        .user-info {
+            font-size: 14px;
+            color: var(--primary-color);
+            font-weight: 600;
+        }
+
     </style>
 </head>
 <body>
@@ -59,16 +75,31 @@
         <div class="alert alert-success">{{ session('success') }}</div>
     @endif
 
-    <div class="d-flex justify-content-end mb-3">
-        <form action="{{ route('logout') }}" method="POST">
-            @csrf
-            <button class="btn btn-outline-danger" type="submit">Logout</button>
-        </form>
+    @if ($errors->any())
+        <div class="alert alert-danger">
+            <ul>
+                @foreach ($errors->all() as $error)
+                    <li>{{ $error }}</li>
+                @endforeach
+            </ul>
+        </div>
+    @endif
+
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <div class="user-info">
+            <strong>Masuk sebagai:</strong> {{ Auth::user()->nama_pegawai }}
+        </div>
+        <div>
+            <form action="{{ route('logout') }}" method="POST">
+                @csrf
+                <button class="btn btn-outline-danger" type="submit">Logout</button>
+            </form>
+        </div>
     </div>
 
     <div class="d-flex justify-content-between align-items-center mb-3">
         <form action="{{ route('cs.penitip.index') }}" method="GET" class="d-flex" style="gap: 10px;">
-            <input type="text" name="q" class="form-control" placeholder="Cari nama atau KTP..." value="{{ $search }}">
+            <input type="text" name="q" class="form-control" placeholder="Cari Data Penitip" value="{{ $search }}">
             <button class="btn btn-outline-primary" type="submit">Cari</button>
         </form>
         <button class="btn btn-success" data-bs-toggle="modal" data-bs-target="#createModal">+ Tambah Penitip</button>

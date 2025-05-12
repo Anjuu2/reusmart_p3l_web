@@ -4,6 +4,7 @@ use App\Http\Controllers\LoginController;
 use App\Http\Controllers\PembeliController;
 use App\Http\Controllers\PembeliHistoryController;
 use App\Http\Controllers\PenitipController;
+use App\Http\Controllers\RequestDonasiController;
 use Illuminate\Http\Request;
 
 Route::get('/', function () {
@@ -28,7 +29,7 @@ Route::post('/login', [LoginController::class, 'login']);
 
 Route::middleware('auth:pembeli')->get('/dashboard/pembeli', fn() => view('dashboard'))->name('dashboard.pembeli');
 Route::middleware('auth:penitip')->get('/dashboard/penitip', fn() => view('dashboardP'))->name('dashboard.penitip');
-Route::middleware('auth:organisasi')->get('/dashboard/organisasi', fn() => view('dashboardO'))->name('dashboard.organisasi');
+// Route::middleware('auth:organisasi')->get('/dashboard/organisasi', fn() => view('dashboardO'))->name('dashboard.organisasi');
 Route::middleware('auth:pegawai')->get('/dashboard/admin', fn() => view('dashboardAdmin'))->name('dashboard.admin');
 Route::middleware('auth:pegawai')->get('/dashboard/kurir', fn() => view('dashboard-kurir'))->name('dashboard.kurir');
 Route::middleware('auth:pegawai')->get('/dashboard/owner', fn() => view('dashboard-owner'))->name('dashboard.owner');
@@ -48,6 +49,12 @@ Route::middleware(['auth:pegawai'])->prefix('cs')->group(function () {
     Route::delete('/penitip/{id}', [PenitipController::class, 'destroy'])->name('cs.penitip.destroy');
 });
 
+Route::middleware(['auth:organisasi'])->prefix('organisasi')->group(function () {
+    Route::get('/request-donasi', [RequestDonasiController::class, 'index'])->name('organisasi.request.index');
+    Route::post('/request-donasi', [RequestDonasiController::class, 'store'])->name('organisasi.request.store');
+    Route::put('/request-donasi/{id}', [RequestDonasiController::class, 'update'])->name('organisasi.request.update');
+    Route::delete('/request-donasi/{id}', [RequestDonasiController::class, 'destroy'])->name('organisasi.request.destroy');
+});
 
 Route::post('/logout', function (Request $request) {
     Auth::guard('pembeli')->logout();              

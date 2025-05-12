@@ -14,7 +14,7 @@ class PenitipController extends Controller
 
         $penitips = Penitip::when($search, function ($query, $search) {
             return $query->where('nama_penitip', 'like', "%$search%")
-                        ->orWhere('no_ktp', 'like', "%$search%");
+                        ->orWhere('no_ktp', 'like', "%$search%")->orWhere('username', 'like', "%$search%")->orWhere('email', 'like', "%$search%");
         })->paginate(10);
 
         return view('dashboardCS', [
@@ -31,17 +31,24 @@ class PenitipController extends Controller
 
     public function store(Request $request)
     {
+        $messages = [
+            'no_ktp.unique' => 'No KTP sudah terdaftar. Silakan gunakan yang lain.',
+            'email.unique' => 'Email sudah terdaftar. Silakan gunakan yang lain.',
+            'username.unique' => 'Username sudah terdaftar. Silakan pilih yang lain.',
+        ];
+
         $request->validate([
             'no_ktp' => 'required|unique:penitip,no_ktp',
             'foto_ktp' => 'nullable|image|max:2048',
             'nama_penitip' => 'required',
             'alamat' => 'required',
-            'email' => 'required|email|unique:penitip',
-            'username' => 'required|unique:penitip',
+            'email' => 'required|email|unique:penitip,email',
+            'username' => 'required|unique:penitip,username',
             'password' => 'required|min:6',
-        ]);
+        ], $messages); 
 
         $data = $request->all();
+
         if ($request->hasFile('foto_ktp')) {
             $data['foto_ktp'] = $request->file('foto_ktp')->store('ktp', 'public');
         }
@@ -49,6 +56,7 @@ class PenitipController extends Controller
         $data['poin'] = 0;
         $data['saldo_penitip'] = 0;
         $data['status_aktif'] = 1;
+
         Penitip::create($data);
 
         return redirect()->route('cs.penitip.index')->with('success', 'Penitip berhasil ditambahkan.');
@@ -63,6 +71,11 @@ class PenitipController extends Controller
     public function update(Request $request, $id)
     {
         $penitip = Penitip::findOrFail($id);
+        $messages = [
+            'no_ktp.unique' => 'No KTP sudah terdaftar. Silakan gunakan yang lain.',
+            'email.unique' => 'Email sudah terdaftar. Silakan gunakan yang lain.',
+            'username.unique' => 'Username sudah terdaftar. Silakan pilih yang lain.',
+        ];
 
         $request->validate([
             'no_ktp' => 'required|unique:penitip,no_ktp,' . $id . ',id_penitip',
