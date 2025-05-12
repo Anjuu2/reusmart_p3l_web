@@ -43,7 +43,7 @@
             left: 0;
             width: 100%;
             height: 100%;
-            background-color: rgba(111, 143, 70, 1);
+            background-color: rgba(111, 143, 70, 0.5);
             z-index: 2;
         }
 
@@ -72,8 +72,7 @@
 
 <section class="background-animation">
     <video class="video-background" autoplay loop muted>
-        <source src="{{asset("images/test.mp4")}}" type="video/mp4"> <!-- background video -->
-        Your browser does not support the video tag.
+        <source src="{{ asset('images/video.mp4') }}" type="video/mp4">
     </video>
 
     <div class="bg-overlay"></div>
