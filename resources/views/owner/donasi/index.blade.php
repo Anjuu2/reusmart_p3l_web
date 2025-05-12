@@ -1,5 +1,10 @@
 @extends('owner.dashboard')
 @section('isi')
+@if (session('success'))
+    <div class="alert alert-success mt-3 mx-3">
+        {{ session('success') }}
+    </div>
+@endif
 @if ($errors->has('error'))
     <div class="alert alert-danger mt-3 mx-3">
         {{ $errors->first('error') }}
@@ -47,7 +52,7 @@
         </select>
 
         <input type="text" name="penerima" class="form-control mb-2 w-100" placeholder="Nama Penerima" required>
-        <!-- <input type="date" name="tanggal_donasi" class="form-control mb-2 w-100" required> -->
+        <input type="datetime-local" name="tanggal_donasi" class="form-control mb-2 w-100" value="{{ \Carbon\Carbon::now()->format('Y-m-d\TH:i') }}" required>
         <button class="btn btn-success w-45">Donasikan</button>
     </form>
 

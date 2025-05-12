@@ -90,8 +90,10 @@ class DonasiController extends Controller
             'id_barang' => 'required|integer',
             'id_request' => 'required|integer',
             'penerima' => 'required|string',
-            'tanggal_donasi' => 'required|date'
+            // 'tanggal_donasi' => 'required|date'
         ]);
+
+        $tanggalDonasi = now();
 
         $requestDonasi = RequestDonasi::findOrFail($request->id_request);
         $barang = BarangTitipan::findOrFail($request->id_barang);
@@ -105,36 +107,33 @@ class DonasiController extends Controller
             return back()->withErrors(['error' => 'Barang tidak sesuai dengan permintaan donasi.']);
         }
 
-        DB::transaction(function () use ($request, $barang) {
-            $tanggalDonasi = $request->tanggal_donasi;
+        DB::transaction(function () use ($request, $barang, $requestDonasi) {
+        // Buat data donasi
+        Donasi::create([
+            'id_request' => $request->id_request,
+            'id_barang' => $request->id_barang,
+            'penerima' => $request->penerima,
+            'tanggal_donasi' => $request->tanggal_donasi
+        ]);
 
-            // Simpan data donasi
-            Donasi::create([
-                'id_request' => $request->id_request,
-                'id_barang' => $request->id_barang,
-                'penerima' => $request->penerima,
-                'tanggal_donasi' => $tanggalDonasi
-            ]);
-
-            // Update barang
-            $barang->update([
+        // Update status dan tanggal_keluar barang
+        BarangTitipan::where('id_barang', $request->id_barang)
+            ->update([
                 'status_barang' => 'Didonasikan',
-                'tanggal_keluar' => $tanggalDonasi
+                'tanggal_keluar' => $request->tanggal_donasi
             ]);
 
-            // Update request donasi
-            RequestDonasi::where('id_request', $request->id_request)
-                ->update([
-                    'status_request' => 'Diterima',
-                    'tanggal_keluar' => $tanggalDonasi
-                ]);
+        // Update status request donasi saja
+        RequestDonasi::where('id_request', $request->id_request)
+            ->update([
+                'status_request' => 'Diterima'
+            ]);
 
-            // Tambah poin untuk penitip
-            $poin = floor($barang->harga_jual / 10000);
-            Penitip::where('id_penitip', $barang->id_penitip)
-                ->increment('poin', $poin);
-        });
-
+        // Hitung dan tambahkan poin ke penitip
+        $poin = floor($barang->harga_jual / 10000);
+        Penitip::where('id_penitip', $barang->id_penitip)
+            ->increment('poin', $poin);
+    });
         return redirect()->route('owner.donasi.index')->with('success', 'Donasi berhasil dialokasikan.');
     }
 
@@ -207,8 +206,6 @@ class DonasiController extends Controller
                 'status_request' => 'Diterima',
                 'tanggal_keluar' => $request->tanggal_donasi
             ]);
-            $penitip = $donasi->barang_titipan->penitip;
-            $penitip->notify(new BarangDidonasikan($donasi->barang_titipan, $request->tanggal_donasi));
         });
 
         return redirect()->route('owner.donasi.index')->with('success', 'Data donasi berhasil diperbarui.');
