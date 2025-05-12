@@ -8,6 +8,7 @@ use App\Http\Controllers\DetailBarangController;
 use App\Http\Controllers\LoginController;
 use App\Http\Controllers\PembeliController;
 use App\Http\Controllers\BarangTitipanController;
+use App\Http\Controllers\DonasiController;
 
 Route::get('/', [HomeController::class, 'index']);
 Route::get('/kategori', [KategoriController::class, 'showAvailableProducts']);
@@ -37,11 +38,22 @@ Route::middleware('auth:penitip')->get('/dashboard/penitip', fn() => view('dashb
 Route::middleware('auth:organisasi')->get('/dashboard/organisasi', fn() => view('dashboardO'))->name('dashboard.organisasi');
 Route::middleware('auth:pegawai')->get('/dashboard/admin', fn() => view('dashboardAdmin'))->name('dashboard.admin');
 Route::middleware('auth:pegawai')->get('/dashboard/kurir', fn() => view('dashboard-kurir'))->name('dashboard.kurir');
-Route::middleware('auth:pegawai')->get('/dashboard/owner', fn() => view('dashboard-owner'))->name('dashboard.owner');
+// Route::middleware('auth:pegawai')->get('/dashboard/owner', fn() => view('dashboard-owner'))->name('dashboard.owner');
+Route::middleware('auth:pegawai')->group(function () {
+    Route::get('/dashboard/owner', fn() => redirect()->route('owner.donasi.index'))->name('dashboard.owner');
+    Route::get('/owner/donasi', [DonasiController::class, 'index'])->name('owner.donasi.index');
+    Route::post('/owner/donasi/allocate', [DonasiController::class, 'allocate'])->name('owner.donasi.allocate');
+    Route::post('/owner/donasi/update', [DonasiController::class, 'update'])->name('owner.donasi.update');
+    Route::post('/owner/donasi/reject', [DonasiController::class, 'reject'])->name('owner.donasi.reject');
+    Route::get('/owner/donasi/history-organisasi/{id}', [DonasiController::class, 'historyByOrganisasi'])->name('owner.donasi.history.organisasi');
+});
+
 Route::middleware('auth:pegawai')->get('/dashboard/kepala-gudang', fn() => view('dashboard-kepala'))->name('dashboard.kepala_gudang');
 Route::middleware('auth:pegawai')->get('/dashboard/pegawai', fn() => view('dashboard-pegawai'))->name('dashboard.pegawai');
 
 Route::middleware('auth:pembeli')->get('/profile/pembeli', [PembeliController::class, 'profilePembeli'])->name('pembeli.profil');
 
 Route::post('logout', [LoginController::class, 'logout'])->name('logout');
+
+
 
