@@ -1,10 +1,14 @@
-@extends('layouts.owner')
-@section('content')
+@extends('owner.dashboard')
+@section('isi')
+@if ($errors->has('error'))
+    <div class="alert alert-danger mt-3 mx-3">
+        {{ $errors->first('error') }}
+    </div>
+@endif
 <div class="container py-4">
-
-    <h4>Request Donasi</h4>
+    <h4><strong>Request Donasi</strong></h4>
     <table class="table table-bordered text-center">
-        <thead><tr><th>ID</th><th>Organisasi</th><th>Alamat</th><th>Request</th><th>Status</th><th>Aksi</th></tr></thead>
+        <thead class="table-dark"><tr><th>ID</th><th>Organisasi</th><th>Alamat</th><th>Request</th><th>Status</th><th>Aksi</th></tr></thead>
         <tbody>
         @foreach($requests as $r)
             <tr>
@@ -25,7 +29,7 @@
         </tbody>
     </table>
 
-    <h4 class="mt-5">Alokasikan Barang ke Permintaan Donasi</h4>
+    <h4 class="mt-5"><strong>Alokasikan Barang ke Permintaan Donasi</strong></h4>
     <form method="POST" action="{{ route('owner.donasi.allocate') }}" style="max-width: 500px;">
         @csrf
         <select name="id_barang" class="form-control mb-2 w-100" required>
@@ -43,14 +47,13 @@
         </select>
 
         <input type="text" name="penerima" class="form-control mb-2 w-100" placeholder="Nama Penerima" required>
-        <input type="date" name="tanggal_donasi" class="form-control mb-2 w-100" required>
+        <!-- <input type="date" name="tanggal_donasi" class="form-control mb-2 w-100" required> -->
         <button class="btn btn-success w-45">Donasikan</button>
-
     </form>
 
-    <h4 class="mt-5">Histori Donasi</h4>
+    <h4 class="mt-5"><strong>Histori Donasi</strong></h4>
     <table class="table table-striped text-center">
-        <thead><tr><th>Kode Barang</th><th>Barang</th><th>Organisasi</th><th>Penerima</th><th>Tanggal</th></tr></thead>
+        <thead class="table-dark"><tr><th>Kode Barang</th><th>Barang</th><th>Organisasi</th><th>Penerima</th><th>Tanggal</th></tr></thead>
         <tbody>
         @foreach($donasiHistori as $d)
             <tr>

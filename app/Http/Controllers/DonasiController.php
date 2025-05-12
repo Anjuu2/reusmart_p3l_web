@@ -27,6 +27,63 @@ class DonasiController extends Controller
         return view('owner.donasi.index', compact('requests', 'organisasi', 'donasiHistori', 'barangSiapDonasi'));
     }
 
+    // public function allocate(Request $request)
+    // {
+    //     $request->validate([
+    //         'id_barang' => 'required|integer',
+    //         'id_request' => 'required|integer',
+    //         'penerima' => 'required|string',
+    //         'tanggal_donasi' => 'required|date'
+    //     ]);
+
+    //     // Ambil permintaan donasi
+    //     $requestDonasi = RequestDonasi::findOrFail($request->id_request);
+
+    //     // Filter barang yang sesuai dengan permintaan donasi
+    //     $barangSiapDonasi = BarangTitipan::where('status_barang', 'barang untuk donasi')
+    //                                     ->where('nama_barang', 'like', "%{$requestDonasi->barang_dibutuhkan}%")
+    //                                     ->get();
+
+    //     // Pastikan barang yang dipilih sesuai permintaan donasi
+    //     $barang = BarangTitipan::findOrFail($request->id_barang);
+
+    //     if (strpos(strtolower($barang->nama_barang), strtolower($requestDonasi->barang_dibutuhkan)) === false) {
+    //         return back()->withErrors([
+    //             'error' => "Barang yang dipilih (\"{$barang->nama_barang}\") tidak sesuai dengan permintaan donasi (dibutuhkan: \"{$requestDonasi->barang_dibutuhkan}\")."
+    //         ]);
+    //     }
+
+    //     // Lanjutkan dengan proses alokasi barang
+    //     DB::transaction(function () use ($request, $barang) {
+    //         Donasi::create([
+    //             'id_request' => $request->id_request,
+    //             'id_barang' => $request->id_barang,
+    //             'penerima' => $request->penerima,
+    //             'tanggal_donasi' => $request->tanggal_donasi
+    //         ]);
+
+    //         $tanggalHariIni = now();
+            
+    //         BarangTitipan::where('id_barang', $request->id_barang)
+    //             ->update([
+    //                 'status_barang' => 'Didonasikan',
+    //                 'tanggal_keluar' => $tanggalHariIni,
+    //             ]);
+    //         RequestDonasi::where('id_request', $request->id_request)
+    //             ->update([
+    //                 'status_request' => 'Diterima',
+    //                 'tanggal_keluar' => $tanggalHariIni,
+    //             ]);
+    //         $barang = BarangTitipan::find($request->id_barang);
+    //         $poin = floor($barang->harga_jual / 10000);
+
+    //         Penitip::where('id_penitip', $barang->id_penitip)
+    //             ->increment('poin', $poin);
+    //     });
+
+    //     return redirect()->route('owner.donasi.index')->with('success', 'Barang berhasil didonasikan.');
+    // }
+    // 3. Mengalokasikan barang ke organisasi berdasarkan request
     public function allocate(Request $request)
     {
         $request->validate([
@@ -36,28 +93,49 @@ class DonasiController extends Controller
             'tanggal_donasi' => 'required|date'
         ]);
 
-        DB::transaction(function () use ($request) {
+        $requestDonasi = RequestDonasi::findOrFail($request->id_request);
+        $barang = BarangTitipan::findOrFail($request->id_barang);
+
+        // Validasi barang
+        if ($barang->status_barang !== 'barang untuk donasi') {
+            return back()->withErrors(['error' => 'Barang tidak tersedia untuk donasi.']);
+        }
+
+        if (stripos($barang->nama_barang, $requestDonasi->barang_dibutuhkan) === false) {
+            return back()->withErrors(['error' => 'Barang tidak sesuai dengan permintaan donasi.']);
+        }
+
+        DB::transaction(function () use ($request, $barang) {
+            $tanggalDonasi = $request->tanggal_donasi;
+
+            // Simpan data donasi
             Donasi::create([
                 'id_request' => $request->id_request,
                 'id_barang' => $request->id_barang,
                 'penerima' => $request->penerima,
-                'tanggal_donasi' => $request->tanggal_donasi
+                'tanggal_donasi' => $tanggalDonasi
             ]);
 
-            BarangTitipan::where('id_barang', $request->id_barang)
-                ->update(['status_barang' => 'Didonasikan']);
+            // Update barang
+            $barang->update([
+                'status_barang' => 'Didonasikan',
+                'tanggal_keluar' => $tanggalDonasi
+            ]);
 
+            // Update request donasi
             RequestDonasi::where('id_request', $request->id_request)
-                ->update(['status_request' => 'Diterima']);
+                ->update([
+                    'status_request' => 'Diterima',
+                    'tanggal_keluar' => $tanggalDonasi
+                ]);
 
-            $barang = BarangTitipan::find($request->id_barang);
+            // Tambah poin untuk penitip
             $poin = floor($barang->harga_jual / 10000);
-
             Penitip::where('id_penitip', $barang->id_penitip)
                 ->increment('poin', $poin);
         });
 
-        return redirect()->route('owner.donasi.index')->with('success', 'Barang berhasil didonasikan.');
+        return redirect()->route('owner.donasi.index')->with('success', 'Donasi berhasil dialokasikan.');
     }
 
     // public function update(Request $request)
@@ -68,15 +146,40 @@ class DonasiController extends Controller
     //         'tanggal_donasi' => 'required|date'
     //     ]);
 
-    //     Donasi::where('id_donasi', $request->id_donasi)
-    //         ->update([
+    //     DB::transaction(function () use ($request) {
+    //         $tanggalHariIni = now();
+
+    //         $donasi = Donasi::with('barang_titipan.penitip')
+    //             ->where('id_donasi', $request->id_donasi)
+    //             ->firstOrFail();
+
+    //         // Update data donasi
+    //         $donasi->update([
     //             'penerima' => $request->penerima,
     //             'tanggal_donasi' => $request->tanggal_donasi
     //         ]);
 
-    //     return redirect()->route('owner.donasi.index')->with('success', 'Data donasi berhasil diperbarui.');
-    // }
+    //         // Update status dan tanggal_keluar barang
+    //         BarangTitipan::where('id_barang', $donasi->id_barang)
+    //             ->update([
+    //                 'status_barang' => 'Didonasikan',
+    //                 'tanggal_keluar' => $tanggalHariIni
+    //             ]);
 
+    //         // Update status dan tanggal_keluar request donasi
+    //         RequestDonasi::where('id_request', $donasi->id_request)
+    //             ->update([
+    //                 'status_request' => 'Diterima',
+    //                 'tanggal_keluar' => $tanggalHariIni
+    //             ]);
+
+    //         // Kirim notifikasi ke penitip
+    //         $penitip = $donasi->barang_titipan->penitip;
+    //         $penitip->notify(new BarangDidonasikan($donasi->barang_titipan, $request->tanggal_donasi));
+    //     });
+
+    //     return redirect()->route('owner.donasi.index')->with('success', 'Data donasi dan status barang berhasil diperbarui.');
+    // }
     public function update(Request $request)
     {
         $request->validate([
@@ -86,27 +189,29 @@ class DonasiController extends Controller
         ]);
 
         DB::transaction(function () use ($request) {
-            $donasi = Donasi::with('barang_titipan.penitip')
-                ->where('id_donasi', $request->id_donasi)
-                ->firstOrFail();
+            $donasi = Donasi::with('barang_titipan.penitip')->findOrFail($request->id_donasi);
 
-            // Update data donasi
+            // Update donasi
             $donasi->update([
                 'penerima' => $request->penerima,
                 'tanggal_donasi' => $request->tanggal_donasi
             ]);
 
-            // Update status barang
-            $barang = $donasi->barang_titipan;
-            $barang->status_barang = 'Sudah Didonasikan';
-            $barang->save();
+            // Update barang dan request sesuai tanggal baru
+            $donasi->barang_titipan->update([
+                'status_barang' => 'Didonasikan',
+                'tanggal_keluar' => $request->tanggal_donasi
+            ]);
 
-            // Kirim notifikasi ke penitip (simulasi log / bisa diganti Laravel Notification)
-            $penitip = $barang->penitip;
-            $penitip->notify(new BarangDidonasikan($barang, $request->tanggal_donasi));
+            $donasi->request_donasi->update([
+                'status_request' => 'Diterima',
+                'tanggal_keluar' => $request->tanggal_donasi
+            ]);
+            $penitip = $donasi->barang_titipan->penitip;
+            $penitip->notify(new BarangDidonasikan($donasi->barang_titipan, $request->tanggal_donasi));
         });
 
-        return redirect()->route('owner.donasi.index')->with('success', 'Data donasi dan status barang berhasil diperbarui.');
+        return redirect()->route('owner.donasi.index')->with('success', 'Data donasi berhasil diperbarui.');
     }
 
     public function reject(Request $request)

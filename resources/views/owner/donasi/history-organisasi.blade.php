@@ -1,5 +1,5 @@
-@extends('layouts.owner')
-@section('content')
+@extends('owner.dashboard')
+@section('isi')
 <div class="container py-4">
     <h4 class="mb-4">Histori Donasi - {{ $organisasi->nama_organisasi }}</h4>
     <table class="table table-bordered text-center">
