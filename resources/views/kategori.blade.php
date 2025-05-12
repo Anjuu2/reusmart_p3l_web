@@ -483,12 +483,16 @@
             <!-- Cart, Search, and Location -->
             <div class="cart-search">
                 <!-- Search Input -->
-                <input type="search" placeholder="Search for items...">
+                <!-- <input type="search" placeholder="Search for items..."> -->
+                <div class="search-bar">
+                    <input type="text" id="search-input" placeholder="Cari produk...">
+                    <button id="search-button">Cari</button>
+                </div>
 
                 <!-- Icons -->
                 <div class="icons">
                     <a href="#"><img src="https://img.icons8.com/material/24/000000/shopping-cart.png" alt="Cart"></a>
-                    <a href="#"><img src="https://img.icons8.com/material/24/000000/user.png" alt="Account"></a>
+                    <a href="login"><img src="https://img.icons8.com/material/24/000000/user.png" alt="Account"></a>
                 </div>
             </div>
         </div>
@@ -549,7 +553,7 @@
                 {{ isset($kategori) ? 'Kategori Barang ' . $kategori->nama_kategori : 'Seluruh Produk' }}
             </h2>
 
-            <div class="product-container">
+            <div class="product-container" id="product-container">
                 @forelse($produk as $item)
                     <a href="{{ url('product/' . $item->id_barang) }}" class="product-card">
                         <img src="{{ asset('images/' . $item->foto_barang) }}" alt="{{ $item->nama_barang }}">
@@ -601,5 +605,59 @@
     <!-- Bootstrap JS and dependencies (Popper.js and Bootstrap JS) -->
     <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.11.6/dist/umd/popper.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.min.js"></script>
+    <script>
+    document.getElementById('search-button').addEventListener('click', function () {
+        const query = document.getElementById('search-input').value.trim();
+
+        if (query !== '') {
+            fetch(`/search?query=${encodeURIComponent(query)}`)
+                .then(response => response.json())
+                .then(data => {
+                    const container = document.getElementById('product-container');
+                    container.innerHTML = ''; // Kosongkan produk sebelumnya
+
+                    if (data.length > 0) {
+                        data.forEach(item => {
+                            const card = document.createElement('a');
+                            card.href = `/product/${item.id_barang}`;
+                            card.classList.add('product-card');
+                            card.innerHTML = `
+                                <img src="/images/${item.foto_barang}" alt="${item.nama_barang}">
+                                <div class="product-info">
+                                    <p class="product-category">${item.kategori?.nama_kategori ?? 'Kategori Tidak Ada'}</p>
+                                    <h3 class="product-name">${item.nama_barang}</h3>
+                                    <p class="product-status">${item.status_barang}</p>
+                                </div>
+                                <div class="product-price">
+                                    <div class="price-container">
+                                        <span class="current-price">Rp${parseInt(item.harga_jual).toLocaleString('id-ID')}</span>
+                                    </div>
+                                    <div class="add-to-cart-container">
+                                        <button class="add-to-cart">
+                                            <img src="https://img.icons8.com/material/24/007848/shopping-cart.png" alt="Cart">
+                                            Add
+                                        </button>
+                                    </div>
+                                </div>
+                            `;
+                            container.appendChild(card);
+                        });
+                    } else {
+                        container.innerHTML = '<p>Tidak ada produk ditemukan.</p>';
+                    }
+                })
+                .catch(err => {
+                    console.error('Search error:', err);
+                });
+        }
+    });
+
+    // Tekan Enter juga bisa jalanin pencarian
+    document.getElementById('search-input').addEventListener('keypress', function (e) {
+        if (e.key === 'Enter') {
+            document.getElementById('search-button').click();
+        }
+    });
+</script>
 </body>
 </html>

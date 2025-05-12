@@ -270,6 +270,8 @@
             background-color: #218838;
         }
 
+        
+
         /* Responsive Design */
         @media (max-width: 768px) {
             .container {
@@ -351,12 +353,13 @@
             <!-- Cart, Search, and Location -->
             <div class="cart-search">
                 <!-- Search Input -->
-                <input type="search" placeholder="Search for items...">
-
+                <!-- <input type="search" placeholder="Search for items..."> -->
+                <input type="search" id="search" placeholder="Search for items..." onkeyup="searchProducts()" />
+                <div id="search-results"></div>
                 <!-- Icons -->
                 <div class="icons">
                     <a href="#"><img src="https://img.icons8.com/material/24/000000/shopping-cart.png" alt="Cart"></a>
-                    <a href="#"><img src="https://img.icons8.com/material/24/000000/user.png" alt="Account"></a>
+                    <a href="login"><img src="https://img.icons8.com/material/24/000000/user.png" alt="Account"></a>
                 </div>
             </div>
         </div>
@@ -406,7 +409,7 @@
 
                     <!-- Informasi Garansi Produk -->
                 <div class="garansi-info" style="margin: 0 0 8px;">
-                    <p style="font-size: 15px; font-weight: bold; margin: 0;"><strong>Garansi Status:</strong></p>
+                    <p style="font-size: 15px; font-weight: bold; margin-bottom: 10px; "><strong>Garansi Status:</strong></p>
                     
                     <!-- Cek jika status garansi tersedia -->
                     @if ($garansi_status !== "Garansi Tidak Tersedia")

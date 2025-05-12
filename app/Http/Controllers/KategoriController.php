@@ -45,4 +45,20 @@ class KategoriController extends Controller
 
         return view('kategori', compact('kategori', 'produk'));
     }
+
+    public function search(Request $request)
+    {
+        $query = $request->get('query');
+
+        if ($query) {
+            $products = BarangTitipan::with('kategori') // ← ini penting
+                ->where('nama_barang', 'like', '%' . $query . '%')
+                ->get();
+        } else {
+            $products = BarangTitipan::with('kategori')->get(); // ← juga di sini
+        }
+
+        return response()->json($products);
+    }
+
 }

@@ -7,6 +7,7 @@ use App\Http\Controllers\AboutController;
 use App\Http\Controllers\DetailBarangController;
 use App\Http\Controllers\LoginController;
 use App\Http\Controllers\PembeliController;
+use App\Http\Controllers\BarangTitipanController;
 
 Route::get('/', [HomeController::class, 'index']);
 Route::get('/kategori', [KategoriController::class, 'showAvailableProducts']);
@@ -14,6 +15,7 @@ Route::get('/kategori/{id}', [KategoriController::class, 'showProductsByCategory
 Route::get('/about', [AboutController::class, 'index']);
 Route::get('/detail', [DetailBarangController::class, 'index']);
 Route::get('/product/{id}', [DetailBarangController::class, 'show']);
+Route::get('/search', [BarangTitipanController::class, 'search']);
 
 // Route::get('/', function () {
 //     return view('login');

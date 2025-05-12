@@ -316,10 +316,9 @@
                 <!-- Search Input -->
                 <input type="search" placeholder="Search for items...">
 
-                <!-- Icons -->
                 <div class="icons">
                     <a href="#"><img src="https://img.icons8.com/material/24/000000/shopping-cart.png" alt="Cart"></a>
-                    <a href="#"><img src="https://img.icons8.com/material/24/000000/user.png" alt="Account"></a>
+                    <a href="login"><img src="https://img.icons8.com/material/24/000000/user.png" alt="Account"></a>
                 </div>
             </div>
         </div>
