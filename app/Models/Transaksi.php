@@ -51,9 +51,9 @@ class Transaksi extends Model
 		return $this->belongsTo(Pembeli::class, 'id_pembeli');
 	}
 
-	public function detail_transaksi()
+	public function detailTransaksi()
 	{
-		return $this->hasOne(DetailTransaksi::class, 'id_transaksi');
+		return $this->hasMany(\App\Models\DetailTransaksi::class, 'id_transaksi');
 	}
 
 	public function komisis()

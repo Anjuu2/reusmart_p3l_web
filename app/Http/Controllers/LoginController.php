@@ -6,7 +6,8 @@ use Illuminate\Http\Request;
 use App\Models\Pembeli;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
-use Illuminate\Support\Facades\Log;  
+use Illuminate\Support\Facades\Log; 
+use Illuminate\Support\Facades\Route;
 
 
 class LoginController extends Controller
@@ -33,7 +34,7 @@ class LoginController extends Controller
             if ($user && $user->password === $password) {
                 Auth::guard('pembeli')->login($user);
                 $request->session()->regenerate();
-                return redirect()->route('dashboard.pembeli');
+                return redirect()->route('home');
             }
         }
 
@@ -96,6 +97,6 @@ class LoginController extends Controller
     public function logout()
     {
         Auth::logout();
-        return redirect()->route('login');
+        return redirect()->route('home');
     }
 }

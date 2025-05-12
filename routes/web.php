@@ -2,10 +2,16 @@
 
 use App\Http\Controllers\LoginController;
 use App\Http\Controllers\PembeliController;
+use App\Http\Controllers\PembeliHistoryController;
+use Illuminate\Http\Request;
 
-// Route::get('/', function () {
-//     return view('login');
-// });
+Route::get('/', function () {
+    return view('home');
+});
+
+Route::get('/home', function () {
+    return view('home');
+})->name('home');
 
 Route::get('/cek-session', function () {
     return response()->json([
@@ -30,5 +36,14 @@ Route::middleware('auth:pegawai')->get('/dashboard/pegawai', fn() => view('dashb
 
 Route::middleware('auth:pembeli')->get('/profile/pembeli', [PembeliController::class, 'profilePembeli'])->name('pembeli.profil');
 
-Route::post('logout', [LoginController::class, 'logout'])->name('logout');
+Route::middleware('auth:pembeli')->get('/pembeli/history', [PembeliHistoryController::class, 'index'])->name('pembeli.history');
+
+
+Route::post('/logout', function (Request $request) {
+    Auth::guard('pembeli')->logout();              
+    $request->session()->invalidate();            
+    $request->session()->regenerateToken();       
+
+    return redirect('/login');                   
+})->name('logout');
 
