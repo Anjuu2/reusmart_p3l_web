@@ -9,6 +9,8 @@ use App\Http\Controllers\LoginController;
 use App\Http\Controllers\PembeliController;
 use App\Http\Controllers\BarangTitipanController;
 use App\Http\Controllers\DonasiController;
+use App\Http\Controllers\OrganisasiController;
+use App\Http\Controllers\PegawaiController;
 
 Route::get('/', [HomeController::class, 'index']);
 Route::get('/kategori', [KategoriController::class, 'showAvailableProducts']);
@@ -36,7 +38,7 @@ Route::post('/login', [LoginController::class, 'login']);
 Route::middleware('auth:pembeli')->get('/dashboard/pembeli', fn() => view('dashboard'))->name('dashboard.pembeli');
 Route::middleware('auth:penitip')->get('/dashboard/penitip', fn() => view('dashboardP'))->name('dashboard.penitip');
 Route::middleware('auth:organisasi')->get('/dashboard/organisasi', fn() => view('dashboardO'))->name('dashboard.organisasi');
-Route::middleware('auth:pegawai')->get('/dashboard/admin', fn() => view('dashboardAdmin'))->name('dashboard.admin');
+// Route::middleware('auth:pegawai')->get('/dashboard/admin', fn() => view('dashboardAdmin'))->name('dashboard.admin');
 Route::middleware('auth:pegawai')->get('/dashboard/kurir', fn() => view('dashboard-kurir'))->name('dashboard.kurir');
 // Route::middleware('auth:pegawai')->get('/dashboard/owner', fn() => view('dashboard-owner'))->name('dashboard.owner');
 Route::middleware('auth:pegawai')->group(function () {
@@ -55,5 +57,32 @@ Route::middleware('auth:pembeli')->get('/profile/pembeli', [PembeliController::c
 
 Route::post('logout', [LoginController::class, 'logout'])->name('logout');
 
+Route::get('/dashboard', function () {
+    return view('admin.dashboard');
+})->name('dashboard.admin');
 
+Route::get('/organisasi', [OrganisasiController::class, 'index'])
+     ->name('organisasi.index');
 
+// Tambahkan route PUT untuk update via AJAX
+Route::post('/organisasi/{organisasi}', [OrganisasiController::class, 'update'])
+     ->name('organisasi.update');
+
+// (opsional) route POST nonaktif
+Route::post('/organisasi/{organisasi}/nonaktif', [OrganisasiController::class, 'nonaktif'])
+     ->name('organisasi.nonaktif');
+
+// Route::get('/pegawai', [PegawaiController::class, 'index'])
+//      ->name('pegawai.index');
+
+Route::middleware('auth:pegawai')->group(function () {
+    Route::get('/pegawai', [PegawaiController::class, 'index'])->name('pegawai.index');
+    Route::get('/pegawai/create', [PegawaiController::class, 'create'])->name('pegawai.create');
+    Route::post('/pegawai', [PegawaiController::class, 'store'])->name('pegawai.store');
+    Route::get('/pegawai/{id}/edit', [PegawaiController::class, 'edit'])->name('pegawai.edit');
+    Route::put('/pegawai/{id}', [PegawaiController::class, 'update'])->name('pegawai.update');
+    Route::delete('/pegawai/{id}', [PegawaiController::class, 'destroy'])->name('pegawai.destroy');
+    Route::patch('/pegawai/{id}/nonaktif', [PegawaiController::class, 'nonaktifkan'])->name('pegawai.nonaktifkan');
+    Route::patch('/pegawai/{id}/aktifkan', [PegawaiController::class, 'aktifkan'])->name('pegawai.aktifkan');
+    Route::get('/pegawai/search', [PegawaiController::class, 'search'])->name('pegawai.search');
+});
