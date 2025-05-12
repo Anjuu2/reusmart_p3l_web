@@ -4,7 +4,7 @@
 <!-- CSRF token untuk AJAX -->
 <meta name="csrf-token" content="{{ csrf_token() }}">
 
-<div class="container mt-3 ms-0 ps-0">
+<div class="container mt-3 ms-3 ps-0">
   <form class="d-flex mb-4">
     <input class="form-control me-2" 
            type="search" 
