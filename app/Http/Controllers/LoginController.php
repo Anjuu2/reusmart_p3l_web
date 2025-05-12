@@ -70,7 +70,7 @@ class LoginController extends Controller
                 Auth::guard('pegawai')->login($pegawai);
                 $request->session()->regenerate();
         
-                $jabatan = strtolower($pegawai->jabatan->nama_jabatan);
+                $jabatan = strtolower(trim($pegawai->jabatan->nama_jabatan));
         
                 switch ($jabatan) {
                     case 'admin':
@@ -81,6 +81,8 @@ class LoginController extends Controller
                         return redirect()->route('dashboard.pembeli');
                     case 'kepala gudang':
                         return redirect()->route('dashboard.kepala_gudang');
+                    case 'customer service':
+                        return redirect()->route('dashboard.cs');
                     default:
                         return redirect()->route('dashboard.pegawai');
                 }

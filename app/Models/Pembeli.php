@@ -12,7 +12,7 @@ class Pembeli extends Authenticatable
 
     protected $table = 'pembeli';  
     protected $primaryKey = 'id_pembeli';  
-    public $timestamps = true;  
+    public $timestamps = false; 
 
     protected $fillable = [
         'username',
