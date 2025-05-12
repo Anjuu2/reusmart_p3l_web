@@ -4,181 +4,91 @@ namespace App\Http\Controllers;
 
 use App\Models\Organisasi;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Auth;
-use Illuminate\Support\Facades\Hash;
-use Exception;
 
 class OrganisasiController extends Controller
 {
-    public function index()
+    public function index(Request $request)
     {
-        // Get all organizations
-        $organisasi = Organisasi::all();
+        $q = $request->query('q');
 
-        return response()->json([
-            'status' => true,
-            'message' => 'All Organisasi retrieved successfully.',
-            'data' => $organisasi
-        ], 200);
+        $organisasi = $q
+            ? Organisasi::where('nama_organisasi', 'like', "%{$q}%")->get()
+            : Organisasi::all();
+
+        return view('Admin.organisasiIndex', [
+            'organisasi' => $organisasi,
+            'q'           => $q,
+        ]);
     }
 
-    public function register(Request $request)
+    public function create()
     {
-        try{
-            $request->validate([
-                'nama_organisasi' => 'required|max:255',
-                'alamat' => 'required|max:255',
-                'password' => 'required',
-            ]);
-
-            $organisasi = Organisasi::create(attributes:[
-                'nama_organisasi' => $request->nama_organisasi,
-                'alamat' => $request->alamat,
-                'password' => Hash::make($request->password),
-                'status_aktif' => 1,
-            ]);
-
-            return response()->json([
-                'message' => 'Organisasi created successfully!',
-                'data' => $organisasi
-            ], 201);
-        }catch (Exception $e){
-            return response()->json([
-                "status" => false,
-                "message" => "something went wrong",
-                "error" => $e->getMessage(),
-            ], 400);
-        }
+        return view('organisasi.create');
     }
 
-    public function login(Request $request){
+    public function store(Request $request)
+    {
         $request->validate([
-            'nama_organisasi' => 'required',
-            'password' => 'required',
+            'nama_organisasi' => 'required|string|max:255',
+            'alamat'          => 'required|string|max:255',
+            'password'        => 'required|string|min:6|confirmed',
         ]);
 
-        $organisasi = Organisasi::where('nama_organisasi', $request->nama_organisasi)->first();
-        
-        // cek akun ada atau ga
-        if (!$organisasi) {
-            return response()->json([
-                "status" => false,
-                "message" => "Invalid credentials: Account not found.",
-            ], 401);
-        }
+        Organisasi::create([
+            'nama_organisasi' => $request->nama_organisasi,
+            'alamat'          => $request->alamat,
+            'password'        => bcrypt($request->password),
+            'status_aktif'    => 1,
+        ]);
 
-        // cek password
-        if (!Hash::check($request->password, $organisasi->password)) {
-            return response()->json([
-                "status" => false,
-                "message" => "Invalid credentials: Incorrect password.",
-            ], 401);
-        }
-
-        // cek akun aktif
-        if (!$organisasi->status_aktif) {
-            return response()->json([
-                "status" => false,
-                "message" => "Account is inactive.",
-            ], 403); // 403 Forbidden status
-        }
-        
-        try {
-            $token = $organisasi->createToken('Personal Access Token')->plainTextToken;
-
-            session(['token' => $token]);
-
-            return response()->json([
-                'status' => true,
-                'message' => 'Login successful.',
-                'token' => $token,  // Send the token in the response
-            ], 200);
-        } catch (Exception $e) {
-            return response()->json([
-                "status" => false,
-                "message" => "Error creating token: " . $e->getMessage(),
-            ], 500);
-        }
-    }
-
-    public function logout (Request $request)
-    {
-        if(Auth::check()){
-            $request->user()->currentAccessToken()->delete();
-            return response()->json(['message' => 'Logged out successfully']);
-        }
-
-        return response()->json(['message' => 'Not logged in'], 401);
+        return redirect()
+            ->route('organisasi.index')
+            ->with('success', 'Organisasi berhasil dibuat.');
     }
 
     public function show($id)
     {
-        // Find the organization by ID
-        $organisasi = Organisasi::find($id);
+        $organisasi = Organisasi::findOrFail($id);
+        return view('organisasi.show', compact('organisasi'));
+    }
 
-        // If organization is found
-        if ($organisasi) {
-            return response()->json($organisasi);
-        } else {
-            return response()->json(['message' => 'Organisasi not found'], 404);
-        }
+    public function edit($id)
+    {
+        $organisasi = Organisasi::findOrFail($id);
+        return view('organisasi.edit', compact('organisasi'));
     }
 
     public function update(Request $request, $id)
     {
         $request->validate([
-            'nama_organisasi' => 'required|max:255',
-            'alamat' => 'required|max:255',
+            'nama_organisasi' => 'required|string|max:255',
+            'alamat'          => 'required|string|max:255',
         ]);
 
-        // Find the organization by ID
-        $organisasi = Organisasi::find($id);
+        $org = Organisasi::findOrFail($id);
+        $org->update($request->only('nama_organisasi', 'alamat'));
 
-        if ($organisasi) {
-            // Update organization details
-            $organisasi->update([
-                'nama_organisasi' => $request->nama_organisasi,
-                'alamat' => $request->alamat,
-            ]);
-
-            return response()->json([
-                'message' => 'Organisasi updated successfully!',
-                'data' => $organisasi
-            ], 200);
-        } else {
-            return response()->json(['message' => 'Organisasi not found'], 404);
-        }
+        return redirect()
+            ->route('organisasi.index')
+            ->with('success', 'Organisasi berhasil diperbarui.');
     }
 
     public function destroy($id)
     {
-        // Find the organization by ID
-        $organisasi = Organisasi::find($id);
+        Organisasi::destroy($id);
 
-        if ($organisasi) {
-            // Delete the organization
-            $organisasi->delete();
-
-            return response()->json([
-                'message' => 'Organisasi deleted successfully!'
-            ], 200);
-        } else {
-            return response()->json(['message' => 'Organisasi not found'], 404);
-        }
+        return redirect()
+            ->route('organisasi.index')
+            ->with('success', 'Organisasi berhasil dihapus.');
     }
 
-    public function nonaktif($id){
-        $organisasi = Organisasi::find($id);
-        
-        if ($organisasi) {
-            $organisasi->status_aktif = 0;
-            $organisasi->save();
+    public function nonaktif($id)
+    {
+        $org = Organisasi::findOrFail($id);
+        $org->update(['status_aktif' => 0]);
 
-            return response()->json([
-                'message' => 'Organisasi dinonaktifkan!'
-            ], 200);
-        }else{
-            return response()->json(['message' => 'Organisasi not found'], 404);
-        }
+        return redirect()
+            ->route('organisasi.index')
+            ->with('success', 'Organisasi berhasil dinonaktifkan.');
     }
 }

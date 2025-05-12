@@ -6,8 +6,9 @@ $vendorDir = dirname(__DIR__);
 $baseDir = dirname($vendorDir);
 
 return array(
+    'App\\Http\\Controllers\\AlamatController' => $baseDir . '/app/Http/Controllers/AlamatController.php',
     'App\\Http\\Controllers\\Controller' => $baseDir . '/app/Http/Controllers/Controller.php',
-    'App\\Http\\Controllers\\PenitipController' => $baseDir . '/app/Http/Controllers/PenitipController.php',
+    'App\\Http\\Controllers\\OrganisasiController' => $baseDir . '/app/Http/Controllers/OrganisasiController.php',
     'App\\Models\\AlamatPembeli' => $baseDir . '/app/Models/AlamatPembeli.php',
     'App\\Models\\Badge' => $baseDir . '/app/Models/Badge.php',
     'App\\Models\\BarangTitipan' => $baseDir . '/app/Models/BarangTitipan.php',

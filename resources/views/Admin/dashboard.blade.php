@@ -3,11 +3,11 @@
     <head>
         <meta charset="utf-8">
         <meta name="viewport"content="width=device-width, initial-scale=1.0">
-        <title>Main</title>
+        <title>Dashboard</title>
         
         <style>
             .main-sidebar{
-                background: linear-gradient(135deg, #2c3e50 0%, #4ca1af 100%);
+                background: linear-gradient(135deg, rgba(0, 128, 0, 0.7) 0%, rgba(108, 241, 108, 0.7) 100%);
             }
 
             .main-header{
@@ -94,7 +94,7 @@
             <aside class="main-sidebar sidebar-dark-primary elevation-4">
                 <a href="#" class="brand-link">
 
-                    <span class="brand-text font-weight-light" style="padding-left:5vw;">SIDUFA</span>
+                    <span class="brand-text font-weight-light" style="padding-left:5vw;">Reusemart</span>
                 </a>
 
                 <div class="sidebar">
@@ -108,8 +108,8 @@
                         <ul class="nav nav-pills nav-sidebar flex-column" data-widget="treeview" role="menu" data-acccordion="false">
                             <li class="nav-item">
                                 <a href="{{url('organisasi')}}" class="nav-link">
-                                    <i class="nav-icon fas fa-home" style="padding-left: -10px;"></i>
-                                    <p>Data Organisasi</p>
+                                    <i class="nav-icon bi bi-buildings-fill" style="padding-left: -10px;"></i>
+                                    <p>Organisasi</p>
                                 </a>
                             </li>
                             <li class="nav-item">
