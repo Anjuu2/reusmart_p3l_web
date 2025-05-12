@@ -195,147 +195,80 @@
             transform: scale(1.2);
         }
 
+        /* Carousel Section */
         .product-container {
-            display: grid;
-            grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
-            gap: 20px;
-            padding: 20px 40px;
-        }
-
-        /* Kartu Produk */
-        .product-card {
-            background-color: #fff;
-            border-radius: 10px;
-            box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.1);
-            text-align: center;
-            text-decoration: none;
-            color: inherit;
-            border: 1px solid #e0e0e0;
-            overflow: hidden;
             display: flex;
-            flex-direction: column;
             justify-content: space-between;
-            padding: 10px;
-            height: 400px;
+            gap: 20px;
+            padding: 20px;
+            margin: 0 auto;
+            width: 80%;
+            box-sizing: border-box;
         }
 
-        .product-card:hover {
-            transform: scale(1.05); /* Memperbesar produk sedikit saat hover */
+        /* Gambar Produk Carousel */
+        .carousel-inner {
+            width: 100%;
+            height: 400px;  /* Menentukan tinggi carousel */
         }
 
-        /* Gambar Produk */
-       .product-card img {
-            /* width: 100%; */
-            height: 150px;
-            object-fit: cover;
-            margin-bottom: 10px;
-        }
-
-        .product-card h4 {
-            font-size: 16px;
-            margin: 5px 0;
-        }
-
-        .product-card p {
-            font-size: 14px;
-            margin: 2px 0;
+        .carousel-item img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;  /* Agar gambar mengisi seluruh area tanpa terdistorsi */
+            border-radius: 8px;
         }
 
         /* Informasi Produk */
         .product-info {
-            margin-top: 15px;
-            flex-grow: 1;
+            width: 50%;
             display: flex;
             flex-direction: column;
-            justify-content: center;
+            gap: 15px;
         }
 
-        /* Nama Kategori Produk */
-        .product-category {
-            font-size: 10px;
-            color: #777;
-            text-align: left;
-        }
-
-        /* Nama Produk */
-        .product-name {
-            font-size: 20px;
-            font-weight: 600;
-            color: #333;
-            margin: 10px 0;
-        }
-
-        /* Rating Produk */
-        .product-rating {
-            font-size: 10px;
-            color: #ff5a5f;
-        }
-
-        /* Nama Merek Produk */
-        .product-brand {
-            font-size: 11px;
-            color: #777;
-        }
-
-        /* Harga Produk */
-        .product-price {
+        /* Kontainer untuk Tombol */
+        .button-container {
             display: flex;
-            justify-content: space-between;
-            align-items: center;
-            margin-top: auto;
-        }
-
-        /* Harga Produk (Di kiri) */
-        .price-container {
-            flex: 1;
-            text-align: left;
-        }
-
-        .current-price {
-            font-size: 14px;
-            font-weight: bold;
-            color: #333;
-            flex-direction: column;
-            margin-left: 10px;
-        }
-
-        .add-to-cart-container {
-            display: flex;
-            justify-content: flex-end;
+            gap: 10px;  /* Memberikan jarak antar tombol */
+            margin-top: 10px;  /* Memberikan ruang antara tombol dan elemen lainnya */
         }
 
         /* Tombol Add to Cart */
-        .add-to-cart {
-            background-color: #F0FFF0;
-            color: #28a745;
-            padding: 5px 10px;
-            border: 2px solid #F0FFF0;;
-            border-radius: 6px;
-            display: flex;
-            align-items: center;
-            font-size: 11px;
+        .add-to-cart-btn{
+            background-color: white;  /* Latar belakang putih */
+            color: #28a745;  /* Teks hijau */
+            padding: 10px 20px;
+            border: 2px solid #28a745;  /* Border hijau */
+            border-radius: 5px;
             cursor: pointer;
+            font-size: 1.2rem;
+            transition: background-color 0.3s ease, color 0.3s ease;
+            width: 48%;  /* Membuat tombol lebar setengah container */
         }
 
-        .add-to-cart img {
-            margin-right: 10px;
-             width: 16px;  /* Menyesuaikan lebar gambar */
-            height: 16px; /* Menyesuaikan tinggi gambar */
-            object-fit: contain; /* Memastikan gambar tidak terdistorsi */
+        .buy-now-btn {
+            background-color: #28a745;
+            color: white;
+            padding: 10px 20px;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 1.2rem;
+            transition: background-color 0.3s ease;
+            width: 48%;  /* Membuat tombol lebar setengah container */
         }
 
-        .add-to-cart:hover {
-            background-color: #ACE1AF;
+        /* Efek Hover Tombol */
+        .add-to-cart-btn:hover{
+            background-color: #28a745;  /* Latar belakang hijau saat hover */
+            color: white;  /* Warna teks menjadi putih saat hover */
+            border: 2px solid #28a745;
         }
 
-        .product-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
-            gap: 20px;
-            padding: 20px 0;
-            width: 100%;
+        .buy-now-btn:hover {
+            background-color: #218838;
         }
-
 
         /* Responsive Design */
         @media (max-width: 768px) {
@@ -373,83 +306,6 @@
                 height: 14px;
             }
 
-            .category-container {
-                grid-template-columns: repeat(6, 1fr);
-                margin-left: 60px;
-                margin-right: auto;
-                gap: 5px;
-            }
-
-            .category-card {
-                height: 30px;
-            }
-
-            .category-card h3 {
-                font-size: 7px;
-            }
-
-            .product-container {
-                margin-left: 60px;
-                margin-right: 60px;
-                gap: 1px;
-            }
-
-            .product-card {
-                width: calc(20% - 10px);
-                height: 400px;
-                margin-bottom: 10px;
-                height: 280px;
-                flex-direction: column;
-            }
-
-            /* Gambar Produk */
-            .product-image {
-                width: 100%;
-                height: 80px;
-                object-fit: cover;
-            }
-
-            /* Nama Kategori Produk */
-            .product-category {
-                font-size: 6px;
-            }
-
-            /* Nama Produk */
-            .product-name {
-                font-size: 9px;
-            }
-
-            /* Rating Produk */
-            .product-rating {
-                font-size: 9px;
-            }
-
-            /* Nama Merek Produk */
-            .product-brand {
-                font-size: 8px;
-            }
-
-            .current-price {
-                font-size: 6px;
-                flex-direction: column;
-            }
-
-            /* Tombol Add to Cart */
-            .add-to-cart {
-                padding: 2px 4px;
-                font-size: 6px;
-            }
-
-            .add-to-cart img {
-                margin-right: 5px; 
-                width: 8px;
-                height: 8px;
-            }
-
-            .add-to-cart:hover {
-                background-color: #ACE1AF;
-            }
-
             footer {
                 padding: 5px 40px;  
             }
@@ -461,6 +317,18 @@
             .social-icon img {
                 width: 14px;
                 height: 14px;
+            }
+
+            .product-container {
+                flex-direction: column; /* Gambar dan informasi produk dalam satu kolom pada layar kecil */
+            }
+
+            .carousel-inner {
+                height: 300px;  /* Menurunkan tinggi carousel pada perangkat kecil */
+            }
+
+            .add-to-cart-btn, .buy-now-btn {
+                width: 100%;  /* Membuat tombol mengisi lebar penuh pada perangkat kecil */
             }
         }
     </style>
@@ -498,86 +366,93 @@
     
     <!-- Main Section -->
     <main>
-        <!-- Featured Categories -->
-        <div class="category-container">
-            <!-- Category 1 -->
-            <a href="{{ url('kategori/1') }}" class="category-card">
-                <h3>Elektronik & Gadget</h3>
-            </a>
-            <!-- Category 2 -->
-            <a href="{{ url('kategori/2') }}" class="category-card">
-                <h3>Pakaian & Aksesori</h3>
-            </a>
-            <!-- Category 3 -->
-            <a href="{{ url('kategori/3') }}" class="category-card">
-                <h3>Perabotan Rumah Tangga</h3>
-            </a>
-            <!-- Category 4 -->
-            <a href="{{ url('kategori/4') }}" class="category-card">
-                <h3>Buku, Alat Tulis, Peralatan Sekolah</h3>
-            </a>
-            <!-- Category 5 -->
-            <a href="{{ url('kategori/5') }}" class="category-card">
-                <h3>Hobi, Mainan, Koleksi</h3>
-            </a>
-            <!-- Category 6 -->
-            <a href="{{ url('kategori/6') }}" class="category-card">
-                <h3>Perlengkapan Bayi & Anak</h3>
-            </a>
-            <!-- Category 7 -->
-            <a href="{{ url('kategori/7') }}" class="category-card">
-                <h3>Otomotif & Aksesori</h3>
-            </a>
-            <!-- Category 8 -->
-            <a href="{{ url('kategori/8') }}" class="category-card">
-                <h3>Perlengkapan Taman & Outdoor</h3>
-            </a>
-            <!-- Category 9 -->
-            <a href="{{ url('kategori/9') }}" class="category-card">
-                <h3>Peralatan Kantor & Industri</h3>
-            </a>
-            <!-- Category 10 -->
-            <a href="{{ url('kategori/10') }}" class="category-card">
-                <h3>Kosmetik & Perawatan Diri</h3>
-            </a>
-        </div>
-
-        <div class="carousel-divider"></div>
-
-        <div class="product-section">
-            <h2 style="text-align: center;">
-                {{ isset($kategori) ? 'Kategori Barang ' . $kategori->nama_kategori : 'Seluruh Produk' }}
-            </h2>
-
+        <section class="product-detail">
             <div class="product-container">
-                @forelse($produk as $item)
-                    <a href="{{ url('product/' . $item->id_barang) }}" class="product-card">
-                        <img src="{{ asset('images/' . $item->foto_barang) }}" alt="{{ $item->nama_barang }}">
-                        <div class="product-info">
-                        <p class="product-category">{{ $item->kategori->nama_kategori ?? 'Kategori Tidak Ada' }}</p>
-                        <h3 class="product-name">{{ $item->nama_barang }}</h3>
-                        <!-- <div class="product-rating">
-                            <span>★ ({{ rand(4,5) }}.{{ rand(0,9) }})</span>
-                        </div> -->
-                        <p class="product-status">{{ $item->status_barang }}</p>
+                <!-- Gambar Produk - Carousel -->
+                <div id="productCarousel" class="carousel slide" data-bs-ride="carousel">
+                    <!-- Carousel Indicators -->
+                    <div class="carousel-indicators">
+                        <button type="button" data-bs-target="#productCarousel" data-bs-slide-to="0" class="active" aria-current="true" aria-label="Slide 1"></button>
+                        <button type="button" data-bs-target="#productCarousel" data-bs-slide-to="1" aria-label="Slide 2"></button>
                     </div>
 
-                    <div class="product-price">
-                        <div class="price-container">
-                            <span class="current-price">Rp{{ number_format($item->harga_jual, 0, ',', '.') }}</span>
+                    <!-- Carousel Inner -->
+                    <div class="carousel-inner">
+                        <div class="carousel-item active">
+                            <img src="{{ asset('images/' . $product->foto_barang) }}" alt="{{ $product->nama_barang }}" class="product-image">
                         </div>
-                        <div class="add-to-cart-container">
-                            <button class="add-to-cart">
-                                <img src="https://img.icons8.com/material/24/007848/shopping-cart.png" alt="Cart">
-                                Add
-                            </button>
+                        <div class="carousel-item">
+                            <img src="{{ asset('images/' . $product->foto_barang_2) }}" alt="{{ $product->nama_barang }} (2)" class="product-image">
                         </div>
                     </div>
-                </a>
-            @empty
-                <p>Tidak ada produk tersedia saat ini.</p>
-            @endforelse
-        </div>
+
+                    <!-- Carousel Controls (Next and Previous Buttons) -->
+                    <button class="carousel-control-prev" type="button" data-bs-target="#productCarousel" data-bs-slide="prev">
+                        <span class="carousel-control-prev-icon" aria-hidden="true"></span>
+                        <span class="visually-hidden">Previous</span>
+                    </button>
+                    <button class="carousel-control-next" type="button" data-bs-target="#productCarousel" data-bs-slide="next">
+                        <span class="carousel-control-next-icon" aria-hidden="true"></span>
+                        <span class="visually-hidden">Next</span>
+                    </button>
+                </div>
+
+                <!-- Informasi Produk -->
+                <div class="product-info" style="line-height: 1.0;">
+                    <h1 class="product-name" style="font-size: 30px; margin-bottom: 10px;"><strong>{{ $product->nama_barang }}</strong></h1>
+                    <p style="font-size: 14px; color: grey; margin: 0 0 6px;">{{ $product->kategori->nama_kategori }}</p>
+                    <p class="product-description" style="text-align: justify; margin: 0 0 8px;">{{ $product->deskripsi }}</p>
+                    <p style="text-align: left; color: grey; margin: 0 0 8px;">Berat barang: {{ $product->berat }} kg</p>
+
+                    <!-- Informasi Garansi Produk -->
+                <div class="garansi-info" style="margin: 0 0 8px;">
+                    <p style="font-size: 15px; font-weight: bold; margin: 0;"><strong>Garansi Status:</strong></p>
+                    
+                    <!-- Cek jika status garansi tersedia -->
+                    @if ($garansi_status !== "Garansi Tidak Tersedia")
+                        <p style="font-size: 13px;">
+                            {{ $garansi_status }} hingga {{ \Carbon\Carbon::parse($product->tanggal_garansi)->format('d M Y') }}
+                        </p>
+                    @else
+                        <p style="font-size: 13px;">{{ $garansi_status }}</p>
+                    @endif
+                </div>
+
+                    <div class="additional-info" style="margin: 0 0 8px;">
+                        <p style="margin: 0;"><strong>Status Barang:</strong> {{ $product->status_barang }}</p>
+                    </div>
+
+                    <p class="product-price" style="font-size: 25px; margin: 4px 0 12px;">
+                        <strong>Rp{{ number_format($product->harga_jual, 0, ',', '.') }}</strong>
+                    </p>
+                    <!-- Kontainer untuk Tombol -->
+                    <div class="button-container" style="margin-top: 35px;">
+                        <!-- Tombol Add to Cart -->
+                        <button class="add-to-cart-btn">Add to Cart</button>
+                        <!-- Tombol Beli Barang -->
+                        <button class="buy-now-btn">Beli Barang</button>
+                    </div>
+                </div>
+            </div>
+
+            <div class="related-products" style="margin-top: 50px; margin-left: 150px;">
+                <h3>Produk Serupa</h3>
+                <div class="related-products-grid" style="display: flex; flex-wrap: wrap; gap: 20px;">
+                    @forelse($produk_serupa as $item)
+                        <a href="{{ url('product/' . $item->id_barang) }}" class="related-product-card" style="width: 200px; text-decoration: none; color: inherit;">
+                            <img src="{{ asset('images/' . $item->foto_barang) }}" alt="{{ $item->nama_barang }}" style="width: 100%; height: 150px; object-fit: cover;">
+                            <div style="padding: 8px;">
+                                <p style="font-size: 13px; color: grey; margin: 4px 0;">{{ $item->kategori->nama_kategori ?? 'Kategori' }}</p>
+                                <h4 style="font-size: 16px; margin: 0 0 4px;">{{ $item->nama_barang }}</h4>
+                                <p style="font-size: 14px; font-weight: bold; margin: 0;">Rp{{ number_format($item->harga_jual, 0, ',', '.') }}</p>
+                            </div>
+                        </a>
+                    @empty
+                        <p>Tidak ada produk serupa untuk ditampilkan.</p>
+                    @endforelse
+                </div>
+            </div>
+        </section>
     </main>
 
     <!-- Footer Section -->

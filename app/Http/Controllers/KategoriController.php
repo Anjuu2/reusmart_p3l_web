@@ -19,10 +19,30 @@ class KategoriController extends Controller
         return view('kategori');
     }
 
-    // public function show($id)
+    // public function showProducts()
     // {
-    //     $kategori = Kategori::findOrFail($id);
-    //     $barang = BarangTitipan::where('id_kategori', $id)->get();
-    //     return view('kategori.show', compact('kategori', 'barang'));
+    //     // Mengambil semua produk barang titipan
+    //     $barangTitipan = BarangTitipan::all();
+
+    //     // Mengirim data produk ke view
+    //     return view('kategori', compact('barangTitipan'));
     // }
+
+    public function showAvailableProducts()
+    {
+        $produk = BarangTitipan::with('kategori')->where('status_barang', 'Tersedia')->get();
+        $kategori = null;
+        return view('kategori', compact('produk', 'kategori'));
+    }
+
+    public function showProductsByCategory($id)
+    {
+        $kategori = Kategori::findOrFail($id);
+        $produk = BarangTitipan::with('kategori')
+            ->where('id_kategori', $id)
+            ->where('status_barang', 'Tersedia')
+            ->get();
+
+        return view('kategori', compact('kategori', 'produk'));
+    }
 }

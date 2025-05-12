@@ -280,9 +280,10 @@
         }
 
         /* Nama Merek Produk */
-        .product-brand {
+        .product-status {
             font-size: 11px;
             color: #777;
+            text-align: left;
         }
 
         /* Harga Produk */
@@ -507,7 +508,7 @@
             </div>
             <nav>
                 <ul>
-                    <li><a href="/kategori">Collection</a></li>
+                    <li><a href="{{ url('/kategori') }}">Collection</a></li>
                     <li><a href="/about">About Us</a></li>
                 </ul>
             </nav>
@@ -536,33 +537,17 @@
                 <button type="button" data-bs-target="#carouselExampleCaptions" data-bs-slide-to="2" aria-label="Slide 3"></button>
             </div>
             <div class="carousel-inner">
-                <div class="carousel-item active">
-                    <a href="{{ url('product-detail-page') }}"> <!-- Ganti URL sesuai halaman detail produk -->
-                        <img src="{{ asset('images/laptop.jpg') }}" class="d-block w-100" alt="Laptop">
+                @foreach($barangs->take(3) as $index => $barang)
+                <div class="carousel-item {{ $index === 0 ? 'active' : '' }}">
+                    <a href="{{ url('product/' . $barang->id_barang) }}">
+                        <img src="{{ asset('images/' . $barang->foto_barang) }}" class="d-block w-100" alt="{{ $barang->nama_barang }}">
                     </a>
                     <div class="carousel-caption d-none d-md-block">
-                        <h5>Acer Swift X14</h5>
-                        <p>Ditenagai prosesor AMD Ryzen 7 dan SSD cepat, cocok untuk kerja kreatif, kuliah, hingga hiburan.</p>
+                        <h5>{{ $barang->nama_barang }}</h5>
+                        <p>{{ Str::limit($barang->deskripsi, 100) }}</p>
                     </div>
                 </div>
-                <div class="carousel-item">
-                    <a href="{{ url('product-detail-page') }}"> <!-- Ganti URL sesuai halaman detail produk -->
-                        <img src="{{ asset('images/printer.jpg') }}" class="d-block w-100" alt="Printer">
-                    </a>
-                    <div class="carousel-caption d-none d-md-block">
-                        <h5>Printer Canon PIXMA MG2577s</h5>
-                        <p>Nikmati kemudahan cetak, scan, dan copy di rumah atau kantor dengan printer hemat tinta dan hasil cetak tajam.</p>
-                    </div>
-                </div>
-                <div class="carousel-item">
-                    <a href="{{ url('product-detail-page') }}"> <!-- Ganti URL sesuai halaman detail produk -->
-                        <img src="{{ asset('images/meja_kursi_kantor.jpg') }}" class="d-block w-100" alt="MejaKursiKantor">
-                    </a>
-                    <div class="carousel-caption d-none d-md-block">
-                        <h5>Set Meja & Kursi Kantor Ergonomis</h5>
-                        <p>Didesain untuk produktivitas dan kenyamanan, cocok untuk ruang kerja profesional maupun home office.</p>
-                    </div>
-                </div>
+                @endforeach
             </div>
             <button class="carousel-control-prev" type="button" data-bs-target="#carouselExampleCaptions" data-bs-slide="prev">
                 <span class="carousel-control-prev-icon" aria-hidden="true"></span>
@@ -583,75 +568,72 @@
         <!-- Featured Categories -->
         <div class="category-container">
             <!-- Category 1 -->
-            <a href="{{ url('kategori') }}" class="category-card">
+            <a href="{{ url('kategori/1') }}" class="category-card">
                 <img src="{{ asset('images/kategori/laptop.png') }}" alt="Elektronik & Gadget">
                 <h3>Elektronik & Gadget</h3>
             </a>
             <!-- Category 2 -->
-            <a href="{{ url('kategori') }}" class="category-card">
+            <a href="{{ url('kategori/2') }}" class="category-card">
                 <img src="{{ asset('images/kategori/baju.png') }}" alt="Pakaian & Aksesori">
                 <h3>Pakaian & Aksesori</h3>
             </a>
             <!-- Category 3 -->
-            <a href="{{ url('kategori') }}" class="category-card">
+            <a href="{{ url('kategori/3') }}" class="category-card">
                 <img src="{{ asset('images/kategori/sofa.png') }}" alt="Perabotan Rumah Tangga">
                 <h3>Perabotan Rumah Tangga</h3>
             </a>
             <!-- Category 4 -->
-            <a href="{{ url('kategori') }}" class="category-card">
+            <a href="{{ url('kategori/4') }}" class="category-card">
                 <img src="{{ asset('images/kategori/tas.png') }}" alt="Buku & Peralatan Sekolah">
                 <h3>Buku, Alat Tulis, Peralatan Sekolah</h3>
             </a>
             <!-- Category 5 -->
-            <a href="{{ url('kategori') }}" class="category-card">
+            <a href="{{ url('kategori/5') }}" class="category-card">
                 <img src="{{ asset('images/kategori/mainan.png') }}" alt="Hobi & Mainan">
                 <h3>Hobi, Mainan, Koleksi</h3>
             </a>
             <!-- Category 6 -->
-            <a href="{{ url('kategori') }}" class="category-card">
+            <a href="{{ url('kategori/6') }}" class="category-card">
                 <img src="{{ asset('images/kategori/bayi.png') }}" alt="Perlengkapan Bayi & Anak">
                 <h3>Perlengkapan Bayi & Anak</h3>
             </a>
             <!-- Category 7 -->
-            <a href="{{ url('kategori') }}" class="category-card">
+            <a href="{{ url('kategori/7') }}" class="category-card">
                 <img src="{{ asset('images/kategori/roda.png') }}" alt="Otomotif & Aksesori">
                 <h3>Otomotif & Aksesori</h3>
             </a>
             <!-- Category 8 -->
-            <a href="{{ url('kategori') }}" class="category-card">
+            <a href="{{ url('kategori/8') }}" class="category-card">
                 <img src="{{ asset('images/kategori/tenda.png') }}" alt="Perlengkapan Taman & Outdoor">
                 <h3>Perlengkapan Taman & Outdoor</h3>
             </a>
             <!-- Category 9 -->
-            <a href="{{ url('kategori') }}" class="category-card">
+            <a href="{{ url('kategori/9') }}" class="category-card">
                 <img src="{{ asset('images/kategori/kantor.png') }}" alt="Peralatan Kantor & Industri">
                 <h3>Peralatan Kantor & Industri</h3>
             </a>
             <!-- Category 10 -->
-            <a href="{{ url('kategori') }}" class="category-card">
+            <a href="{{ url('kategori/10') }}" class="category-card">
                 <img src="{{ asset('images/kategori/cermin.png') }}" alt="Kosmetik & Perawatan Diri">
                 <h3>Kosmetik & Perawatan Diri</h3>
             </a>
         </div>
 
-        <div class="populer-produk">
-            <h2>Produk Terpopuler</h2>
-        </div>
         <div class="product-container">
-            <a href="{{ url('product-detail-page') }}" class="product-card">
-                <img src="{{ asset('images/stroller.png') }}" alt="Chicco Trolleyme Stroller" class="product-image">
+            @foreach($barangs->take(10) as $barang)
+            <a href="{{ url('product/' . $barang->id_barang) }}" class="product-card">
+                <img src="{{ asset('images/' . $barang->foto_barang) }}" alt="{{ $barang->nama_barang }}" class="product-image">
                 <div class="product-info">
-                    <p class="product-category">Perlengkapan Bayi & Anak</p>
-                    <h3 class="product-name">JOIE Muze Travel System Stroller</h3>
-                    <div class="product-rating">
-                        <span>★ (4.0)</span>
-                    </div>
-                    <p class="product-brand">By StevenAndre</p>
+                    <p class="product-category">{{ $barang->kategori->nama_kategori ?? 'Kategori Tidak Ada' }}</p>
+                    <h3 class="product-name">{{ $barang->nama_barang }}</h3>
+                    <!-- <div class="product-rating">
+                        <span>★ ({{ rand(4,5) }}.{{ rand(0,9) }})</span> <!-- Simulasi rating -->
+                    <!-- </div> -->
+                    <p class="product-status">{{ $barang->status_barang }}</p>
                 </div>
-                <!-- Harga dan Tombol Add -->
                 <div class="product-price">
                     <div class="price-container">
-                        <span class="current-price">Rp2.896.000,00</span>
+                        <span class="current-price">Rp{{ number_format($barang->harga_jual, 0, ',', '.') }}</span>
                     </div>
                     <div class="add-to-cart-container">
                         <button class="add-to-cart">
@@ -661,102 +643,8 @@
                     </div>
                 </div>
             </a>
-
-            <a href="{{ url('product-detail-page') }}" class="product-card">
-                <img src="{{ asset('images/sofa.png') }}" alt="sofa" class="product-image">
-                <div class="product-info">
-                    <p class="product-category">Perabotan Rumah Tangga</p>
-                    <h3 class="product-name">Ashley Brise Sofa L Sectional Fabric</h3>
-                    <div class="product-rating">
-                        <span>★ (4.5)</span>
-                    </div>
-                    <p class="product-brand">By DionXius</p>
-                </div>
-                <!-- Harga dan Tombol Add -->
-                <div class="product-price">
-                    <div class="price-container">
-                        <span class="current-price">Rp1.276.000,00</span>
-                    </div>
-                    <div class="add-to-cart-container">
-                        <button class="add-to-cart">
-                            <img src="https://img.icons8.com/material/24/007848/shopping-cart.png" alt="Cart">
-                                Add
-                        </button>
-                    </div>
-                </div>
-            </a>
-
-            <a href="{{ url('product-detail-page') }}" class="product-card">
-                <img src="{{ asset('images/sepatu.png') }}" alt="sepatu" class="product-image">
-                <div class="product-info">
-                    <p class="product-category">Pakaian & Aksesori</p>
-                    <h3 class="product-name">New Balance 327 Women's Sneakers</h3>
-                    <div class="product-rating">
-                        <span>★ (4.7)</span>
-                    </div>
-                    <p class="product-brand">By XaveriusJohn</p>
-                </div>
-                <!-- Harga dan Tombol Add -->
-                <div class="product-price">
-                    <div class="price-container">
-                        <span class="current-price">Rp3.024.000,00</span>
-                    </div>
-                    <div class="add-to-cart-container">
-                        <button class="add-to-cart">
-                            <img src="https://img.icons8.com/material/24/007848/shopping-cart.png" alt="Cart">
-                                Add
-                        </button>
-                    </div>
-                </div>
-            </a>
-
-            <a href="{{ url('product-detail-page') }}" class="product-card">
-                <img src="{{ asset('images/kamera.png') }}" alt="kamera" class="product-image">
-                <div class="product-info">
-                    <p class="product-category">Elektronik & Gadget </p>
-                    <h3 class="product-name">Canon EOS 3000D Kit EF-S 18-55mm f/3.5-5.6 III</h3>
-                    <div class="product-rating">
-                        <span>★ (4.3)</span>
-                    </div>
-                    <p class="product-brand">By MarcelaCan</p>
-                </div>
-                <!-- Harga dan Tombol Add -->
-                <div class="product-price">
-                    <div class="price-container">
-                        <span class="current-price">Rp5.985.000,00</span>
-                    </div>
-                    <div class="add-to-cart-container">
-                        <button class="add-to-cart">
-                            <img src="https://img.icons8.com/material/24/007848/shopping-cart.png" alt="Cart">
-                                Add
-                        </button>
-                    </div>
-                </div>
-            </a>
-
-            <a href="{{ url('product-detail-page') }}" class="product-card">
-                <img src="{{ asset('images/kalkulator.png') }}" alt="kalkulator" class="product-image">
-                <div class="product-info">
-                    <p class="product-category"> Buku, Alat Tulis, & Peralatan Sekolah</p>
-                    <h3 class="product-name">Casio Kalkulator Saintifik FX-991</h3>
-                    <div class="product-rating">
-                        <span>★ (4.5)</span>
-                    </div>
-                    <p class="product-brand">By AntonTung</p>
-                </div>
-                <!-- Harga dan Tombol Add -->
-                <div class="product-price">
-                    <div class="price-container">
-                        <span class="current-price">Rp210.000,00</span>
-                    </div>
-                    <div class="add-to-cart-container">
-                        <button class="add-to-cart">
-                            <img src="https://img.icons8.com/material/24/007848/shopping-cart.png" alt="Cart">
-                                Add
-                        </button>
-                    </div>
-                </div>
-            </a>
+            @endforeach
+        </div>
         </div>
     </main>
 
