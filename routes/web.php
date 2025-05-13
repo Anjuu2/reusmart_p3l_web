@@ -9,6 +9,7 @@ use App\Http\Controllers\PembeliController;
 use App\Http\Controllers\PembeliHistoryController;
 use App\Http\Controllers\PenitipController;
 use App\Http\Controllers\AlamatController;
+use App\Http\Controllers\DiskusiController;
 
 Route::get('/', function () {
     return view('home');
@@ -99,6 +100,9 @@ Route::middleware(['auth:pegawai'])->prefix('cs')->group(function () {
     Route::delete('/penitip/{id}', [PenitipController::class, 'destroy'])->name('cs.penitip.destroy');
 });
 
+Route::get('/diskusi', [DiskusiController::class, 'index'])->name('diskusi.index');
+Route::middleware('auth:pembeli')->post('/diskusi/{id_barang}/tanya', [DiskusiController::class, 'storePertanyaan'])->name('diskusi.tanya');
+Route::middleware('auth:pegawai')->post('/diskusi/{id_diskusi}/jawab', [DiskusiController::class, 'jawab'])->name('diskusi.jawab');
 
 Route::middleware('auth:pembeli')->group(function () {
     // Route untuk menampilkan data alamat

@@ -519,6 +519,7 @@
                 <!-- Icons -->
                 <div class="icons">
                     <a href="#"><img src="https://img.icons8.com/material/24/000000/shopping-cart.png" alt="Cart"></a>
+                    <a href="{{ route('diskusi.index') }}"><img src="https://img.icons8.com/?size=100&id=123773&format=png&color=000000" alt="Diskusi"></a>
                     <a href="{{ route('pembeli.profil') }}">
                         <img src="https://img.icons8.com/material/24/000000/user.png" alt="Account">
                     </a>
