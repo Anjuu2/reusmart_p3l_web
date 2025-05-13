@@ -6,9 +6,9 @@
 
 namespace App\Models;
 
+use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Collection;
-use Illuminate\Database\Eloquent\Model;
 use Laravel\Sanctum\HasApiTokens;
 
 /**
@@ -32,7 +32,7 @@ use Laravel\Sanctum\HasApiTokens;
  *
  * @package App\Models
  */
-class Penitip extends Model
+class Penitip extends Authenticatable
 {
 	use HasApiTokens, HasFactory;
 	protected $table = 'penitip';

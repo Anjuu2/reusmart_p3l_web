@@ -6,6 +6,7 @@
 
 namespace App\Models;
 
+use Illuminate\Foundation\Auth\User as Authenticatable; 
 use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Database\Eloquent\Model;
 
@@ -31,7 +32,7 @@ use Illuminate\Database\Eloquent\Model;
  *
  * @package App\Models
  */
-class Pembeli extends Model
+class Pembeli extends Authenticatable
 {
 	protected $table = 'pembeli';
 	protected $primaryKey = 'id_pembeli';

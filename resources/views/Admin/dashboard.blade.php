@@ -55,7 +55,6 @@
             }
         </style>
 
-        <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Source+Sans+Pro:300,400,400i,700&display=fallback">
         <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css">
         <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
         <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
@@ -92,7 +91,7 @@
             </nav>
 
             <aside class="main-sidebar sidebar-dark-primary elevation-4">
-                <a href="#" class="brand-link">
+                <a href="{{ url('dashboard') }}" class="brand-link">
 
                     <span class="brand-text font-weight-light" style="padding-left:5vw;">Reusemart</span>
                 </a>

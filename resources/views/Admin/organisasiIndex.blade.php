@@ -4,20 +4,21 @@
 <!-- CSRF token untuk AJAX -->
 <meta name="csrf-token" content="{{ csrf_token() }}">
 
-<div class="container mt-3 ms-3 ps-0">
-  <form class="d-flex mb-4">
-    <input class="form-control me-2" 
-           type="search" 
-           placeholder="Cari organisasi..." 
-           aria-label="Search" 
-           style="width: 250px;">
+<form class="d-flex mt-3 ms-3 ps-0" method="GET" action="{{ route('organisasi.show') }}">
+    <input
+      class="form-control me-2"
+      type="search"
+      name="q"
+      placeholder="Cari organisasi..."
+      value="{{ old('q', $q) }}"
+      style="width: 250px;"
+    >
     <button class="btn btn-outline-dark" type="submit">
-      <i class="bi bi-search"></i>
+      <i class="bi bi-search"></i> Cari
     </button>
   </form>
-</div>
 
-<table class="table table-striped border-dark text-center" id="organisasi-table">
+<table class="table table-striped border-dark text-center mt-3" id="organisasi-table">
   <thead class="table-dark">
     <tr>
       <th>ID</th>
