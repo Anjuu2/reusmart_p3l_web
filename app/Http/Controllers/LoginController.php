@@ -78,7 +78,7 @@ class LoginController extends Controller
                     case 'kurir':
                         return redirect()->route('dashboard.kurir');
                     case 'owner':
-                        return redirect()->route('dashboard.pembeli');
+                        return redirect()->route('dashboard.owner');
                     case 'kepala gudang':
                         return redirect()->route('dashboard.kepala_gudang');
                     case 'customer service':

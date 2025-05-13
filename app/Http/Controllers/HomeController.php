@@ -3,12 +3,19 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
+use App\Models\BarangTitipan;
 
 class HomeController extends Controller
 {
+    // public function index()
+    // {
+    //     return view('home');
+    // }
+
     public function index()
     {
-        return view('home');
+        $barangs = BarangTitipan::with('kategori')->where('status_barang', 'Tersedia')->get();
+        return view('home', compact('barangs'));
     }
 
     public function showProducts()
@@ -17,7 +24,7 @@ class HomeController extends Controller
         $barangTitipan = BarangTitipan::all();
 
         // Mengirim data produk ke view
-        return view('products.index', compact('barangTitipan'));
+        return view('home', compact('barangTitipan'));
     }
 
     public function showProductsByCategory($categoryId)
@@ -26,7 +33,7 @@ class HomeController extends Controller
         $barangTitipan = BarangTitipan::where('id_kategori', $categoryId)->get();
 
         // Mengirim data ke view
-        return view('products.index', compact('barangTitipan'));
+        return view('home', compact('barangTitipan'));
     }
 
 }
