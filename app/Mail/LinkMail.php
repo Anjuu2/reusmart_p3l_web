@@ -1,4 +1,5 @@
 <?php
+
 namespace App\Mail;
 
 use Illuminate\Bus\Queueable;
@@ -20,6 +21,9 @@ class LinkMail extends Mailable
     {
         return $this
             ->subject('Berikut Link Anda')
-            ->view('emails.linkMail');
+            ->view('emails.linkMail')
+            ->with([
+                'url' => $this->url
+            ]);
     }
 }

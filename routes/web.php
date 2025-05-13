@@ -36,12 +36,20 @@ Route::get('/lupa-password', function () {
     return view('lupaPassword');
 });
 
+
 Route::post('/organisasi/{organisasi}/changePassword', [OrganisasiController::class, 'ubahPassword'])
-     ->name('ubahPassword');
+->name('ubahPassword');
 
-Route::get('/kirim-link', [PasswordController::class, 'showForm']);
+Route::get('/linkForm', function () {
+    return view('emails.kirimLinkForm');
+})->name('linkForm');
+
+Route::get('/changePassword', function () {
+    return view('lupaPassword');
+})->name('changePassword');
+Route::post('/changePassword', [PasswordController::class, 'changePassword'])->name('password.ubah');
+
 Route::post('/kirim-link', [PasswordController::class, 'sendLink'])->name('kirim.link');
-
 
 /////////////////////////////////////////////////
 

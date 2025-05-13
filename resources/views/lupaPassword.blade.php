@@ -73,43 +73,52 @@
         <h1 class="my-4 display-5 fw-bold text-white">Reset Password</h1>
         <div class="card bg-glass">
           <div class="card-body p-4">
-            <form  method="POST">
-              
-              
-              <div class="form-floating mb-3">
-                <input type="email"
-                       name="email"
-                       class="form-control"
-                       id="floatingEmail"
-                       placeholder="name@example.com"
-                       required>
-                <label for="floatingEmail">Alamat Email</label>
-              </div>
+            <form action="{{ route('password.ubah') }}" method="POST">
+              @csrf
+                <div class="form-floating mb-4">
+                    <select name="tipe_user" class="form-select" id="floatingTipeUser" required>
+                        <option value="" selected disabled>Pilih Tipe Pengguna</option>
+                        <option value="pembeli">Pembeli</option>
+                        <option value="penitip">Penitip</option>
+                        <option value="organisasi">Organisasi</option>
+                    </select>
+                    <label for="floatingTipeUser">Tipe Pengguna</label>
+                </div>
 
-              <div class="form-floating mb-3">
-                <input type="password"
-                       name="password"
-                       class="form-control"
-                       id="floatingPassword"
-                       placeholder="Password Baru"
-                       required>
-                <label for="floatingPassword">Password Baru</label>
-              </div>
+                <div class="form-floating mb-3">
+                    <input type="email"
+                          name="email"
+                          class="form-control"
+                          id="floatingEmail"
+                          placeholder="name@example.com"
+                          required>
+                    <label for="floatingEmail">Alamat Email</label>
+                </div>
 
-              <div class="form-floating mb-4">
-                <input type="password"
-                       name="password_confirmation"
-                       class="form-control"
-                       id="floatingPasswordConfirm"
-                       placeholder="Konfirmasi Password"
-                       required>
-                <label for="floatingPasswordConfirm">Konfirmasi Password</label>
-              </div>
+                <div class="form-floating mb-3">
+                    <input type="password"
+                          name="password"
+                          class="form-control"
+                          id="floatingPassword"
+                          placeholder="Password Baru"
+                          required>
+                    <label for="floatingPassword">Password Baru</label>
+                </div>
 
-              <button type="submit"
-                      class="btn btn-dark w-100 mb-2">
-                Ganti Password
-              </button>
+                @if ($errors->any())
+                <div class="alert alert-danger">
+                  <ul>
+                  @foreach ($errors->all() as $error)
+                    <li>{{ $error }}</li>
+                  @endforeach
+                  </ul>
+                </div>
+                @endif
+
+                <button type="submit"
+                        class="btn btn-dark w-100 mb-2">
+                    Ganti Password
+                </button>
             </form>
           </div>
         </div>
