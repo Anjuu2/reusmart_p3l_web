@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\Organisasi;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Hash;
 
 class OrganisasiController extends Controller
 {
@@ -26,18 +27,20 @@ class OrganisasiController extends Controller
         $request->validate([
             'nama_organisasi' => 'required|string|max:255',
             'alamat'          => 'required|string|max:255',
-            'password'        => 'required|string|min:6|confirmed',
+            'password'        => 'required|string|min:6',
+            'email'           => 'required',
         ]);
 
         Organisasi::create([
             'nama_organisasi' => $request->nama_organisasi,
             'alamat'          => $request->alamat,
-            'password'        => bcrypt($request->password),
+            'email'           => $request->email,
+            'password'        => Hash::Make($request->password),
             'status_aktif'    => 1,
         ]);
 
         return redirect()
-            ->route('organisasi.index')
+            ->route('login')
             ->with('success', 'Organisasi berhasil dibuat.');
     }
 

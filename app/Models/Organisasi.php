@@ -43,6 +43,7 @@ class Organisasi extends Model
 	protected $fillable = [
 		'nama_organisasi',
 		'alamat',
+		'email',
 		'password',
 		'status_aktif'
 	];

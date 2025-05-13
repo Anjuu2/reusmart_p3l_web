@@ -59,7 +59,12 @@ Route::get('/cek-session', function () {
 
 Route::get('login', [LoginController::class, 'showLoginForm'])->name('login');
 Route::post('/login', [LoginController::class, 'login']);
+Route::get('/register', function () {
+    return view('register');
+});
 
+Route::post('/register/pembeli', [PembeliController::class, 'store'])->name('pembeli.register');
+Route::post('/register/organisasi', [OrganisasiController::class, 'store'])->name('organisasi.register');
 
 Route::middleware('auth:pembeli')->get('/dashboard/pembeli', fn() => view('dashboard'))->name('dashboard.pembeli');
 Route::middleware('auth:pembeli')->get('/alamat/pembeli', fn() => view('Pembeli.alamatPembeli'))->name('alamat.pembeli');

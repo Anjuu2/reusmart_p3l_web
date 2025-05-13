@@ -136,6 +136,9 @@
 
                         <button type="submit" style="width:100%;" class="btn btn-dark btn-block mb-2 mt-3">Login</button>
                         <div class="d-flex justify-content-center mt-2">
+                            <a href="{{ url('register') }}" class="link-dark" style="font-size: 15px;">Lupa Password?</a>
+                        </div>
+                        <div class="d-flex justify-content-center mt-2">
                             <a href="{{ url('register') }}" class="link-dark" style="font-size: 22px;">Buat Akun ReUseMart</a>
                         </div>
                     </form>

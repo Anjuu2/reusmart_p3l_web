@@ -181,40 +181,40 @@
         </div>
 
         <div class="modal fade" id="editProfileModal" tabindex="-1" aria-labelledby="editProfileModalLabel" aria-hidden="true">
-        <div class="modal-dialog modal-lg">
-            <form action="{{ route('pembeli.update', $pembeli->id_pembeli) }}" method="POST" class="modal-content">
-            @csrf
-            @method('PUT')
-            <div class="modal-header bg-light">
-                <h5 class="modal-title" id="editProfileModalLabel">Edit Profil Pembeli</h5>
-                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Tutup"></button>
+            <div class="modal-dialog modal-lg">
+                <form action="{{ route('pembeli.update', $pembeli->id_pembeli) }}" method="POST" class="modal-content">
+                @csrf
+                @method('PUT')
+                <div class="modal-header bg-light">
+                    <h5 class="modal-title" id="editProfileModalLabel">Edit Profil Pembeli</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Tutup"></button>
+                </div>
+                <div class="modal-body">
+                    <div class="row g-3">
+                    <div class="col-md-6">
+                        <label>Nama</label>
+                        <input type="text" name="nama_pembeli" class="form-control" value="{{ $pembeli->nama_pembeli }}" required>
+                    </div>
+                    <div class="col-md-6">
+                        <label>Username</label>
+                        <input type="text" name="username" class="form-control" value="{{ $pembeli->username }}" required>
+                    </div>
+                    <div class="col-md-6">
+                        <label>Nomor Telepon</label>
+                        <input type="text" name="notelp" class="form-control" value="{{ $pembeli->notelp }}" required>
+                    </div>
+                    <div class="col-md-6">
+                        <label>Email</label>
+                        <input type="email" name="email" class="form-control" value="{{ $pembeli->email }}" required>
+                    </div>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Batal</button>
+                    <button type="submit" class="btn btn-custom">Simpan Perubahan</button>
+                </div>
+                </form>
             </div>
-            <div class="modal-body">
-                <div class="row g-3">
-                <div class="col-md-6">
-                    <label>Nama</label>
-                    <input type="text" name="nama_pembeli" class="form-control" value="{{ $pembeli->nama_pembeli }}" required>
-                </div>
-                <div class="col-md-6">
-                    <label>Username</label>
-                    <input type="text" name="username" class="form-control" value="{{ $pembeli->username }}" required>
-                </div>
-                <div class="col-md-6">
-                    <label>Nomor Telepon</label>
-                    <input type="text" name="notelp" class="form-control" value="{{ $pembeli->notelp }}" required>
-                </div>
-                <div class="col-md-6">
-                    <label>Email</label>
-                    <input type="email" name="email" class="form-control" value="{{ $pembeli->email }}" required>
-                </div>
-                </div>
-            </div>
-            <div class="modal-footer">
-                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Batal</button>
-                <button type="submit" class="btn btn-custom">Simpan Perubahan</button>
-            </div>
-            </form>
-        </div>
         </div>
 
         <div class="profile-actions d-flex justify-content-between align-items-center mt-4">
