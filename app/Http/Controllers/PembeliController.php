@@ -23,6 +23,11 @@ class PembeliController extends Controller
         return view('profilePembeli', compact('pembeli', 'transaksiList'));
     }
 
+    public function detailRiwayat()
+    {
+        
+    }
+
     public function update(Request $request, $id)
     {
         $request->validate([

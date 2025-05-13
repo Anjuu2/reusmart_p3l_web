@@ -145,6 +145,7 @@
                         <div class="card-header" style="background-color: #e7f0da; color: rgba(111, 143, 70, 1);">
                             <div class="d-flex justify-content-between">
                                 <div>
+                                    <strong>ID Transaksi:</strong> <a href="#">{{ $transaksi->id_transaksi }}</a><br>
                                     <strong>Tanggal:</strong> {{ $transaksi->tanggal_transaksi }}<br>
                                     <strong>Status:</strong> {{ $transaksi->status_transaksi }}
                                 </div>
@@ -159,6 +160,7 @@
                                     <li class="list-group-item">
                                         <div class="d-flex justify-content-between">
                                             <div>
+                                                <strong>{{ $detail->barang->id_barang ?? 'Barang sudah dihapus' }}</strong>
                                                 <strong>{{ $detail->barang->nama_barang ?? 'Barang sudah dihapus' }}</strong>
                                             </div>
                                             <div class="fw-semibold text-success">
