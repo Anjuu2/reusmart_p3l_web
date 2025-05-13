@@ -18,7 +18,8 @@ Route::get('/kategori/{id}', [KategoriController::class, 'showProductsByCategory
 Route::get('/about', [AboutController::class, 'index']);
 Route::get('/detail', [DetailBarangController::class, 'index']);
 Route::get('/product/{id}', [DetailBarangController::class, 'show']);
-Route::get('/search', [BarangTitipanController::class, 'search']);
+Route::get('/cari', [BarangTitipanController::class, 'search'])->name('barang.cari');
+Route::get('/checkout', [TransaksiController::class, 'index'])->middleware('auth')->name('checkout');
 
 // Route::get('/', function () {
 //     return view('login');

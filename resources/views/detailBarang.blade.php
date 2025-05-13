@@ -31,9 +31,13 @@
 
         .logo {
             margin-left: -40px;
+            background-color: rgba(111, 143, 70, 1); /* semi-transparan */
+            padding: 8px 12px;
+            border-radius: 50%;
         }
+
         header {
-            background-color: #ffffff;
+            background-color: rgba(111, 143, 70, 1);
             padding: 10px 0;
             display: flex;
             justify-content: space-between;
@@ -47,6 +51,15 @@
 
         header .logo img {
             height: 60px;
+            filter: drop-shadow(2px 2px 4px rgba(0, 0, 0, 0.2)); /* efek bayangan */
+            transition: transform 0.3s ease;
+            border-radius: 50%;
+        }
+
+        header .logo img:hover {
+            transform: scale(1.1); /* sedikit membesar saat di-hover */
+            filter: drop-shadow(6px 6px 12px rgba(0, 0, 0, 0.3));
+            cursor: pointer;
         }
 
         nav ul {
@@ -62,7 +75,7 @@
 
         nav ul li a {
             text-decoration: none;
-            color: #333;
+            color: white;
             font-size: 15px;
             font-weight: 600;
         }
@@ -144,16 +157,16 @@
 
         .carousel-divider {
             width: 80%;
-            height: 1px; 
-            background-color: grey; 
-            margin: 20px auto; 
-            box-shadow: 0px 2px 4px rgba(0, 0, 0, 0.1);
+            height: 1px; /* tebal garis */
+            background-color: rgba(111, 143, 70, 1);; /* warna garis */
+            margin: 20px auto; /* jarak dari carousel */
+            box-shadow: 0px 2px 4px rgba(0, 0, 0, 0.1); /* bayangan untuk garis */
         }
 
         footer {
             background-color: #f4f4f4;
             padding: 10px 50px;  
-            border-top: 1px solid #333;
+            border-top: 1px solid rgba(111, 143, 70, 1);;
             font-size: 14px;
         }
 
@@ -242,9 +255,9 @@
             border: 2px solid #28a745;  /* Border hijau */
             border-radius: 5px;
             cursor: pointer;
-            font-size: 1.2rem;
+            font-size: 1rem;
             transition: background-color 0.3s ease, color 0.3s ease;
-            width: 48%;  /* Membuat tombol lebar setengah container */
+            width: 30%;  /* Membuat tombol lebar setengah container */
         }
 
         .buy-now-btn {
@@ -256,7 +269,7 @@
             cursor: pointer;
             font-size: 1.2rem;
             transition: background-color 0.3s ease;
-            width: 48%;  /* Membuat tombol lebar setengah container */
+            width: 100%;  /* Membuat tombol lebar setengah container */
         }
 
         /* Efek Hover Tombol */
@@ -354,12 +367,12 @@
             <div class="cart-search">
                 <!-- Search Input -->
                 <!-- <input type="search" placeholder="Search for items..."> -->
-                <input type="search" id="search" placeholder="Search for items..." onkeyup="searchProducts()" />
+                <!-- <input type="search" id="search" placeholder="Search for items..." onkeyup="searchProducts()" /> -->
                 <div id="search-results"></div>
                 <!-- Icons -->
                 <div class="icons">
-                    <a href="#"><img src="https://img.icons8.com/material/24/000000/shopping-cart.png" alt="Cart"></a>
-                    <a href="login"><img src="https://img.icons8.com/material/24/000000/user.png" alt="Account"></a>
+                    <a href="#"><img src="https://img.icons8.com/material/24/ffffff/shopping-cart.png" alt="Cart"></a>
+                    <a href="{{ route('checkout') }}"><img src="https://img.icons8.com/material/24/ffffff/user.png" alt="Account"></a>
                 </div>
             </div>
         </div>
@@ -432,14 +445,18 @@
                     <div class="button-container" style="margin-top: 35px;">
                         <!-- Tombol Add to Cart -->
                         <button class="add-to-cart-btn">Add to Cart</button>
+
                         <!-- Tombol Beli Barang -->
-                        <button class="buy-now-btn">Beli Barang</button>
+                        <a href="{{ route('checkout') }}">
+                            <button class="buy-now-btn">Beli Barang</button>
+                        </a>
                     </div>
+
                 </div>
             </div>
 
             <div class="related-products" style="margin-top: 50px; margin-left: 150px;">
-                <h3>Produk Serupa</h3>
+                <h3 style="font-size: 24px"><Strong>Produk Serupa</Strong></h3>
                 <div class="related-products-grid" style="display: flex; flex-wrap: wrap; gap: 20px;">
                     @forelse($produk_serupa as $item)
                         <a href="{{ url('product/' . $item->id_barang) }}" class="related-product-card" style="width: 200px; text-decoration: none; color: inherit;">

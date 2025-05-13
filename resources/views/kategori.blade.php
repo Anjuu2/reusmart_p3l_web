@@ -7,7 +7,8 @@
 
     <!-- Bootstrap CSS -->
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/css/bootstrap.min.css" rel="stylesheet">
-
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.5/font/bootstrap-icons.css">
+    
     <style>
         * {
             margin: 0;
@@ -31,9 +32,13 @@
 
         .logo {
             margin-left: -40px;
+            background-color: rgba(111, 143, 70, 1); /* semi-transparan */
+            padding: 8px 12px;
+            border-radius: 50%;
         }
+
         header {
-            background-color: #ffffff;
+            background-color: rgba(111, 143, 70, 1);
             padding: 10px 0;
             display: flex;
             justify-content: space-between;
@@ -47,6 +52,15 @@
 
         header .logo img {
             height: 60px;
+            filter: drop-shadow(2px 2px 4px rgba(0, 0, 0, 0.2)); /* efek bayangan */
+            transition: transform 0.3s ease;
+            border-radius: 50%;
+        }
+
+        header .logo img:hover {
+            transform: scale(1.1); 
+            filter: drop-shadow(6px 6px 12px rgba(0, 0, 0, 0.3));
+            cursor: pointer;
         }
 
         nav ul {
@@ -62,7 +76,7 @@
 
         nav ul li a {
             text-decoration: none;
-            color: #333;
+            color: white
             font-size: 15px;
             font-weight: 600;
         }
@@ -137,7 +151,7 @@
         .category-card h3 {
             margin-top: 5px;
             margin: 2px 0 0 0;
-            font-size: 8px;
+            font-size: 10px;
             color: #333;
             text-decoration: none;
         }
@@ -153,7 +167,7 @@
         footer {
             background-color: #f4f4f4;
             padding: 10px 50px;  
-            border-top: 1px solid #333;
+            border-top: 1px solid rgba(111, 143, 70, 1);;
             font-size: 14px;
         }
 
@@ -476,23 +490,16 @@
             </div>
             <nav>
                 <ul>
-                    <li><a href="/kategori">Collection</a></li>
-                    <li><a href="/about">About Us</a></li>
+                    <li><a href="{{ url('/kategori') }}" style="color: white;">Collection</a></li>
+                    <li><a href="/about" style="color: white;">About Us</a></li>
                 </ul>
             </nav>
             <!-- Cart, Search, and Location -->
             <div class="cart-search">
-                <!-- Search Input -->
-                <!-- <input type="search" placeholder="Search for items..."> -->
-                <div class="search-bar">
-                    <input type="text" id="search-input" placeholder="Cari produk...">
-                    <button id="search-button">Cari</button>
-                </div>
-
                 <!-- Icons -->
                 <div class="icons">
-                    <a href="#"><img src="https://img.icons8.com/material/24/000000/shopping-cart.png" alt="Cart"></a>
-                    <a href="login"><img src="https://img.icons8.com/material/24/000000/user.png" alt="Account"></a>
+                    <a href="#"><img src="https://img.icons8.com/material/24/ffffff/shopping-cart.png" alt="Cart"></a>
+                    <a href="login"><img src="https://img.icons8.com/material/24/ffffff/user.png" alt="Account"></a>
                 </div>
             </div>
         </div>
@@ -552,36 +559,53 @@
             <h2 style="text-align: center;">
                 {{ isset($kategori) ? 'Kategori Barang ' . $kategori->nama_kategori : 'Seluruh Produk' }}
             </h2>
-
+            <div class="cart-search" style="margin-bottom: 10px;">
+                <form class="d-flex mb-2" action="{{ route('barang.cari') }}" method="GET">
+                    <input class="form-control form-control-sm me-2" 
+                        type="search" 
+                        name="search" 
+                        placeholder="Cari barang titipan..." 
+                        value="{{ request('search') }}" 
+                        aria-label="Search" 
+                        style="width: 230px; margin-left: 35px;">
+                    <button class="btn btn-sm" type="submit">
+                        <i class="bi bi-search"></i>
+                    </button>
+                </form>
+            </div>
             <div class="product-container" id="product-container">
-                @forelse($produk as $item)
-                    <a href="{{ url('product/' . $item->id_barang) }}" class="product-card">
-                        <img src="{{ asset('images/' . $item->foto_barang) }}" alt="{{ $item->nama_barang }}">
-                        <div class="product-info">
-                        <p class="product-category">{{ $item->kategori->nama_kategori ?? 'Kategori Tidak Ada' }}</p>
-                        <h3 class="product-name">{{ $item->nama_barang }}</h3>
-                        <!-- <div class="product-rating">
-                            <span>★ ({{ rand(4,5) }}.{{ rand(0,9) }})</span>
-                        </div> -->
-                        <p class="product-status">{{ $item->status_barang }}</p>
-                    </div>
+                @if($produk->isEmpty())
+                    <p>Tidak ada produk yang ditemukan dengan kata kunci tersebut.</p>
+                @else
+                    @forelse($produk as $item)
+                        <a href="{{ url('product/' . $item->id_barang) }}" class="product-card">
+                            <img src="{{ asset('images/' . $item->foto_barang) }}" alt="{{ $item->nama_barang }}">
+                            <div class="product-info">
+                            <p class="product-category">{{ $item->kategori->nama_kategori ?? 'Kategori Tidak Ada' }}</p>
+                            <h3 class="product-name">{{ $item->nama_barang }}</h3>
+                            <!-- <div class="product-rating">
+                                <span>★ ({{ rand(4,5) }}.{{ rand(0,9) }})</span>
+                            </div> -->
+                            <p class="product-status">{{ $item->status_barang }}</p>
+                        </div>
 
-                    <div class="product-price">
-                        <div class="price-container">
-                            <span class="current-price">Rp{{ number_format($item->harga_jual, 0, ',', '.') }}</span>
+                        <div class="product-price">
+                            <div class="price-container">
+                                <span class="current-price">Rp{{ number_format($item->harga_jual, 0, ',', '.') }}</span>
+                            </div>
+                            <div class="add-to-cart-container">
+                                <button class="add-to-cart">
+                                    <img src="https://img.icons8.com/material/24/007848/shopping-cart.png" alt="Cart">
+                                    Add
+                                </button>
+                            </div>
                         </div>
-                        <div class="add-to-cart-container">
-                            <button class="add-to-cart">
-                                <img src="https://img.icons8.com/material/24/007848/shopping-cart.png" alt="Cart">
-                                Add
-                            </button>
-                        </div>
-                    </div>
-                </a>
-            @empty
-                <p>Tidak ada produk tersedia saat ini.</p>
-            @endforelse
-        </div>
+                    </a>
+                @empty
+                    <p>Tidak ada produk tersedia saat ini.</p>
+                @endforelse
+            @endif
+        </div>  
     </main>
 
     <!-- Footer Section -->
@@ -605,59 +629,5 @@
     <!-- Bootstrap JS and dependencies (Popper.js and Bootstrap JS) -->
     <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.11.6/dist/umd/popper.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.min.js"></script>
-    <script>
-    document.getElementById('search-button').addEventListener('click', function () {
-        const query = document.getElementById('search-input').value.trim();
-
-        if (query !== '') {
-            fetch(`/search?query=${encodeURIComponent(query)}`)
-                .then(response => response.json())
-                .then(data => {
-                    const container = document.getElementById('product-container');
-                    container.innerHTML = ''; // Kosongkan produk sebelumnya
-
-                    if (data.length > 0) {
-                        data.forEach(item => {
-                            const card = document.createElement('a');
-                            card.href = `/product/${item.id_barang}`;
-                            card.classList.add('product-card');
-                            card.innerHTML = `
-                                <img src="/images/${item.foto_barang}" alt="${item.nama_barang}">
-                                <div class="product-info">
-                                    <p class="product-category">${item.kategori?.nama_kategori ?? 'Kategori Tidak Ada'}</p>
-                                    <h3 class="product-name">${item.nama_barang}</h3>
-                                    <p class="product-status">${item.status_barang}</p>
-                                </div>
-                                <div class="product-price">
-                                    <div class="price-container">
-                                        <span class="current-price">Rp${parseInt(item.harga_jual).toLocaleString('id-ID')}</span>
-                                    </div>
-                                    <div class="add-to-cart-container">
-                                        <button class="add-to-cart">
-                                            <img src="https://img.icons8.com/material/24/007848/shopping-cart.png" alt="Cart">
-                                            Add
-                                        </button>
-                                    </div>
-                                </div>
-                            `;
-                            container.appendChild(card);
-                        });
-                    } else {
-                        container.innerHTML = '<p>Tidak ada produk ditemukan.</p>';
-                    }
-                })
-                .catch(err => {
-                    console.error('Search error:', err);
-                });
-        }
-    });
-
-    // Tekan Enter juga bisa jalanin pencarian
-    document.getElementById('search-input').addEventListener('keypress', function (e) {
-        if (e.key === 'Enter') {
-            document.getElementById('search-button').click();
-        }
-    });
-</script>
 </body>
 </html>

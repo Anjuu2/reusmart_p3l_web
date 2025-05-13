@@ -31,9 +31,13 @@
 
         .logo {
             margin-left: -40px;
+            background-color: rgba(111, 143, 70, 1); /* semi-transparan */
+            padding: 8px 12px;
+            border-radius: 50%;
         }
+
         header {
-            background-color: #ffffff;
+            background-color: rgba(111, 143, 70, 1);
             padding: 10px 0;
             display: flex;
             justify-content: space-between;
@@ -47,6 +51,15 @@
 
         header .logo img {
             height: 60px;
+            filter: drop-shadow(2px 2px 4px rgba(0, 0, 0, 0.2)); /* efek bayangan */
+            transition: transform 0.3s ease;
+            border-radius: 50%;
+        }
+
+        header .logo img:hover {
+            transform: scale(1.1); 
+            filter: drop-shadow(6px 6px 12px rgba(0, 0, 0, 0.3));
+            cursor: pointer;
         }
 
         nav ul {
@@ -62,7 +75,7 @@
 
         nav ul li a {
             text-decoration: none;
-            color: #333;
+            color: white;
             font-size: 15px;
             font-weight: 600;
         }
@@ -144,7 +157,7 @@
         .carousel-divider {
             width: 80%;
             height: 1px; /* tebal garis */
-            background-color: #333; /* warna garis */
+            background-color: rgba(111, 143, 70, 1);; /* warna garis */
             margin: 20px auto; /* jarak dari carousel */
             box-shadow: 0px 2px 4px rgba(0, 0, 0, 0.1); /* bayangan untuk garis */
         }
@@ -336,7 +349,7 @@
         footer {
             background-color: #f4f4f4;
             padding: 10px 50px;  
-            border-top: 1px solid #333;
+            border-top: 1px solid rgba(111, 143, 70, 1);;
             font-size: 14px;
         }
 
@@ -519,8 +532,8 @@
                 
                 <!-- Icons -->
                 <div class="icons">
-                    <a href="#"><img src="https://img.icons8.com/material/24/000000/shopping-cart.png" alt="Cart"></a>
-                    <a href="login"><img src="https://img.icons8.com/material/24/000000/user.png" alt="Account"></a>
+                    <a href="#"><img src="https://img.icons8.com/material/24/ffffff/shopping-cart.png" alt="Cart"></a>
+                    <a href="login"><img src="https://img.icons8.com/material/24/ffffff/user.png" alt="Account"></a>
                 </div>
             </div>
         </div>

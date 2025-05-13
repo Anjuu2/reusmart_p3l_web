@@ -15,18 +15,14 @@ class BarangTitipanController extends Controller
 
     public function search(Request $request)
     {
-        // Mengambil input pencarian dari parameter 'query'
-        $query = $request->get('query');
+        $query = $request->input('search');  // Ambil kata kunci pencarian dari parameter 'search'
 
-        // Jika ada query pencarian, cari barang berdasarkan nama yang mirip
-        if ($query) {
-            $products = BarangTitipan::where('nama_barang', 'like', '%' . $query . '%')->get();
-        } else {
-            // Jika tidak ada pencarian, ambil semua produk
-            $products = BarangTitipan::all();
-        }
+        // Cari produk berdasarkan nama barang dan hanya menampilkan barang yang statusnya 'Tersedia'
+        $produk = BarangTitipan::where('nama_barang', 'like', '%' . $query . '%')
+            ->where('status_barang', 'Tersedia')  // Menambahkan filter untuk hanya barang yang tersedia
+            ->get();
 
-        // Mengembalikan data produk sebagai JSON
-        return response()->json($products);
+        // Mengirim data produk yang ditemukan ke view
+        return view('kategori', compact('produk'));
     }
 }

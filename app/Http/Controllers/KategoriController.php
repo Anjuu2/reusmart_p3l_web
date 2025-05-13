@@ -35,14 +35,29 @@ class KategoriController extends Controller
         return view('kategori', compact('produk', 'kategori'));
     }
 
+    // public function showProductsByCategory($id)
+    // {
+    //     $kategori = Kategori::findOrFail($id);
+    //     $produk = BarangTitipan::with('kategori')
+    //         ->where('id_kategori', $id)
+    //         ->where('status_barang', 'Tersedia')
+    //         ->get();
+
+    //     return view('kategori', compact('kategori', 'produk'));
+    // }
+
     public function showProductsByCategory($id)
     {
+        // Ambil kategori berdasarkan ID
         $kategori = Kategori::findOrFail($id);
+        
+        // Ambil produk berdasarkan kategori
         $produk = BarangTitipan::with('kategori')
             ->where('id_kategori', $id)
             ->where('status_barang', 'Tersedia')
             ->get();
 
+        // Kirim data ke view
         return view('kategori', compact('kategori', 'produk'));
     }
 
@@ -61,4 +76,11 @@ class KategoriController extends Controller
         return response()->json($products);
     }
 
+    public function show($id)
+    {
+        $kategori = Kategori::findOrFail($id);
+        $barang = BarangTitipan::where('id_kategori', $id)->get();
+
+        return view('kategori', compact('kategori', 'barang'));
+    }
 }
