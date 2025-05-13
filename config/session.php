@@ -19,6 +19,8 @@ return [
     */
 
     'driver' => env('SESSION_DRIVER', 'database'),
+    'cookie' => env('SESSION_COOKIE', 'laravel_session'),
+    // 'domain' => env('SESSION_DOMAIN', null),  // Pastikan domain sesuai dengan domain aplikasi Anda
 
     /*
     |--------------------------------------------------------------------------
