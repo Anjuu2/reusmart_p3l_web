@@ -6,7 +6,8 @@ use Illuminate\Http\Request;
 use App\Models\Pembeli;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
-use Illuminate\Support\Facades\Log;  
+use Illuminate\Support\Facades\Log; 
+use Illuminate\Support\Facades\Route;
 
 
 class LoginController extends Controller
@@ -33,7 +34,7 @@ class LoginController extends Controller
             if ($user && $user->password === $password) {
                 Auth::guard('pembeli')->login($user);
                 $request->session()->regenerate();
-                return redirect()->route('dashboard.pembeli');
+                return redirect()->route('home');
             }
         }
 
@@ -53,7 +54,7 @@ class LoginController extends Controller
             if ($org && $org->password === $password) {
                 Auth::guard('organisasi')->login($org);
                 $request->session()->regenerate();
-                return redirect()->route('dashboard.organisasi');
+                return redirect()->route('organisasi.request.index');
             }
         }
 
@@ -69,7 +70,7 @@ class LoginController extends Controller
                 Auth::guard('pegawai')->login($pegawai);
                 $request->session()->regenerate();
         
-                $jabatan = strtolower($pegawai->jabatan->nama_jabatan);
+                $jabatan = strtolower(trim($pegawai->jabatan->nama_jabatan));
         
                 switch ($jabatan) {
                     case 'admin':
@@ -80,6 +81,8 @@ class LoginController extends Controller
                         return redirect()->route('dashboard.owner');
                     case 'kepala gudang':
                         return redirect()->route('dashboard.kepala_gudang');
+                    case 'customer service':
+                        return redirect()->route('dashboard.cs');
                     default:
                         return redirect()->route('dashboard.pegawai');
                 }
@@ -96,6 +99,6 @@ class LoginController extends Controller
     public function logout()
     {
         Auth::logout();
-        return redirect()->route('login');
+        return redirect()->route('home');
     }
 }

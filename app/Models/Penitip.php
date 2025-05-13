@@ -16,6 +16,7 @@ class Penitip extends Authenticatable
 
     protected $fillable = [
         'no_ktp',
+        'foto_ktp', 
         'nama_penitip',
         'username',
         'password',
