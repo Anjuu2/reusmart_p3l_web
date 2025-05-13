@@ -182,7 +182,7 @@
 
         <div class="modal fade" id="editProfileModal" tabindex="-1" aria-labelledby="editProfileModalLabel" aria-hidden="true">
         <div class="modal-dialog modal-lg">
-            <form action="{{ route('pembeli.update', $pembeli->id_pembeli) }}" method="POST" class="modal-content">
+            <form action="{{ route('pembeli.update', $pembeli->id_pembeli) }}" method="POST" class="modal-content" onsubmit="return confirm('Yakin ingin simpan perubahan?')">
             @csrf
             @method('PUT')
             <div class="modal-header bg-light">

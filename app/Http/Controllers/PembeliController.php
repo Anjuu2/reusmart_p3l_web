@@ -13,7 +13,7 @@ class PembeliController extends Controller
 {
     public function profilePembeli()
     {
-        $pembeli = auth()->guard('pembeli')->user(); // pastikan guard 'pembeli'
+        $pembeli = auth()->guard('pembeli')->user(); 
 
         $transaksiList = Transaksi::with('detailTransaksi.barang')
             ->where('id_pembeli', $pembeli->id_pembeli)
@@ -27,9 +27,9 @@ class PembeliController extends Controller
     {
         $request->validate([
             'nama_pembeli' => 'required',
-            'username' => 'required',
-            'notelp' => 'required',
-            'email' => 'required|email',
+            'username'     => 'required|unique:pembeli,username,' . $id . ',id_pembeli',
+            'notelp'       => 'required|unique:pembeli,notelp,' . $id . ',id_pembeli',
+            'email'        => 'required|email|unique:pembeli,email,' . $id . ',id_pembeli',
         ]);
 
         $pembeli = Pembeli::findOrFail($id);
