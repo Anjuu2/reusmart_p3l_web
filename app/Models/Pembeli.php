@@ -12,7 +12,7 @@ class Pembeli extends Authenticatable
 
     protected $table = 'pembeli';  
     protected $primaryKey = 'id_pembeli';  
-    public $timestamps = true;  
+    public $timestamps = false; 
 
     protected $fillable = [
         'username',
@@ -28,4 +28,10 @@ class Pembeli extends Authenticatable
     {
         return $this->password;  
     }
+
+    public function transaksi()
+    {
+        return $this->hasMany(Transaksi::class, 'id_pembeli');
+    }
+
 }

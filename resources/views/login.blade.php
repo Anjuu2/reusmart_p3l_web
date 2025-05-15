@@ -43,7 +43,7 @@
             left: 0;
             width: 100%;
             height: 100%;
-            background-color: rgba(111, 143, 70, 1);
+            background-color: rgba(111, 143, 70, 0.5);
             z-index: 2;
         }
 
@@ -72,8 +72,7 @@
 
 <section class="background-animation">
     <video class="video-background" autoplay loop muted>
-        <source src="{{asset("images/test.mp4")}}" type="video/mp4"> <!-- background video -->
-        Your browser does not support the video tag.
+        <source src="{{ asset('images/video.mp4') }}" type="video/mp4">
     </video>
 
     <div class="bg-overlay"></div>
@@ -81,7 +80,7 @@
         <div class="row gx-lg-5 align-items-center mb-5">
             <div class="col-lg-6 mb-5 mb-lg-0">
                 <h1 class="my-5 display-5 fw-bold">
-                    Hadir Untuk Anda, Bersama Mengolah Ulang
+                    Gunakan Kembali, Kurangi Sampah, Berbagi Lebih Banyak
                 </h1>
             </div>
             <div class="col-lg-5 mb-5 mb-lg-0 position-relative ms-auto">
@@ -104,13 +103,11 @@
                             <label for="floatingTipeUser">Tipe Pengguna</label>
                         </div>
 
-                        <!-- Input Email -->
                         <div class="form-floating mb-4" id="emailField">
                             <input type="email" name="email" class="form-control" id="floatingInput" placeholder="Email" />
                             <label for="floatingInput">Email</label>
                         </div>
 
-                        <!-- Select Organisasi -->
                         <div class="form-floating mb-4 d-none" id="organisasiSelectWrapper">
                             <select name="id_organisasi" class="form-select" id="organisasiSelect">
                                 <option value="" disabled selected>Pilih Organisasi</option>
