@@ -558,10 +558,10 @@
         <div class="carousel-divider"></div>
 
         <div class="product-section">
-            <h2 style="text-align: center;">
+            <!-- <h2 style="text-align: center;">
                 {{ isset($kategori) ? 'Kategori Barang ' . $kategori->nama_kategori : 'Seluruh Produk' }}
-            </h2>
-            <div class="cart-search" style="margin-bottom: 10px;">
+            </h2> -->
+            <div class="cart-search" style="margin-bottom: 0px;">
                 <form class="d-flex mb-2" action="{{ route('barang.cari') }}" method="GET">
                     <input class="form-control form-control-sm me-2" 
                         type="search" 
