@@ -17,8 +17,10 @@
 
         body {
             font-family: Arial, sans-serif;
-            background-color: #f4f4f4;
             color: #333;
+            background-color: rgba(255, 255, 255, 0.8) !important;
+            backdrop-filter: saturate(150%) blur(30px);
+            z-index: 3;
         }
 
         .container {

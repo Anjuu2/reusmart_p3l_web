@@ -23,6 +23,21 @@ class PembeliController extends Controller
         return view('profilePembeli', compact('pembeli', 'transaksiList'));
     }
 
+    // public function showBarangYangDibeli()
+    // {
+    //     $barangs = BarangTitipan::with('kategori')->where('status_barang', 'Terjual')->get();
+
+    //     $pembeli = Pembeli::all();
+    //     $barangHistori = DetailTransaksi::with(['barang_titipan', 'transaksi.id_pembeli'])
+    //         ->whereHas('transaksi', function($query) {
+    //             $query->where('status_transaksi', 'Lunas');
+    //         })
+    //         ->get();
+    //     $barangTerbeli = Transaksi::where('status_transaksi', 'Lunas')->get();
+
+    //     return view('dashboard', compact('barangs', 'pembeli', 'barangHistori', 'barangTerbeli'));
+    // }
+
     public function update(Request $request, $id)
     {
         $request->validate([
@@ -48,5 +63,4 @@ class PembeliController extends Controller
 
         return redirect()->back()->with('success', 'Status akun diperbarui.');
     }
-
 }

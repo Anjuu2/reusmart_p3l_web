@@ -18,8 +18,10 @@
 
         body {
             font-family: Arial, sans-serif;
-            background-color: #f4f4f4;
             color: #333;
+            background-color: rgba(255, 255, 255, 0.8) !important;
+            backdrop-filter: saturate(150%) blur(30px);
+            z-index: 3;
         }
 
         .container {
@@ -556,10 +558,10 @@
         <div class="carousel-divider"></div>
 
         <div class="product-section">
-            <h2 style="text-align: center;">
+            <!-- <h2 style="text-align: center;">
                 {{ isset($kategori) ? 'Kategori Barang ' . $kategori->nama_kategori : 'Seluruh Produk' }}
-            </h2>
-            <div class="cart-search" style="margin-bottom: 10px;">
+            </h2> -->
+            <div class="cart-search" style="margin-bottom: 0px;">
                 <form class="d-flex mb-2" action="{{ route('barang.cari') }}" method="GET">
                     <input class="form-control form-control-sm me-2" 
                         type="search" 

@@ -17,8 +17,7 @@
             </button>
         </form>
 
-        {{-- Tombol tambah di kanan --}}
-        <a href="{{ route('pegawai.create') }}" class="btn btn-outline-success">Tambah Pegawai</a>
+        <a href="{{ route('pegawai.create') }}" class="btn btn-success">Tambah Pegawai</a>
     </div>
     @if($pegawai->isEmpty())
         <div class="mx-auto text-center mt-4" style="background-color: #f0f0f0; padding: 15px 25px; border-radius: 8px; max-width: 400px;">
@@ -45,23 +44,23 @@
                         <td>{{ $p->notelp }}</td>
                         <td>{{ $p->jabatan->nama_jabatan ?? '-' }}</td>
                         <td>
-                            <a href="{{ route('pegawai.edit', $p->id_pegawai) }}" class="btn btn-sm btn-outline-warning">Edit</a>
+                            <a href="{{ route('pegawai.edit', $p->id_pegawai) }}" class="btn btn-sm btn-warning">Edit</a>
                             <form action="{{ route('pegawai.destroy', $p->id_pegawai) }}" method="POST" style="display:inline-block">
                                 @csrf
                                 @method('DELETE')
-                                <button class="btn btn-sm btn-outline-danger" onclick="return confirm('Yakin hapus pegawai?')">Hapus</button>
+                                <button class="btn btn-sm btn-danger" onclick="return confirm('Yakin hapus pegawai?')">Hapus</button>
                             </form>
                             @if($p->status_aktif == 1)
                             <form action="{{ route('pegawai.nonaktifkan', $p->id_pegawai) }}" method="POST" style="display:inline-block; margin-top:5px;">
                                 @csrf
                                 @method('PATCH')
-                                <button class="btn btn-sm btn-outline-secondary" onclick="return confirm('Nonaktifkan pegawai ini?')">Nonaktifkan</button>
+                                <button class="btn btn-sm btn-secondary" onclick="return confirm('Nonaktifkan pegawai ini?')">Nonaktifkan</button>
                             </form>
                         @else
                             <form action="{{ route('pegawai.aktifkan', $p->id_pegawai) }}" method="POST" style="display:inline-block; margin-top:5px;">
                                 @csrf
                                 @method('PATCH')
-                                <button class="btn btn-sm btn-outline-success" onclick="return confirm('Aktifkan kembali pegawai ini?')">Aktifkan</button>
+                                <button class="btn btn-sm btn-success" onclick="return confirm('Aktifkan kembali pegawai ini?')">Aktifkan</button>
                             </form>
                         @endif
                         </td>
