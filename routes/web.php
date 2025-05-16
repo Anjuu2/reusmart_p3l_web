@@ -30,13 +30,8 @@ Route::get('/product/{id}', [DetailBarangController::class, 'show']);
 Route::get('/cari', [BarangTitipanController::class, 'search'])->name('barang.cari');
 Route::get('/checkout', [TransaksiController::class, 'index'])->middleware('auth')->name('checkout');
 
-Route::get('/', function () {
-    return view('home');
-});
+Route::get('/home', [HomeController::class, 'index'])->name('home');
 
-Route::get('/home', function () {
-    return view('home');
-})->name('home');
 
 Route::get('/cek-session', function () {
     return response()->json([
@@ -212,11 +207,3 @@ Route::middleware('auth:pembeli')->group(function () {
     // Route untuk menampilkan detail alamat (opsional)
     Route::get('/alamat/{id}', [AlamatController::class, 'show'])->name('alamat.show');
 });
-
-Route::post('/logout', function (Request $request) {
-    Auth::guard('pembeli')->logout();              
-    $request->session()->invalidate();            
-    $request->session()->regenerateToken();       
-
-    return redirect('home');                   
-})->name('logout');

@@ -527,9 +527,8 @@
             </div>
             <nav>
                 <ul>
-                    <li><a href="{{ url('/kategori') }}">Collection</a></li>
-
-                    <li><a href="/about">About Us</a></li>
+                    <li><a href="{{ url('/kategori') }}" style="color: white;">Collection</a></li>
+                    <li><a href="/about" style="color: white;">About Us</a></li>
                 </ul>
             </nav>
             <!-- Cart, Search, and Location -->
