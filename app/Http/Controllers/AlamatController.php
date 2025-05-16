@@ -88,29 +88,29 @@ class AlamatController extends Controller
     }
 
     public function destroy($id)
-{
-    $user = Auth::user();
-    $alamat = AlamatPembeli::where('id_alamat_pembeli', $id)
-        ->where('id_pembeli', $user->id_pembeli)
-        ->first();
+    {
+        $user = Auth::user();
+        $alamat = AlamatPembeli::where('id_alamat_pembeli', $id)
+            ->where('id_pembeli', $user->id_pembeli)
+            ->first();
 
-    if ($alamat) {
-        $jumlahAlamat = AlamatPembeli::where('id_pembeli', $user->id_pembeli)->count();
+        if ($alamat) {
+            $jumlahAlamat = AlamatPembeli::where('id_pembeli', $user->id_pembeli)->count();
 
-        // Prevent deletion if there is only 1 address
-        if ($jumlahAlamat == 1) {
+            // Prevent deletion if there is only 1 address
+            if ($jumlahAlamat == 1) {
+                // Redirect dengan flash message untuk alert
+                return redirect()->route('alamatPembeli.index')->with('error', 'Alamat default tidak dapat dihapus jika hanya ada satu alamat.');
+            }
+
+            $alamat->delete();
+
             // Redirect dengan flash message untuk alert
-            return redirect()->route('alamatPembeli.index')->with('error', 'Alamat default tidak dapat dihapus jika hanya ada satu alamat.');
+            return redirect()->route('alamatPembeli.index')->with('success', 'Alamat berhasil dihapus.');
         }
 
-        $alamat->delete();
-
-        // Redirect dengan flash message untuk alert
-        return redirect()->route('alamatPembeli.index')->with('success', 'Alamat berhasil dihapus.');
+        // Jika alamat tidak ditemukan, redirect dengan alert
+        return redirect()->route('alamatPembeli.index')->with('error', 'Alamat tidak ditemukan.');
     }
-
-    // Jika alamat tidak ditemukan, redirect dengan alert
-    return redirect()->route('alamatPembeli.index')->with('error', 'Alamat tidak ditemukan.');
-}
 
 }

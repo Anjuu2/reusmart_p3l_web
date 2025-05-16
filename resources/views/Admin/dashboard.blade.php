@@ -158,7 +158,7 @@
                 </div>
                 <div class="modal-footer">
                     <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
-                    <a href="{{url('/')}}">
+                    <a href="{{url('login')}}">
                         <button type="button" class="btn btn-danger" id="logout-btn">Logout</button>
                     </a>
                 </div>

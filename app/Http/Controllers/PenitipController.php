@@ -108,5 +108,4 @@ class PenitipController extends Controller
         $penitip->delete();
         return redirect()->route('cs.penitip.index')->with('success', 'Penitip berhasil dihapus.');
     }
-
 }

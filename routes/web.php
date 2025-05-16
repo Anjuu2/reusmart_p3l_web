@@ -15,22 +15,25 @@ Route::get('/', function () {
     return view('home');
 });
 
-Route::get('/dashboard', function () {
+Route::middleware('auth:pegawai')->get('/dashboard', function () {
     return view('admin.dashboard');
-});
+})->name('dashboard.admin');
 
-Route::get('/organisasi', [OrganisasiController::class, 'index'])
+Route::middleware('auth:pegawai')->get('/organisasi', [OrganisasiController::class, 'index'])
      ->name('organisasi.index');
 
 // Tambahkan route PUT untuk update via AJAX
-Route::post('/organisasi/{organisasi}', [OrganisasiController::class, 'update'])
+Route::middleware('auth:pegawai')->post('/organisasi/{organisasi}', [OrganisasiController::class, 'update'])
      ->name('organisasi.update');
 
 // (opsional) route POST nonaktif
-Route::post('/organisasi/{organisasi}/nonaktif', [OrganisasiController::class, 'nonaktif'])
+Route::middleware('auth:pegawai')->post('/organisasi/{organisasi}/nonaktif', [OrganisasiController::class, 'nonaktif'])
      ->name('organisasi.nonaktif');
 
-Route::get('/organisasi/show', [OrganisasiController::class, 'show'])
+Route::middleware('auth:pegawai')->post('/organisasi/{organisasi}/hapus', [OrganisasiController::class, 'destroy'])
+     ->name('organisasi.hapus');
+
+Route::middleware('auth:pegawai')->get('/organisasi/show', [OrganisasiController::class, 'show'])
      ->name('organisasi.show');
 
 Route::get('/lupa-password', function () {
@@ -78,8 +81,7 @@ Route::post('/register/organisasi', [OrganisasiController::class, 'store'])->nam
 Route::middleware('auth:pembeli')->get('/dashboard/pembeli', fn() => view('dashboard'))->name('dashboard.pembeli');
 Route::middleware('auth:pembeli')->get('/alamat/pembeli', fn() => view('Pembeli.alamatPembeli'))->name('alamat.pembeli');
 Route::middleware('auth:penitip')->get('/dashboard/penitip', fn() => view('dashboardP'))->name('dashboard.penitip');
-Route::middleware('auth:organisasi')->get('/dashboard/organisasi', fn() => view('dashboardO'))->name('dashboard.organisasi');
-Route::middleware('auth:pegawai')->get('/dashboard/admin', fn() => view('dashboardAdmin'))->name('dashboard.admin');
+
 Route::middleware('auth:pegawai')->get('/dashboard/kurir', fn() => view('dashboard-kurir'))->name('dashboard.kurir');
 Route::middleware('auth:pegawai')->get('/dashboard/owner', fn() => view('dashboard-owner'))->name('dashboard.owner');
 Route::middleware('auth:pegawai')->get('/dashboard/kepala-gudang', fn() => view('dashboard-kepala'))->name('dashboard.kepala_gudang');

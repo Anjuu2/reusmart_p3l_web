@@ -6,6 +6,7 @@
 
 namespace App\Models;
 
+use Illuminate\Foundation\Auth\User as Authenticatable;
 use Carbon\Carbon;
 use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Database\Eloquent\Model;
@@ -32,7 +33,7 @@ use Illuminate\Database\Eloquent\Model;
  *
  * @package App\Models
  */
-class Pegawai extends Model
+class Pegawai extends Authenticatable
 {
 	protected $table = 'pegawai';
 	protected $primaryKey = 'id_pegawai';
