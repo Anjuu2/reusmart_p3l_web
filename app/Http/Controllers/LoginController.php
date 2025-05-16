@@ -34,7 +34,7 @@ class LoginController extends Controller
             if ($user && $user->password === $password) {
                 Auth::guard('pembeli')->login($user);
                 $request->session()->regenerate();
-                return redirect()->route('home');
+                return redirect()->route('home'); // jangan lupa disini ada masalah!!!
             }
         }
 
@@ -55,8 +55,8 @@ class LoginController extends Controller
             if ($org && $org->password === $password) {
                 Auth::guard('organisasi')->login($org);
                 $request->session()->regenerate();
-                // return redirect()->route('organisasi.request.index');
-                return redirect()->route('dashboard.organisasi');
+                return redirect()->route('organisasi.request.index');
+                // return redirect()->route('dashboard.organisasi');
             }
         }
 

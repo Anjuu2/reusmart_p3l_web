@@ -27,7 +27,7 @@ use Laravel\Sanctum\HasApiTokens;
  *
  * @package App\Models
  */
-class Organisasi extends Model
+class Organisasi extends Authenticatable
 {
 	use HasApiTokens, HasFactory, Notifiable;
 	protected $table = 'organisasi';

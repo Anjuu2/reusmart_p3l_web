@@ -103,6 +103,15 @@
 
         <div class="profile-info">
             <h5 class="mb-4">Informasi Akun</h5>
+            @if ($errors->any())
+                <div class="alert alert-danger">
+                    <ul>
+                        @foreach ($errors->all() as $error)
+                            <li>{{ $error }}</li>
+                        @endforeach
+                    </ul>
+                </div>
+            @endif
             <div class="row g-3">
                 <div class="col-md-6">
                     <label>Nama</label>
@@ -145,6 +154,7 @@
                         <div class="card-header" style="background-color: #e7f0da; color: rgba(111, 143, 70, 1);">
                             <div class="d-flex justify-content-between">
                                 <div>
+                                    <strong>ID Transaksi:</strong> <a href="#">{{ $transaksi->id_transaksi }}</a><br>
                                     <strong>Tanggal:</strong> {{ $transaksi->tanggal_transaksi }}<br>
                                     <strong>Status:</strong> {{ $transaksi->status_transaksi }}
                                 </div>
@@ -159,6 +169,7 @@
                                     <li class="list-group-item">
                                         <div class="d-flex justify-content-between">
                                             <div>
+                                                <strong>{{ $detail->barang->id_barang ?? 'Barang sudah dihapus' }}</strong>
                                                 <strong>{{ $detail->barang->nama_barang ?? 'Barang sudah dihapus' }}</strong>
                                             </div>
                                             <div class="fw-semibold text-success">
@@ -182,7 +193,7 @@
 
         <div class="modal fade" id="editProfileModal" tabindex="-1" aria-labelledby="editProfileModalLabel" aria-hidden="true">
         <div class="modal-dialog modal-lg">
-            <form action="{{ route('pembeli.update', $pembeli->id_pembeli) }}" method="POST" class="modal-content">
+            <form action="{{ route('pembeli.update', $pembeli->id_pembeli) }}" method="POST" class="modal-content" onsubmit="return confirm('Yakin ingin simpan perubahan?')">
             @csrf
             @method('PUT')
             <div class="modal-header bg-light">
@@ -215,6 +226,7 @@
             </div>
             </form>
         </div>
+        </div>
 
         <div class="profile-actions d-flex justify-content-between align-items-center mt-4">
             <div class="d-flex gap-2">
@@ -224,10 +236,6 @@
                 <button type="button" class="btn btn-custom" data-bs-toggle="modal" data-bs-target="#editProfileModal">
                     Edit Profil
                 </button>
-
-                <a href="{{ route('alamatPembeli.index') }}">
-                    <button type="button" class="btn btn-primary">Daftar Alamat</button>
-                </a>
                 <form action="{{ route('pembeli.toggleStatus', $pembeli->id_pembeli) }}" method="POST" onsubmit="return confirm('Yakin ingin mengubah status akun?')">
                     @csrf
                     @method('PUT')
