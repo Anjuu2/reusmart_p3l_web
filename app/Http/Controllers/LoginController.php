@@ -44,7 +44,8 @@ class LoginController extends Controller
             if ($user && $user->password === $password) {
                 Auth::guard('penitip')->login($user);
                 $request->session()->regenerate();
-                return redirect()->route('dashboard.penitip');
+                // return redirect()->route('dashboard.penitip');
+                return redirect()->route('penitip.profil');
             }
         }
 
@@ -54,7 +55,8 @@ class LoginController extends Controller
             if ($org && $org->password === $password) {
                 Auth::guard('organisasi')->login($org);
                 $request->session()->regenerate();
-                return redirect()->route('organisasi.request.index');
+                // return redirect()->route('organisasi.request.index');
+                return redirect()->route('dashboard.organisasi');
             }
         }
 
@@ -79,6 +81,7 @@ class LoginController extends Controller
                         return redirect()->route('dashboard.kurir');
                     case 'owner':
                         return redirect()->route('dashboard.owner');
+                        // return redirect()->route('dashboard.pembeli');
                     case 'kepala gudang':
                         return redirect()->route('dashboard.kepala_gudang');
                     case 'customer service':

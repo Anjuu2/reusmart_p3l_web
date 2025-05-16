@@ -5,15 +5,20 @@ use App\Http\Controllers\HomeController;
 use App\Http\Controllers\KategoriController;
 use App\Http\Controllers\AboutController;
 use App\Http\Controllers\DetailBarangController;
+
+use Illuminate\Support\Facades\Auth;
+use App\Http\Controllers\OrganisasiController;
+use App\Http\Controllers\PasswordController;
+
 use App\Http\Controllers\LoginController;
 use App\Http\Controllers\PembeliController;
 use App\Http\Controllers\PembeliHistoryController;
 use App\Http\Controllers\PenitipController;
+
 use App\Http\Controllers\RequestDonasiController;
 use Illuminate\Http\Request;
 use App\Http\Controllers\BarangTitipanController;
 use App\Http\Controllers\DonasiController;
-use App\Http\Controllers\OrganisasiController;
 use App\Http\Controllers\PegawaiController;
 
 Route::get('/', [HomeController::class, 'index']);
@@ -25,13 +30,8 @@ Route::get('/product/{id}', [DetailBarangController::class, 'show']);
 Route::get('/cari', [BarangTitipanController::class, 'search'])->name('barang.cari');
 Route::get('/checkout', [TransaksiController::class, 'index'])->middleware('auth')->name('checkout');
 
-Route::get('/', function () {
-    return view('home');
-});
+Route::get('/home', [HomeController::class, 'index'])->name('home');
 
-Route::get('/home', function () {
-    return view('home');
-})->name('home');
 
 Route::get('/cek-session', function () {
     return response()->json([
@@ -118,4 +118,92 @@ Route::middleware('auth:pegawai')->group(function () {
     Route::patch('/pegawai/{id}/nonaktif', [PegawaiController::class, 'nonaktifkan'])->name('pegawai.nonaktifkan');
     Route::patch('/pegawai/{id}/aktifkan', [PegawaiController::class, 'aktifkan'])->name('pegawai.aktifkan');
     Route::get('/pegawai/search', [PegawaiController::class, 'search'])->name('pegawai.search');
+});
+
+use App\Http\Controllers\AlamatController;
+use App\Http\Controllers\DiskusiController;
+
+// Route::get('/', function () {
+//     return view('home');
+// });
+
+Route::middleware('auth:pegawai')->get('/dashboard', function () {
+    return view('admin.dashboard');
+})->name('dashboard.admin');
+
+Route::middleware('auth:pegawai')->get('/organisasi', [OrganisasiController::class, 'index'])
+     ->name('organisasi.index');
+
+// Tambahkan route PUT untuk update via AJAX
+Route::middleware('auth:pegawai')->post('/organisasi/{organisasi}', [OrganisasiController::class, 'update'])
+     ->name('organisasi.update');
+
+// (opsional) route POST nonaktif
+Route::middleware('auth:pegawai')->post('/organisasi/{organisasi}/nonaktif', [OrganisasiController::class, 'nonaktif'])
+     ->name('organisasi.nonaktif');
+
+Route::middleware('auth:pegawai')->post('/organisasi/{organisasi}/hapus', [OrganisasiController::class, 'destroy'])
+     ->name('organisasi.hapus');
+
+Route::middleware('auth:pegawai')->get('/organisasi/show', [OrganisasiController::class, 'show'])
+     ->name('organisasi.show');
+
+Route::get('/lupa-password', function () {
+    return view('lupaPassword');
+});
+
+
+Route::post('/organisasi/{organisasi}/changePassword', [OrganisasiController::class, 'ubahPassword'])
+->name('ubahPassword');
+
+Route::get('/linkForm', function () {
+    return view('emails.kirimLinkForm');
+})->name('linkForm');
+
+Route::get('/changePassword', function () {
+    return view('lupaPassword');
+})->name('changePassword');
+Route::post('/changePassword', [PasswordController::class, 'changePassword'])->name('password.ubah');
+
+Route::post('/kirim-link', [PasswordController::class, 'sendLink'])->name('kirim.link');
+
+Route::get('/cek-session', function () {
+    return response()->json([
+        'session_id' => session()->getId(),        
+        'user' => Auth::user(),                    
+        'session_data' => session()->all(),        
+    ]);
+});
+
+Route::get('/register', function () {
+    return view('register');
+});
+
+Route::post('/register/pembeli', [PembeliController::class, 'store'])->name('pembeli.register');
+Route::post('/register/organisasi', [OrganisasiController::class, 'store'])->name('organisasi.register');
+
+Route::middleware('auth:pembeli')->get('/alamat/pembeli', fn() => view('Pembeli.alamatPembeli'))->name('alamat.pembeli');
+
+Route::middleware('auth:penitip')->get('/profile/penitip', [PenitipController::class, 'profilePenitip'])->name('penitip.profil');
+Route::middleware('auth:penitip')->put('/profile/penitip/{id}', [PenitipController::class, 'update'])->name('penitip.update');
+
+Route::get('/diskusi', [DiskusiController::class, 'index'])->name('diskusi.index');
+Route::middleware('auth:pembeli')->post('/diskusi/{id_barang}/tanya', [DiskusiController::class, 'storePertanyaan'])->name('diskusi.tanya');
+Route::middleware('auth:pegawai')->post('/diskusi/{id_diskusi}/jawab', [DiskusiController::class, 'jawab'])->name('diskusi.jawab');
+
+Route::middleware('auth:pembeli')->group(function () {
+    // Route untuk menampilkan data alamat
+    Route::get('/alamat', [AlamatController::class, 'index'])->name('alamatPembeli.index');
+
+    // Route untuk menambah alamat baru
+    Route::post('/alamat', [AlamatController::class, 'store'])->name('alamat.store');
+
+    // Route untuk memperbarui alamat
+    Route::put('/alamat/{id}', [AlamatController::class, 'update'])->name('alamat.update');
+
+    // Route untuk menghapus alamat
+    Route::delete('/alamat/{id}', [AlamatController::class, 'destroy'])->name('alamat.destroy');
+
+    // Route untuk menampilkan detail alamat (opsional)
+    Route::get('/alamat/{id}', [AlamatController::class, 'show'])->name('alamat.show');
 });

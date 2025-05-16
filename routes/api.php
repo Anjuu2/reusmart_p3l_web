@@ -30,4 +30,5 @@ use App\Http\Controllers\PembeliController;
 //     Route::delete('/AlamatDestroy/{id}', [AlamatController::class, 'destroy']);
 // });
 // Route::get('/OrganisasiIndex', [OrganisasiController::class, 'index']);
+
 // Route::get('/OrganisasiSearch', [OrganisasiController::class, 'search']);

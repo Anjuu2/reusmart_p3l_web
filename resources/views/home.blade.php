@@ -77,7 +77,7 @@
 
         nav ul li a {
             text-decoration: none;
-            color: white;
+            color: white
             font-size: 15px;
             font-weight: 600;
         }
@@ -155,7 +155,6 @@
             text-align: left;
         }
 
-        /* Garis Pemisah di Bawah Carousel */
         .carousel-divider {
             width: 80%;
             height: 1px; /* tebal garis */
@@ -299,6 +298,11 @@
             font-size: 11px;
             color: #777;
             text-align: left;
+        }
+
+        .product-brand {
+            font-size: 11px;
+            color: #777;
         }
 
         /* Harga Produk */
@@ -523,21 +527,17 @@
             </div>
             <nav>
                 <ul>
-                    <li><a href="{{ url('/kategori') }}">Collection</a></li>
-                    <li><a href="/about">About Us</a></li>
+                    <li><a href="{{ url('/kategori') }}" style="color: white;">Collection</a></li>
+                    <li><a href="/about" style="color: white;">About Us</a></li>
                 </ul>
             </nav>
             <!-- Cart, Search, and Location -->
             <div class="cart-search">
-                <!-- Search Input -->
-                <!-- <input type="search" placeholder="Search for items..."> -->
-                
                 <!-- Icons -->
                 <div class="icons">
-                    <a href="#"><img src="https://img.icons8.com/material/24/000000/shopping-cart.png" alt="Cart"></a>
-                    <a href="{{ route('pembeli.profil') }}">
-                        <img src="https://img.icons8.com/material/24/000000/user.png" alt="Account">
-                    </a>
+                    <a href="#"><img src="https://img.icons8.com/material/24/ffffff/shopping-cart.png" alt="Cart"></a>
+                    <a href="{{ route('diskusi.index') }}"><img src="https://img.icons8.com/?size=100&id=123773&format=png&color=ffffff" alt="Diskusi"></a>
+                    <a href="login"><img src="https://img.icons8.com/material/24/ffffff/user.png" alt="Account"></a>
                 </div>
             </div>
         </div>
@@ -644,8 +644,8 @@
                     <p class="product-category">{{ $barang->kategori->nama_kategori ?? 'Kategori Tidak Ada' }}</p>
                     <h3 class="product-name">{{ $barang->nama_barang }}</h3>
                     <!-- <div class="product-rating">
-                        <span>★ ({{ rand(4,5) }}.{{ rand(0,9) }})</span> <!-- Simulasi rating -->
-                    <!-- </div> -->
+                        <span>★ ({{ rand(4,5) }}.{{ rand(0,9) }})</span>
+                    </div> -->
                     <p class="product-status">{{ $barang->status_barang }}</p>
                 </div>
                 <div class="product-price">
@@ -661,7 +661,6 @@
                 </div>
             </a>
             @endforeach
-        </div>
         </div>
     </main>
 
