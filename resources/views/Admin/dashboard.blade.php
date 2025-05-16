@@ -7,7 +7,7 @@
         
         <style>
             .main-sidebar{
-                background: linear-gradient(135deg, rgba(0, 128, 0, 0.7) 0%, rgba(111, 143, 70, 1) 100%);
+                background: linear-gradient(135deg, rgba(0, 128, 0, 0.7) 0%, rgba(108, 241, 108, 0.7) 100%);
             }
 
             .main-header{
@@ -92,10 +92,10 @@
             </nav>
 
             <aside class="main-sidebar sidebar-dark-primary elevation-4">
-                <!-- <a href="#" class="brand-link">
+                <a href="{{ url('dashboard.admin') }}" class="brand-link">
 
                     <span class="brand-text font-weight-light" style="padding-left:5vw;">Reusemart</span>
-                </a> -->
+                </a>
 
                 <div class="sidebar">
                     <div class="user-panel mt-3 pb-3 mb-3 d-flex">

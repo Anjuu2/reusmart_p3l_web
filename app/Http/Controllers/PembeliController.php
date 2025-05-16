@@ -8,6 +8,7 @@ use App\Models\Transaksi;
 use App\Models\DetailTransaksi;
 use App\Models\BarangTitipan;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Hash;
 
 class PembeliController extends Controller
 {
@@ -22,21 +23,6 @@ class PembeliController extends Controller
 
         return view('profilePembeli', compact('pembeli', 'transaksiList'));
     }
-
-    // public function showBarangYangDibeli()
-    // {
-    //     $barangs = BarangTitipan::with('kategori')->where('status_barang', 'Terjual')->get();
-
-    //     $pembeli = Pembeli::all();
-    //     $barangHistori = DetailTransaksi::with(['barang_titipan', 'transaksi.id_pembeli'])
-    //         ->whereHas('transaksi', function($query) {
-    //             $query->where('status_transaksi', 'Lunas');
-    //         })
-    //         ->get();
-    //     $barangTerbeli = Transaksi::where('status_transaksi', 'Lunas')->get();
-
-    //     return view('dashboard', compact('barangs', 'pembeli', 'barangHistori', 'barangTerbeli'));
-    // }
 
     public function update(Request $request, $id)
     {
@@ -62,5 +48,30 @@ class PembeliController extends Controller
         ]);
 
         return redirect()->back()->with('success', 'Status akun diperbarui.');
+    }
+
+    public function store(Request $request)
+    {
+        $request->validate([
+            'nama_pembeli' => 'required',
+            'username' =>'required',
+            'notelp' =>'required',
+            'email' =>'required',
+            'password'=>'required',
+        ]);
+
+        Pembeli::create([
+            'nama_pembeli' => $request->nama_pembeli,
+            'username' => $request->username,
+            'notelp' => $request->notelp,
+            'email' => $request->email,
+            'password' => Hash::Make($request->password),
+            'poin' => 0,
+            'status_aktif' => 1,
+        ]);
+
+        return redirect()
+            ->route('login')
+            ->with('success', 'Pembeli berhasil dibuat.');
     }
 }

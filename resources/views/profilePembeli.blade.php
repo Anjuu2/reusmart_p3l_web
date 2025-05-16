@@ -215,7 +215,6 @@
             </div>
             </form>
         </div>
-        </div>
 
         <div class="profile-actions d-flex justify-content-between align-items-center mt-4">
             <div class="d-flex gap-2">
@@ -225,6 +224,10 @@
                 <button type="button" class="btn btn-custom" data-bs-toggle="modal" data-bs-target="#editProfileModal">
                     Edit Profil
                 </button>
+
+                <a href="{{ route('alamatPembeli.index') }}">
+                    <button type="button" class="btn btn-primary">Daftar Alamat</button>
+                </a>
                 <form action="{{ route('pembeli.toggleStatus', $pembeli->id_pembeli) }}" method="POST" onsubmit="return confirm('Yakin ingin mengubah status akun?')">
                     @csrf
                     @method('PUT')

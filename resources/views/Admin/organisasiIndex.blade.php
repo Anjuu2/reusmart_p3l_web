@@ -4,20 +4,21 @@
 <!-- CSRF token untuk AJAX -->
 <meta name="csrf-token" content="{{ csrf_token() }}">
 
-<div class="container mt-3 ms-3 ps-0">
-  <form class="d-flex mb-4">
-    <input class="form-control me-2" 
-           type="search" 
-           placeholder="Cari organisasi..." 
-           aria-label="Search" 
-           style="width: 250px;">
+<form class="d-flex mt-3 ms-3 ps-0" method="GET" action="{{ route('organisasi.show') }}">
+    <input
+      class="form-control me-2"
+      type="search"
+      name="q"
+      placeholder="Cari organisasi..."
+      value="{{ old('q', $q) }}"
+      style="width: 250px;"
+    >
     <button class="btn btn-outline-dark" type="submit">
-      <i class="bi bi-search"></i>
+      <i class="bi bi-search"></i> Cari
     </button>
   </form>
-</div>
 
-<table class="table table-striped border-dark text-center" id="organisasi-table">
+<table class="table table-striped border-dark text-center mt-3" id="organisasi-table">
   <thead class="table-dark">
     <tr>
       <th>ID</th>
@@ -30,7 +31,7 @@
   <tbody>
     @foreach($organisasi as $org)
       <tr data-id="{{ $org->id_organisasi }}">
-        <td>{{ $org->id_organisasi }}</td>
+        <td>ORG{{ $org->id_organisasi }}</td>
         <td class="col-nama">{{ $org->nama_organisasi }}</td>
         <td class="col-alamat">{{ $org->alamat }}</td>
         <td>{{ $org->status_aktif ? 'Aktif' : 'Nonaktif' }}</td>
@@ -50,6 +51,13 @@
                   data-bs-target="#nonaktifModal"
                   data-id="{{ $org->id_organisasi }}">
             Nonaktif
+          </button>
+          <button type="button"
+                  class="btn btn-sm btn-dark btn-hapus"
+                  data-bs-toggle="modal"
+                  data-bs-target="#hapusModal"
+                  data-id="{{ $org->id_organisasi }}">
+            Hapus
           </button>
         </td>
       </tr>
@@ -118,6 +126,33 @@
   </div>
 </div>
 
+{{-- Modal Hapus --}}
+<div class="modal fade" id="hapusModal" tabindex="-1" aria-hidden="true" data-bs-backdrop="static" data-bs-keyboard="false">
+  <div class="modal-dialog modal-dialog-centered">
+    <div class="modal-content">
+      <form id="hapusForm">
+        @csrf
+
+        <div class="modal-header bg-dark">
+          <h5 class="modal-title">Konfirmasi Hapus</h5>
+          <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+        </div>
+
+        <input type="hidden" id="hapusId">
+
+        <div class="modal-body">
+          <h3>Ingin menghapus organisasi ini?</h3>
+        </div>
+
+        <div class="modal-footer">
+          <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Batal</button>
+          <button type="submit" class="btn btn-danger">Hapus</button>
+        </div>
+      </form>
+    </div>
+  </div>
+</div>
+
 <script>
 $(function(){
   // Pasang header CSRF untuk semua AJAX
@@ -157,7 +192,6 @@ $(function(){
       });
   });
 
-  // Saat modal Nonaktif dibuka, simpan ID
   $('#nonaktifModal').on('show.bs.modal', function(e){
     const btn = $(e.relatedTarget);
     $('#nonaktifId').val(btn.data('id'));
@@ -176,6 +210,28 @@ $(function(){
       })
       .fail(xhr=>{
         alert('Gagal nonaktif: '+xhr.responseJSON?.message||xhr.statusText);
+      });
+  });
+
+  // Saat modal hapus dibuka, simpan ID
+  $('#hapusModal').on('show.bs.modal', function(e){
+    const btn = $(e.relatedTarget);
+    $('#hapusId').val(btn.data('id'));
+  });
+
+  // Submit hapus via AJAX
+  $('#hapusForm').on('submit', function(e){
+    e.preventDefault();
+    const id = $('#hapusId').val();
+
+    $.post(`/organisasi/${id}/hapus`, {})
+      .done(res=>{
+        $('#hapusModal').modal('hide');
+        alert('Organisasi berhasil dihapus');
+        location.reload();
+      })
+      .fail(xhr=>{
+        alert('Gagal hapus: '+xhr.responseJSON?.message||xhr.statusText);
       });
   });
 });
