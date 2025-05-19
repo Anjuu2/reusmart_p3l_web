@@ -66,7 +66,7 @@ Route::middleware('auth:pegawai')->get('/dashboard/pegawai', fn() => view('dashb
 Route::middleware('auth:pembeli')->get('/profile/pembeli', [PembeliController::class, 'profilePembeli'])->name('pembeli.profil');
 Route::middleware('auth:pembeli')->put('/profile/pembeli/{id}', [PembeliController::class, 'update'])->name('pembeli.update');
 Route::middleware('auth:pembeli')->put('/profile/pembeli/status/{id}', [PembeliController::class, 'toggleStatus'])->name('pembeli.toggleStatus');
-
+Route::middleware('auth:pembeli')->put('/profile/pembeli/riwayat', [PembeliController::class, 'toggleStatus'])->name('pembeli.toggleStatus');
 
 Route::middleware(['auth:pegawai'])->prefix('cs')->group(function () {
     Route::get('/penitip', [PenitipController::class, 'index'])->name('cs.penitip.index');
