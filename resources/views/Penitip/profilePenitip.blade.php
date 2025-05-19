@@ -219,7 +219,7 @@
         <div class="profile-actions d-flex justify-content-between align-items-center mt-4">
             <div class="d-flex gap-2">
                 <button type="button" class="btn btn-outline-primary" data-bs-toggle="modal" data-bs-target="#historyModal">
-                    Lihat Riwayat Pembelian
+                    Lihat Riwayat Penjualan
                 </button>
                 <button type="button" class="btn btn-custom" data-bs-toggle="modal" data-bs-target="#editProfileModal">
                     Edit Profil

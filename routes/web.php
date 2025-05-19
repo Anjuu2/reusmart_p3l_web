@@ -31,16 +31,6 @@ Route::get('/cari', [BarangTitipanController::class, 'search'])->name('barang.ca
 Route::get('/checkout', [TransaksiController::class, 'index'])->middleware('auth')->name('checkout');
 
 Route::get('/home', [HomeController::class, 'index'])->name('home');
-
-
-Route::get('/cek-session', function () {
-    return response()->json([
-        'session_id' => session()->getId(),        
-        'user' => Auth::user(),                    
-        'session_data' => session()->all(),        
-    ]);
-});
-
 Route::get('login', [LoginController::class, 'showLoginForm'])->name('login');
 Route::post('/login', [LoginController::class, 'login']);
 
