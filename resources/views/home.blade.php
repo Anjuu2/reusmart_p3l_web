@@ -543,7 +543,7 @@
         </div>
     </header>
 
-    <div class="navbar-shadow-separator"></div>
+    <!-- <div class="navbar-shadow-separator"></div> -->
     
     <!-- Main Section -->
     <main>
