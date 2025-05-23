@@ -20,6 +20,7 @@ use Illuminate\Http\Request;
 use App\Http\Controllers\BarangTitipanController;
 use App\Http\Controllers\DonasiController;
 use App\Http\Controllers\PegawaiController;
+use App\Http\Controllers\KeranjangController;
 
 Route::get('/', [HomeController::class, 'index']);
 Route::get('/kategori', [KategoriController::class, 'showAvailableProducts']);
@@ -57,6 +58,10 @@ Route::middleware('auth:pembeli')->get('/profile/pembeli', [PembeliController::c
 Route::middleware('auth:pembeli')->put('/profile/pembeli/{id}', [PembeliController::class, 'update'])->name('pembeli.update');
 Route::middleware('auth:pembeli')->put('/profile/pembeli/status/{id}', [PembeliController::class, 'toggleStatus'])->name('pembeli.toggleStatus');
 Route::middleware('auth:pembeli')->put('/profile/pembeli/riwayat', [PembeliController::class, 'toggleStatus'])->name('pembeli.toggleStatus');
+
+Route::middleware('auth:pembeli')->get('/keranjang', [KeranjangController::class, 'showCart'])->name('keranjang');
+Route::middleware('auth:pembeli')->post('/keranjang/tambah', [KeranjangController::class, 'addToCart'])->name('keranjang.tambah');
+Route::middleware('auth:pembeli')->post('/keranjang/{id}', [KeranjangController::class, 'removeFromCart'])->name('keranjang.hapus');
 
 Route::middleware(['auth:pegawai'])->prefix('cs')->group(function () {
     Route::get('/penitip', [PenitipController::class, 'index'])->name('cs.penitip.index');
