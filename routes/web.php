@@ -20,6 +20,7 @@ use Illuminate\Http\Request;
 use App\Http\Controllers\BarangTitipanController;
 use App\Http\Controllers\DonasiController;
 use App\Http\Controllers\PegawaiController;
+use App\Http\Controllers\TransaksiController;
 
 Route::get('/', [HomeController::class, 'index']);
 Route::get('/kategori', [KategoriController::class, 'showAvailableProducts']);
@@ -47,6 +48,25 @@ Route::middleware('auth:pegawai')->group(function () {
     Route::post('/owner/donasi/update', [DonasiController::class, 'update'])->name('owner.donasi.update');
     Route::post('/owner/donasi/reject', [DonasiController::class, 'reject'])->name('owner.donasi.reject');
     Route::get('/owner/donasi/history-organisasi/{id}', [DonasiController::class, 'historyByOrganisasi'])->name('owner.donasi.history.organisasi');
+
+    Route::get('/dashboard/pegawai_gudang', function () {
+        return view('pegawai_gudang.dashboard');
+    })->name('dashboard.pegawai_gudang');
+
+    Route::get('/pegawaiG/barangTitipan', [BarangTitipanController::class, 'index'])->name('pegawai_gudang.barangTitipan.index');
+
+    Route::get('/pegawaiG/barangTitipan/create', [BarangTitipanController::class, 'createBlank'])->name('pegawai_gudang.barangTitipan.createBlank');
+    Route::get('/pegawaiG/barangTitipan/create/{id_penitip}', [BarangTitipanController::class, 'create'])->name('pegawai_gudang.barangTitipan.create');
+    Route::get('/pegawaiG/barangTitipan/cariPenitip', [BarangTitipanController::class, 'cariPenitipForm'])->name('pegawai_gudang.barangTitipan.cariPenitip');
+
+    Route::post('/pegawaiG/barangTitipan', [BarangTitipanController::class, 'store'])->name('pegawai_gudang.barangTitipan.store');
+    Route::get('/pegawaiG/barangTitipan/{id}/edit', [BarangTitipanController::class, 'edit'])->name('pegawai_gudang.barangTitipan.edit');
+    Route::put('/pegawaiG/barangTitipan/{id}', [BarangTitipanController::class, 'update'])->name('pegawai_gudang.barangTitipan.update');
+    Route::delete('/pegawaiG/barangTitipan/{id}', [BarangTitipanController::class, 'destroy'])->name('pegawai_gudang.barangTitipan.destroy');
+    Route::get('/pegawaiG/barangTitipan/{id}', [BarangTitipanController::class, 'showDetail'])->name('pegawai_gudang.barangTitipan.showDetail');
+
+    // Route::get('/pegawaiG/barangTitipan/create', [BarangTitipanController::class, 'create'])->name('pegawai_gudang.barangTitipan.create');
+
 });
 
 Route::middleware('auth:pegawai')->get('/dashboard/kepala-gudang', fn() => view('dashboard-kepala'))->name('dashboard.kepala_gudang');

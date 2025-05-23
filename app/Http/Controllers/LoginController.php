@@ -84,6 +84,8 @@ class LoginController extends Controller
                         // return redirect()->route('dashboard.pembeli');
                     case 'kepala gudang':
                         return redirect()->route('dashboard.kepala_gudang');
+                    case 'pegawai gudang':
+                        return redirect()->route('dashboard.pegawai_gudang');
                     case 'customer service':
                         return redirect()->route('dashboard.cs');
                     default:
