@@ -7,6 +7,7 @@ use App\Models\BarangTitipan;
 use App\Models\Kategori;
 use App\Models\Pegawai;
 use App\Models\Penitip;
+use App\Models\FotoBarang;
 use Carbon\Carbon;
 use Illuminate\Http\Support\Facades\Storage;
 use PDF;
@@ -110,13 +111,16 @@ class BarangTitipanController extends Controller
         
         $penitip = Penitip::findOrFail($id_penitip);
         $kategori = Kategori::all();
-        $pegawaiQc = Pegawai::whereHas('jabatan', fn($q) =>
-            $q->where('nama_jabatan', 'Pegawai Gudang')
-        )->get();
+        $pegawaiLogin = auth()->guard('pegawai')->user();
+        $pegawaiQc = Pegawai::whereHas('jabatan', function ($q) {
+            $q->where('nama_jabatan', 'Pegawai Gudang');
+        })
+        ->where('id_pegawai', '!=', $pegawaiLogin->id_pegawai)
+        ->get();
         $pegawaiHunter = Pegawai::whereHas('jabatan', function ($q) {
             $q->where('nama_jabatan', 'Hunter');
         })->get();
-        return view('pegawai_gudang.barangTitipan.create', compact('kategori', 'pegawaiQc', 'pegawaiHunter', 'penitip'));
+        return view('pegawai_gudang.barangTitipan.create', compact('kategori', 'pegawaiQc', 'pegawaiHunter', 'penitip', 'pegawaiLogin'));
     }
 
     public function createBlank()
@@ -126,6 +130,7 @@ class BarangTitipanController extends Controller
 
     public function store(Request $request)
     {
+
         $request->validate([
             'nama_barang' => 'required',
             'harga_jual' => 'required|numeric',
@@ -134,8 +139,8 @@ class BarangTitipanController extends Controller
             'id_qc_pegawai' => 'required',
             'berat' => 'required|numeric',
             'deskripsi' => 'required',
-            'foto_barang' => 'required|image',
-            'foto_barang_2' => 'required|image',
+            'foto_barang' => 'required|array|min:2',
+            'foto_barang.*' => 'image|mimes:jpg,jpeg,png|max:2048',
 
         ]);
 
@@ -146,10 +151,10 @@ class BarangTitipanController extends Controller
             'nama_barang' => $request->nama_barang,
             'id_penitip' => $request->id_penitip,
             'id_kategori' => $request->id_kategori,
-            'id_qc_pegawai' => $request->id_qc_pegawai,
+            'id_qc_pegawai' => $request->id_qc_pegawai, // ✅ DITAMBAHKAN DI SINI
             'id_hunter' => $request->id_hunter,
             'barang_hunter' => $request->id_hunter ? 1 : 0,
-            'id_pegawai' => auth()->user()->id_pegawai,
+            'id_pegawai' => auth()->guard('pegawai')->user()->id_pegawai,
             'berat' => $request->berat,
             'harga_jual' => $request->harga_jual,
             'deskripsi' => $request->deskripsi,
@@ -160,19 +165,19 @@ class BarangTitipanController extends Controller
             'tanggal_masuk' => $tanggalMasuk,
             'tanggal_akhir' => $tanggalAkhir,
         ]);
+        
+        $barang->save();
 
         foreach ($request->file('foto_barang') as $index => $file) {
             $filename = time() . '_' . $index . '.' . $file->extension();
-            $file->move(public_path('images'), $filename);
+            $file->move(public_path('images/barang/'), $filename);
 
             FotoBarang::create([
-                'id_barang' => $barang->id_barang,  // barang yang baru disimpan
+                'id_barang' => $barang->id_barang,
                 'nama_file' => $filename,
                 'urutan' => $index + 1,
             ]);
         }
-
-        $barang->save();
 
         return redirect()->route('pegawai_gudang.barangTitipan.index')->with('success', 'Barang berhasil ditambahkan!');
     }
@@ -180,34 +185,113 @@ class BarangTitipanController extends Controller
     public function edit($id)
     {
         $barang = BarangTitipan::findOrFail($id);
+        $penitip = $barang->penitip;
+
         $kategori = Kategori::all();
-        $pegawaiQc = Pegawai::where('jabatan', 'gudang')->get();
-        $penitip = Penitip::all();
-        return view('pegawai_gudang.barangTitipan.edit', compact('barang', 'kategori', 'pegawaiQc', 'penitip'));
+        $pegawaiLogin = auth()->guard('pegawai')->user();
+
+        $pegawaiQc = Pegawai::whereHas('jabatan', function ($q) {
+            $q->where('nama_jabatan', 'Pegawai Gudang');
+        })
+        ->where('id_pegawai', '!=', $pegawaiLogin->id_pegawai)
+        ->get();
+
+        $pegawaiHunter = Pegawai::whereHas('jabatan', function ($q) {
+            $q->where('nama_jabatan', 'Hunter');
+        })->get();
+
+        return view('pegawai_gudang.barangTitipan.edit', compact('barang', 'penitip', 'kategori', 'pegawaiLogin', 'pegawaiQc', 'pegawaiHunter'));
     }
 
     public function update(Request $request, $id)
     {
         $barang = BarangTitipan::findOrFail($id);
 
+        $jumlahFotoLama = $barang->fotoBarang()->count();
+        $jumlahFotoUpload = $request->hasFile('foto_barang') ? count($request->file('foto_barang')) : 0;
+
+        // Hitung total foto setelah update
+        $totalFotoSetelahUpdate = $jumlahFotoLama + $jumlahFotoUpload;
+
+        if ($totalFotoSetelahUpdate < 2) {
+            return back()->withErrors(['foto_barang' => 'Total foto setelah update minimal harus 2'])->withInput();
+        }
+
+        $request->validate([
+            'nama_barang' => 'required',
+            'harga_jual' => 'required|numeric',
+            'id_penitip' => 'required|exists:penitip,id_penitip',
+            'id_kategori' => 'required',
+            'id_qc_pegawai' => 'required',
+            'berat' => 'required|numeric',
+            'deskripsi' => 'required',
+            'status_barang' => 'required',
+            'status_perpanjangan' => 'required|boolean',
+            'garansi' => 'required|boolean',
+            'tanggal_masuk' => 'required|date',
+            'tanggal_akhir' => 'required|date',
+            'tanggal_garansi' => 'nullable|date',
+            'id_hunter' => 'nullable|exists:pegawai,id_pegawai',
+            'foto_barang.*' => 'image|mimes:jpg,jpeg,png|max:2048',
+        ]);
+
+        if ($request->hasFile('foto_barang')) {
+            $request->validate([
+                'foto_barang' => 'array|min:2',
+                'fotuntuk yang update jugao_barang.*' => 'image|mimes:jpg,jpeg,png|max:2048',
+            ]);
+        }
+
+        $barang = BarangTitipan::findOrFail($id);
+
         $barang->update([
             'nama_barang' => $request->nama_barang,
-            'harga_jual' => $request->harga_jual,
             'id_penitip' => $request->id_penitip,
             'id_kategori' => $request->id_kategori,
             'id_qc_pegawai' => $request->id_qc_pegawai,
             'id_hunter' => $request->id_hunter,
             'barang_hunter' => $request->id_hunter ? 1 : 0,
+            'id_pegawai' => $request->id_pegawai,
             'berat' => $request->berat,
-            'garansi' => $request->garansi ?? null,
-            'tanggal_garansi' => $request->tanggal_garansi ?? null,
-            'tanggal_masuk' => $request->tanggal_masuk,
-            'tanggal_akhir' => $request->tanggal_akhir,
+            'harga_jual' => $request->harga_jual,
+            'deskripsi' => $request->deskripsi,
             'status_barang' => $request->status_barang,
             'status_perpanjangan' => $request->status_perpanjangan,
+            'garansi' => $request->garansi,
+            'tanggal_garansi' => $request->tanggal_garansi,
+            'tanggal_masuk' => $request->tanggal_masuk,
+            'tanggal_akhir' => $request->tanggal_akhir,
         ]);
 
+        // ✅ Tambah foto baru (jika ada upload)
+        if ($request->hasFile('foto_barang')) {
+            foreach ($request->file('foto_barang') as $index => $file) {
+                $filename = time() . '_' . $index . '.' . $file->extension();
+                $file->move(public_path('images/barang/'), $filename);
+
+                FotoBarang::create([
+                    'id_barang' => $barang->id_barang,
+                    'nama_file' => $filename,
+                    'urutan' => $barang->fotoBarang()->count() + $index + 1,
+                ]);
+            }
+        }
+
         return redirect()->route('pegawai_gudang.barangTitipan.index')->with('success', 'Barang berhasil diperbarui!');
+    }
+
+    public function hapusFoto($id)
+    {
+        $foto = FotoBarang::findOrFail($id);
+
+        $path = public_path('images/barang/' . $foto->nama_file);
+        if (file_exists($path)) {
+            unlink($path); // hapus file
+        }
+
+        $foto->delete(); // hapus record
+
+        return back()->with('success', 'Foto berhasil dihapus.');
     }
 
     public function destroy($id)

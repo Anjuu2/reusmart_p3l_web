@@ -423,7 +423,7 @@
                     <div class="carousel-inner">
                         @foreach ($product->fotoBarang as $index => $foto)
                             <div class="carousel-item {{ $index == 0 ? 'active' : '' }}">
-                                <img src="{{ asset('images/' . $foto->nama_file) }}"
+                                <img src="{{ asset('images/barang/' . $foto->nama_file) }}"
                                     class="d-block w-100 img-fluid"
                                     alt="Foto {{ $index + 1 }}">
                             </div>
@@ -488,7 +488,7 @@
                 <div class="related-products-grid" style="display: flex; flex-wrap: wrap; gap: 20px;">
                     @forelse($produk_serupa as $item)
                         <a href="{{ url('product/' . $item->id_barang) }}" class="related-product-card" style="width: 200px; text-decoration: none; color: inherit;">
-                           <img src="{{ asset('images/' . ($item->fotoBarang->first()->nama_file ?? 'default.jpg')) }}" alt="..." class="img-fluid related-image">
+                           <img src="{{ asset('images/barang/' . ($item->fotoBarang->first()->nama_file ?? 'default.jpg')) }}" alt="..." class="img-fluid related-image">
                             <div style="padding: 8px;">
                                 <p style="font-size: 13px; color: grey; margin: 4px 0;">{{ $item->kategori->nama_kategori ?? 'Kategori' }}</p>
                                 <h4 style="font-size: 16px; margin: 0 0 4px;">{{ $item->nama_barang }}</h4>

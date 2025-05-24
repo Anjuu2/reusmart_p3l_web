@@ -67,7 +67,7 @@
         <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.6/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-4Q6Gf2aSP4eDXB8Miphtr37CMZZQ5oXLH2yaXMJ2w8e2ZtHTl7GptT4jmndRuHDT" crossorigin="anonymous">
         <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/admin-lte@3.2.0/dist/css/adminlte.min.css">
     </head>
-    <body class="hold-transition sidebar-mini">
+    <body class="hold-transition sidebar-mini d-flex flex-column min-vh-100">
         <div class="wrapper">
             <nav class="main-header navbar navbar-expand navbar-white navbar-light">
                 <ul class="navbar-nav">
@@ -116,42 +116,18 @@
                                     <i class="nav-icon bi bi-inbox"></i>
                                     <p>Barang Titipan</p>
                                 </a>
-                                <!-- <div class="collapse" id="collapseDonasi">
-                                    <ul class="btn-toggle-nav list-unstyled fw-normal pb-1 small ps-3">
-                                        <li>
-                                            <a class="nav-link" href="{{ route('dashboard.owner') }}">Kelola Donasi</a>
-                                        </li>
-                                        <li>
-                                            <a class="nav-link collapsed" data-bs-toggle="collapse" href="#collapseHistori" role="button" aria-expanded="false" aria-controls="collapseHistori">
-                                                Histori Organisasi
-                                            </a>
-                                            <div class="collapse" id="collapseHistori">
-                                                <ul class="btn-toggle-nav list-unstyled fw-normal pb-1 small ps-3">
-                                                    @foreach($daftarOrganisasi as $org)
-                                                        <li>
-                                                            <a class="nav-link" href="{{ route('owner.donasi.history.organisasi', ['id' => $org->id_organisasi]) }}">
-                                                                {{ $org->nama_organisasi }}
-                                                            </a>
-                                                        </li>
-                                                    @endforeach
-                                                </ul>
-                                            </div>
-                                        </li>
-                                    </ul>
-                                </div> -->
                             </li>
                         </ul>
                     </nav>
                 </div>
             </aside>
 
-            <div class="content-wrapper">
+            <main class="content-wrapper">
                 @yield('isi')
-            </div>
+            </main>
 
-            <footer class="main-footer">
-                
-                <strong>Kami ada untuk Anda </strong>
+            <footer class="main-footer mt-auto text-center py-3">
+                <strong>Kami ada untuk Anda</strong>
             </footer>
         </div>
 

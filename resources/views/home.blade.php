@@ -571,8 +571,7 @@
                 @foreach($barangs->take(3) as $index => $barang)
                 <div class="carousel-item {{ $index === 0 ? 'active' : '' }}">
                     <a href="{{ url('product/' . $barang->id_barang) }}">
-                        <img src="{{ asset('images/' . ($barang->fotoBarang->first()->nama_file ?? 'default.jpg')) }}" alt="Foto Barang" class="img-fluid">
-                        <!-- <img src="{{ asset('images/' . $barang->foto_barang) }}" class="d-block w-100" alt="{{ $barang->nama_barang }}"> -->
+                        <img src="{{ asset('images/barang/' . ($barang->fotoBarang->first()->nama_file ?? 'default.jpg')) }}" alt="Foto Barang" class="img-fluid">
                     </a>
                     <div class="carousel-caption d-none d-md-block">
                         <h5>{{ $barang->nama_barang }}</h5>
@@ -654,7 +653,7 @@
         <div class="product-container">
             @foreach($barangs->take(10) as $barang)
             <a href="{{ url('product/' . $barang->id_barang) }}" class="product-card">
-                <img src="{{ asset('images/' . ($barang->fotoBarang->first()->nama_file ?? 'default.jpg')) }}" alt="Foto Barang" class="img-fluid">
+                <img src="{{ asset('images/barang/' . ($barang->fotoBarang->first()->nama_file ?? 'default.jpg')) }}" alt="Foto Barang" class="img-fluid">
                 <div class="product-info">
                     <p class="product-category">{{ $barang->kategori->nama_kategori ?? 'Kategori Tidak Ada' }}</p>
                     <h3 class="product-name">{{ $barang->nama_barang }}</h3>

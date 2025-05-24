@@ -1,6 +1,7 @@
 @extends('pegawai_gudang.dashboard')
 
 @section('isi')
+
 <style>
     .table-sm th,
     .table-sm td {
@@ -14,9 +15,10 @@
         table-layout: auto;
         width: 100%;
     }
+
 </style>
 
-<div class="container mt-4">
+<div class="container mt-2">
     <h2 class="mb-4 text-center"><strong>Daftar Barang Titipan</strong></h2>
 
     {{-- Flash message --}}
@@ -45,8 +47,8 @@
 
     {{-- Tabel --}}
     <div class="table-responsive">
-        <table class="table table-bordered table-striped table-sm align-middle text-center">
-            <thead class="table-dark">
+        <table class="table table-bordered table-striped table-sm align-middle">
+            <thead class="table-dark text-center">
                 <tr>
                     <th>Kode Barang</th>
                     <th>Nama Barang</th>
@@ -59,11 +61,11 @@
             <tbody>
                 @forelse ($barang as $item)
                 <tr>
-                    <td>{{ strtoupper(substr($item->nama_barang, 0, 1)) . $item->id_barang }}</td>
+                    <td class="text-center">{{ strtoupper(substr($item->nama_barang, 0, 1)) . $item->id_barang }}</td>
                     <td>{{ $item->nama_barang }}</td>
                     <td>{{ $item->kategori->nama_kategori ?? '-' }}</td>
                     <td>{{ $item->status_barang }}</td>
-                    <td>{{ $item->penitip->nama_penitip ?? '-' }}</td>
+                    <td>T{{ $item->penitip->id_penitip}} - {{ $item->penitip->nama_penitip ?? '-' }}</td>
                     <td>
                         <a href="{{ route('pegawai_gudang.barangTitipan.showDetail', $item->id_barang) }}" class="btn btn-sm btn-info">Detail</a>
 

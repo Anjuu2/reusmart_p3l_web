@@ -68,7 +68,7 @@ class BarangTitipan extends Model
 	protected $fillable = [
 		'id_penitip',
 		'id_pegawai',
-		'id_qc_pegawai,',
+		'id_qc_pegawai',
 		'id_hunter',
 		'id_kategori',
 		'tanggal_masuk',

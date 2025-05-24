@@ -1,9 +1,17 @@
 @extends('pegawai_gudang.dashboard')
 @section('isi')
+
+@php
+    $pegawai = auth()->guard('pegawai')->user();
+@endphp
+
 <div class="d-flex justify-content-center align-items-center" style="padding-top: 40px; padding-bottom: 40px;">
-    <div class="card shadow" style="width: 1000px; height: 1000px;">
+    <div class="card shadow" style="width: 1000px; height: 1100px;">
         <div class="card-body">
-            <h2 class="mb-4 text-center"><strong>Tambah Barang Titipan</strong></h2>
+            <h2 class="mb-2 text-center"><strong>Tambah Barang Titipan</strong></h2>
+            <p class="text-center">
+                <strong>Oleh:</strong> P{{ $pegawai->id_pegawai }} - {{ $pegawai->nama_pegawai }}
+            </p>
 
             @if ($errors->any())
                 <div class="alert alert-danger">
@@ -16,13 +24,14 @@
                 </div>
             @endif
 
-            <form action="{{ route('pegawai_gudang.barangTitipan.store') }}" method="POST">
+            <form action="{{ route('pegawai_gudang.barangTitipan.store') }}" method="POST"  enctype="multipart/form-data">
                 @csrf
 
-                <input type="hidden" name="id_penitip" value="{{ $penitip->idPenitip }}">
+                <input type="hidden" name="id_penitip" value="{{ $penitip->id_penitip }}">
                 <div class="mb-3">
                     <label class="form-label">Penitip</label>
-                    <input type="text" class="form-control" value="{{ $penitip->nama_penitip }}" readonly>
+                    <input type="text" class="form-control"
+                        value="T{{ $penitip->id_penitip }} - {{ $penitip->nama_penitip }}" readonly>
                 </div>
 
                 <div class="row">
@@ -32,7 +41,7 @@
                             <option value="">-- Pilih Pegawai QC --</option>
                             @foreach ($pegawaiQc as $qc)
                                 <option value="{{ $qc->id_pegawai }}" {{ old('id_qc_pegawai') == $qc->id_pegawai ? 'selected' : '' }}>
-                                    {{ $qc->nama_pegawai }}
+                                    P{{ $qc->id_pegawai }} - {{ $qc->nama_pegawai }}
                                 </option>
                             @endforeach
                         </select>
@@ -43,7 +52,7 @@
                         <select name="id_hunter" class="form-select">
                             <option value="">-- Tidak Ada --</option>
                             @foreach ($pegawaiHunter as $hunter)
-                                <option value="{{ $hunter->id_pegawai }}">{{ $hunter->nama_pegawai }}</option>
+                                <option value="{{ $hunter->id_pegawai }}">P{{ $hunter->id_pegawai }} - {{ $hunter->nama_pegawai }}</option>
                             @endforeach
                         </select>
                     </div>
@@ -130,9 +139,9 @@
                 </div>
 
                 <div class="mb-3">
-                    <label class="form-label">Foto Barang</label>
-                    <input type="file" name="foto_barang" class="form-control mb-2" required>
-                    <input type="file" name="foto_barang2" class="form-control" required>
+                    <label class="form-label">Foto Barang (minimal 2 gambar)</label>
+                    <input type="file" name="foto_barang[]" class="form-control" multiple required>
+                    <small class="text-muted">Upload minimal 2 gambar. File bertipe .jpg, .jpeg, .png</small>
                 </div>
 
                 <div class="text-end">
