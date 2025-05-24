@@ -46,6 +46,7 @@ class BarangTitipanController extends Controller
 
             $query->where(function ($q) use ($search) {
                 $q->where('nama_barang', 'like', "%$search%")
+                ->orWhere('id_barang', 'like', "%$search%")
                 ->orWhere('deskripsi', 'like', "%$search%")
                 ->orWhere('harga_jual', 'like', "%$search%")
                 ->orWhere('berat', 'like', "%$search%")
@@ -80,6 +81,16 @@ class BarangTitipanController extends Controller
                 $jumlahHari = (int) $matches[1];
                 $tanggalBatas = now()->subDays($jumlahHari);
                 $query->orWhere('tanggal_masuk', '>=', $tanggalBatas);
+            }
+
+            if (preg_match('/^([A-Za-z])(\d+)$/', $search, $match)) {
+                $huruf = strtoupper($match[1]);
+                $angka = $match[2];
+
+                $query->orWhere(function ($q) use ($huruf, $angka) {
+                    $q->where('id_barang', $angka)
+                    ->whereRaw('UPPER(LEFT(nama_barang, 1)) = ?', [$huruf]);
+                });
             }
         }
 
@@ -208,10 +219,10 @@ class BarangTitipanController extends Controller
         $barang = BarangTitipan::findOrFail($id);
 
         $jumlahFotoLama = $barang->fotoBarang()->count();
+        $jumlahFotoDihapus = is_array($request->hapus_foto) ? count($request->hapus_foto) : 0;
         $jumlahFotoUpload = $request->hasFile('foto_barang') ? count($request->file('foto_barang')) : 0;
 
-        // Hitung total foto setelah update
-        $totalFotoSetelahUpdate = $jumlahFotoLama + $jumlahFotoUpload;
+        $totalFotoSetelahUpdate = ($jumlahFotoLama - $jumlahFotoDihapus) + $jumlahFotoUpload;
 
         if ($totalFotoSetelahUpdate < 2) {
             return back()->withErrors(['foto_barang' => 'Total foto setelah update minimal harus 2'])->withInput();
@@ -235,14 +246,20 @@ class BarangTitipanController extends Controller
             'foto_barang.*' => 'image|mimes:jpg,jpeg,png|max:2048',
         ]);
 
-        if ($request->hasFile('foto_barang')) {
-            $request->validate([
-                'foto_barang' => 'array|min:2',
-                'fotuntuk yang update jugao_barang.*' => 'image|mimes:jpg,jpeg,png|max:2048',
-            ]);
+        // Hapus foto yang ditandai
+        if ($request->filled('hapus_foto')) {
+            $fotoIds = $request->input('hapus_foto');
+            foreach ($fotoIds as $idFoto) {
+                $foto = FotoBarang::find($idFoto);
+                if ($foto && $foto->id_barang == $barang->id_barang) {
+                    $path = public_path('images/barang/' . $foto->nama_file);
+                    if (file_exists($path)) {
+                        unlink($path);
+                    }
+                    $foto->delete();
+                }
+            }
         }
-
-        $barang = BarangTitipan::findOrFail($id);
 
         $barang->update([
             'nama_barang' => $request->nama_barang,
@@ -263,7 +280,6 @@ class BarangTitipanController extends Controller
             'tanggal_akhir' => $request->tanggal_akhir,
         ]);
 
-        // ✅ Tambah foto baru (jika ada upload)
         if ($request->hasFile('foto_barang')) {
             foreach ($request->file('foto_barang') as $index => $file) {
                 $filename = time() . '_' . $index . '.' . $file->extension();
@@ -276,8 +292,9 @@ class BarangTitipanController extends Controller
                 ]);
             }
         }
-
-        return redirect()->route('pegawai_gudang.barangTitipan.index')->with('success', 'Barang berhasil diperbarui!');
+        // return redirect()->route('pegawai_gudang.barangTitipan.index')->with('success', 'Barang berhasil diperbarui!');
+        return redirect()->route('pegawai_gudang.barangTitipan.showDetail', $barang->id_barang)
+            ->with('success', 'Barang berhasil diperbarui!');
     }
 
     public function hapusFoto($id)

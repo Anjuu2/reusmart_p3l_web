@@ -58,9 +58,7 @@ Route::middleware('auth:pegawai')->group(function () {
     Route::get('/pegawaiG/barangTitipan/create', [BarangTitipanController::class, 'createBlank'])->name('pegawai_gudang.barangTitipan.createBlank');
     Route::get('/pegawaiG/barangTitipan/create/{id_penitip}', [BarangTitipanController::class, 'create'])->name('pegawai_gudang.barangTitipan.create');
     Route::get('/pegawaiG/barangTitipan/cariPenitip', [BarangTitipanController::class, 'cariPenitipForm'])->name('pegawai_gudang.barangTitipan.cariPenitip');
-
     Route::post('/pegawaiG/barangTitipan', [BarangTitipanController::class, 'store'])->name('pegawai_gudang.barangTitipan.store');
-
     Route::delete('/pegawaiG/barangTitipan/foto-barang/{id}', [BarangTitipanController::class, 'hapusFoto'])->name('fotoBarang.hapus');
 
     Route::get('/pegawaiG/barangTitipan/{id}/edit', [BarangTitipanController::class, 'edit'])->name('pegawai_gudang.barangTitipan.edit');

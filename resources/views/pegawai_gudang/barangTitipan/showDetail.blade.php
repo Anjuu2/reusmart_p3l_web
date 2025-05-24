@@ -1,6 +1,13 @@
 @extends('pegawai_gudang.dashboard')
 
 @section('isi')
+
+@if (session('success'))
+    <div class="alert alert-success">
+        {{ session('success') }}
+    </div>
+@endif
+
 <style>
     th {
         width: 200px;

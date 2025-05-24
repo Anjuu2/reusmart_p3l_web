@@ -66,12 +66,9 @@
                     <td>{{ $item->kategori->nama_kategori ?? '-' }}</td>
                     <td>{{ $item->status_barang }}</td>
                     <td>T{{ $item->penitip->id_penitip}} - {{ $item->penitip->nama_penitip ?? '-' }}</td>
-                    <td>
+                    <td class="text-center">
                         <a href="{{ route('pegawai_gudang.barangTitipan.showDetail', $item->id_barang) }}" class="btn btn-sm btn-info">Detail</a>
-
-                        
-
-                        <form action="{{ route('pegawai_gudang.barangTitipan.destroy', $item->id_barang) }}" method="POST" class="d-inline" onsubmit="return confirm('Yakin ingin menghapus?')">
+                        <form action="{{ route('pegawai_gudang.barangTitipan.destroy', $item->id_barang) }}" method="POST" class="d-inline" onsubmit="return confirm('Yakin ingin menghapus Barang ini?')">
                             @csrf
                             @method('DELETE')
                             <button class="btn btn-sm btn-danger">Hapus</button>

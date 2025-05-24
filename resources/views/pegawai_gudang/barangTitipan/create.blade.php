@@ -146,7 +146,7 @@
 
                 <div class="text-end">
                     <a href="{{ route('pegawai_gudang.barangTitipan.index') }}" class="btn btn-secondary">Batal</a>
-                    <button type="submit" class="btn btn-primary">Simpan</button>
+                    <button type="submit" class="btn btn-primary">Tambah</button>
                 </div>
             </form>
         </div>

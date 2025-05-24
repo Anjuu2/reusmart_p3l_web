@@ -144,7 +144,9 @@
 
                 <div class="mb-3">
                     <label class="form-label">Upload Foto Baru</label>
-                    <input type="file" name="foto_barang[]" class="form-control" multiple>
+                    <input type="file" name="foto_barang[]" class="form-control" id="inputFotoBaru" multiple>
+                    <div id="previewFotoBaru" class="d-flex flex-wrap gap-3 mt-2"></div>
+
                     <small class="text-muted">Kosongkan jika tidak ingin menambah foto</small>
                 </div>
 
@@ -154,31 +156,28 @@
                         <small class="text-muted d-block mt-1">Minimal 2 foto wajib dimiliki. Jika ingin hapus semua, pastikan upload pengganti.</small>
                         <div class="d-flex flex-wrap gap-3">
                             @foreach ($barang->fotoBarang as $foto)
-                                <div style="position: relative; width: 150px; height: 150px; flex-shrink: 0;">
+                                <div style="position: relative; width: 150px; height: 150px;">
                                     <img src="{{ asset('images/barang/' . $foto->nama_file) }}"
                                         style="width: 100%; height: 100%; object-fit: cover; border-radius: 8px; border: 1px solid #ccc;">
-
-                                    <form action="{{ route('fotoBarang.hapus', $foto->id_foto) }}"
-                                        method="POST"
-                                        style="position: absolute; top: 6px; right: 6px;">
-                                        @csrf
-                                        @method('DELETE')
-                                        <button type="submit"
-                                                class="btn btn-sm btn-danger rounded-circle p-1"
-                                                style="font-size: 14px; line-height: 1; width: 26px; height: 26px;"
-                                                onclick="return confirm('Hapus foto ini?')">
-                                            &times;
-                                        </button>
-                                    </form>
+                                    
+                                    <div style="position: absolute; top: 6px; right: 6px;">
+                                        <input type="checkbox" name="hapus_foto[]" value="{{ $foto->id_foto }}">
+                                    </div>
                                 </div>
                             @endforeach
                         </div>
+                        <small class="text-muted d-block">Centang untuk menghapus</small>
                     </div>
                 @endif
 
                 <div class="text-end">
                     <a href="{{ route('pegawai_gudang.barangTitipan.index') }}" class="btn btn-secondary">Batal</a>
-                    <button type="submit" class="btn btn-primary">Simpan Perubahan</button>
+                    <!-- @if ($errors->has('foto_barang'))
+                        <div class="alert alert-danger mt-2">
+                            {{ $errors->first('foto_barang') }}
+                        </div>
+                    @endif -->
+                    <button onclick="console.log('klik');" type="submit" class="btn btn-success">Simpan</button>
                 </div>
             </form>
         </div>
@@ -215,37 +214,44 @@
 </script>
 
 <script>
-    document.addEventListener('DOMContentLoaded', function () {
-        const tglMasuk = document.querySelector('input[name="tanggal_masuk"]');
-        const tglAkhir = document.querySelector('input[name="tanggal_akhir"]');
-        const form = document.querySelector('form');
-        const inputFoto = document.querySelector('input[name="foto_barang[]"]');
+document.addEventListener('DOMContentLoaded', function () {
+    const form = document.querySelector('form');
+    const inputFoto = document.querySelector('input[name="foto_barang[]"]');
+    const totalFotoLama = {{ $barang->fotoBarang->count() }};
 
-        function updateTanggalAkhir() {
-            if (!tglMasuk || !tglAkhir) return;
+    form.addEventListener('submit', function (e) {
+        console.log("Form SUBMIT jalan");
 
-            const masuk = new Date(tglMasuk.value);
-            if (!isNaN(masuk.getTime())) {
-                const akhir = new Date(masuk);
-                akhir.setDate(akhir.getDate() + 30);
-                akhir.setHours(masuk.getHours(), masuk.getMinutes(), 0, 0);
+        const totalFotoBaru = inputFoto?.files?.length || 0;
+        const totalSetelahSubmit = totalFotoLama + totalFotoBaru;
 
-                const pad = n => n.toString().padStart(2, '0');
-                const formatted = `${akhir.getFullYear()}-${pad(akhir.getMonth() + 1)}-${pad(akhir.getDate())}T${pad(akhir.getHours())}:${pad(akhir.getMinutes())}`;
-                tglAkhir.value = formatted;
-            }
+        if (totalFotoSetelahSubmit < 2) {
+            e.preventDefault();
+            alert("Total foto setelah update minimal 2.");
         }
+    });
+});
+</script>
 
-        updateTanggalAkhir();
-        tglMasuk?.addEventListener('input', updateTanggalAkhir);
-        tglMasuk?.addEventListener('change', updateTanggalAkhir);
+<script>
+document.addEventListener('DOMContentLoaded', function () {
+    const inputFoto = document.getElementById('inputFotoBaru');
+    const previewDiv = document.getElementById('previewFotoBaru');
 
-        form.addEventListener('submit', function (e) {
-            if (inputFoto && inputFoto.files.length > 0 && inputFoto.files.length < 2) {
-                e.preventDefault();
-                alert("Minimal upload 2 gambar.");
-            }
+    inputFoto.addEventListener('change', function () {
+        previewDiv.innerHTML = ''; // kosongkan dulu
+        Array.from(this.files).forEach(file => {
+            const reader = new FileReader();
+            reader.onload = e => {
+                const img = document.createElement('img');
+                img.src = e.target.result;
+                img.style = "width: 100px; height: 100px; object-fit: cover; border: 1px solid #ccc; margin-right: 10px;";
+                previewDiv.appendChild(img);
+            };
+            reader.readAsDataURL(file);
         });
     });
+});
 </script>
+
 @endpush
