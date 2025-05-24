@@ -113,7 +113,10 @@ class BarangTitipanController extends Controller
         $pegawaiQc = Pegawai::whereHas('jabatan', fn($q) =>
             $q->where('nama_jabatan', 'Pegawai Gudang')
         )->get();
-        return view('pegawai_gudang.barangTitipan.create', compact('kategori', 'pegawaiQc', 'penitip'));
+        $pegawaiHunter = Pegawai::whereHas('jabatan', function ($q) {
+            $q->where('nama_jabatan', 'Hunter');
+        })->get();
+        return view('pegawai_gudang.barangTitipan.create', compact('kategori', 'pegawaiQc', 'pegawaiHunter', 'penitip'));
     }
 
     public function createBlank()
@@ -126,10 +129,14 @@ class BarangTitipanController extends Controller
         $request->validate([
             'nama_barang' => 'required',
             'harga_jual' => 'required|numeric',
-            'id_penitip' => 'required|exists:penitip,idPenitip',
+            'id_penitip' => 'required|exists:penitip,id_penitip',
             'id_kategori' => 'required',
             'id_qc_pegawai' => 'required',
             'berat' => 'required|numeric',
+            'deskripsi' => 'required',
+            'foto_barang' => 'required|image',
+            'foto_barang_2' => 'required|image',
+
         ]);
 
         $tanggalMasuk = Carbon::now();
@@ -137,20 +144,33 @@ class BarangTitipanController extends Controller
 
         $barang = new BarangTitipan([
             'nama_barang' => $request->nama_barang,
-            'harga_jual' => $request->harga_jual,
             'id_penitip' => $request->id_penitip,
             'id_kategori' => $request->id_kategori,
             'id_qc_pegawai' => $request->id_qc_pegawai,
             'id_hunter' => $request->id_hunter,
             'barang_hunter' => $request->id_hunter ? 1 : 0,
+            'id_pegawai' => auth()->user()->id_pegawai,
             'berat' => $request->berat,
-            'garansi' => $request->garansi ?? null,
-            'tanggal_garansi' => $request->tanggal_garansi ?? null,
+            'harga_jual' => $request->harga_jual,
+            'deskripsi' => $request->deskripsi,
+            'status_barang' => $request->status_barang,
+            'status_perpanjangan' => $request->status_perpanjangan,
+            'garansi' => $request->garansi,
+            'tanggal_garansi' => $request->tanggal_garansi,
             'tanggal_masuk' => $tanggalMasuk,
             'tanggal_akhir' => $tanggalAkhir,
-            'status_barang' => 'Tersedia',
-            'status_perpanjangan' => 0,
         ]);
+
+        foreach ($request->file('foto_barang') as $index => $file) {
+            $filename = time() . '_' . $index . '.' . $file->extension();
+            $file->move(public_path('images'), $filename);
+
+            FotoBarang::create([
+                'id_barang' => $barang->id_barang,  // barang yang baru disimpan
+                'nama_file' => $filename,
+                'urutan' => $index + 1,
+            ]);
+        }
 
         $barang->save();
 

@@ -285,7 +285,26 @@
             background-color: #218838;
         }
 
-        
+        .related-image {
+            width: 100%;
+            height: 160px;
+            object-fit: contain;
+            border-radius: 6px;
+            background-color: #f9f9f9;
+        }
+
+        .related-product-card {
+            border: 1px solid #eee;
+            border-radius: 10px;
+            overflow: hidden;
+            transition: transform 0.2s;
+            background-color: #fff;
+            margin-bottom: 10px;
+        }
+
+        .related-product-card:hover {
+            transform: scale(1.03);
+        }
 
         /* Responsive Design */
         @media (max-width: 768px) {
@@ -390,21 +409,28 @@
                 <div id="productCarousel" class="carousel slide" data-bs-ride="carousel">
                     <!-- Carousel Indicators -->
                     <div class="carousel-indicators">
-                        <button type="button" data-bs-target="#productCarousel" data-bs-slide-to="0" class="active" aria-current="true" aria-label="Slide 1"></button>
-                        <button type="button" data-bs-target="#productCarousel" data-bs-slide-to="1" aria-label="Slide 2"></button>
+                        @foreach ($product->fotoBarang as $index => $foto)
+                            <button type="button"
+                                    data-bs-target="#productCarousel"
+                                    data-bs-slide-to="{{ $index }}"
+                                    class="{{ $index == 0 ? 'active' : '' }}"
+                                    aria-current="{{ $index == 0 ? 'true' : 'false' }}"
+                                    aria-label="Slide {{ $index + 1 }}"></button>
+                        @endforeach
                     </div>
 
                     <!-- Carousel Inner -->
                     <div class="carousel-inner">
-                        <div class="carousel-item active">
-                            <img src="{{ asset('images/' . $product->foto_barang) }}" alt="{{ $product->nama_barang }}" class="product-image">
-                        </div>
-                        <div class="carousel-item">
-                            <img src="{{ asset('images/' . $product->foto_barang_2) }}" alt="{{ $product->nama_barang }} (2)" class="product-image">
-                        </div>
+                        @foreach ($product->fotoBarang as $index => $foto)
+                            <div class="carousel-item {{ $index == 0 ? 'active' : '' }}">
+                                <img src="{{ asset('images/' . $foto->nama_file) }}"
+                                    class="d-block w-100 img-fluid"
+                                    alt="Foto {{ $index + 1 }}">
+                            </div>
+                        @endforeach
                     </div>
 
-                    <!-- Carousel Controls (Next and Previous Buttons) -->
+                    <!-- Carousel Controls -->
                     <button class="carousel-control-prev" type="button" data-bs-target="#productCarousel" data-bs-slide="prev">
                         <span class="carousel-control-prev-icon" aria-hidden="true"></span>
                         <span class="visually-hidden">Previous</span>
@@ -462,7 +488,7 @@
                 <div class="related-products-grid" style="display: flex; flex-wrap: wrap; gap: 20px;">
                     @forelse($produk_serupa as $item)
                         <a href="{{ url('product/' . $item->id_barang) }}" class="related-product-card" style="width: 200px; text-decoration: none; color: inherit;">
-                            <img src="{{ asset('images/' . $item->foto_barang) }}" alt="{{ $item->nama_barang }}" style="width: 100%; height: 150px; object-fit: cover;">
+                           <img src="{{ asset('images/' . ($item->fotoBarang->first()->nama_file ?? 'default.jpg')) }}" alt="..." class="img-fluid related-image">
                             <div style="padding: 8px;">
                                 <p style="font-size: 13px; color: grey; margin: 4px 0;">{{ $item->kategori->nama_kategori ?? 'Kategori' }}</p>
                                 <h4 style="font-size: 16px; margin: 0 0 4px;">{{ $item->nama_barang }}</h4>

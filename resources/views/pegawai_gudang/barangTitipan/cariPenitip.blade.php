@@ -47,7 +47,12 @@
         </tbody>
     </table>
     @elseif(request('search'))
-        <p class="text-muted">Data Penitip tidak ditemukan.</p>
+        <div class="d-flex-text-start">
+            <p class="text-muted mb-2">Data Penitip tidak ditemukan.</p>
+            <a href="{{ route('dashboard.cs') }}" class="btn btn-outline-success">
+                Buat Akun Penitip
+            </a>
+        </div>
     @endif
 </div>
 @endsection

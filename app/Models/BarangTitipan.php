@@ -136,6 +136,6 @@ class BarangTitipan extends Model
 
 	public function fotoBarang()
 	{
-		return $this->hasMany(FotoBarang::class, 'id_barang');
+    	return $this->hasMany(FotoBarang::class, 'id_barang', 'id_barang');
 	}
 }
