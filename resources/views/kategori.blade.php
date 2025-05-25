@@ -581,7 +581,7 @@
                 @else
                     @forelse($produk as $item)
                         <a href="{{ url('product/' . $item->id_barang) }}" class="product-card">
-                            <img src="{{ asset('images/' . $item->foto_barang) }}" alt="{{ $item->nama_barang }}">
+                            <img src="{{ asset('images/barang/' . ($item->fotoBarang->first()->nama_file ?? 'default.jpg')) }}" class="img-fluid">
                             <div class="product-info">
                             <p class="product-category">{{ $item->kategori->nama_kategori ?? 'Kategori Tidak Ada' }}</p>
                             <h3 class="product-name">{{ $item->nama_barang }}</h3>
