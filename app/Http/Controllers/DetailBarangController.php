@@ -31,7 +31,7 @@ class DetailBarangController extends Controller
 
     public function show($id)
     {
-        $product = BarangTitipan::with('kategori')->find($id);
+        $product = BarangTitipan::with(['kategori', 'fotoBarang'])->find($id);
         
         if (!$product) {
             abort(404, "Produk tidak ditemukan.");
@@ -39,7 +39,8 @@ class DetailBarangController extends Controller
         
         $garansi_status = $this->checkWarrantyStatus($product->tanggal_garansi);
 
-        $produk_serupa = BarangTitipan::where('id_kategori', $product->id_kategori)
+        $produk_serupa = BarangTitipan::with('fotoBarang')
+            ->where('id_kategori', $product->id_kategori)
             ->where('id_barang', '!=', $id)
             ->where('status_barang', 'Tersedia')
             ->take(4)

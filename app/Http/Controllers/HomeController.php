@@ -14,14 +14,15 @@ class HomeController extends Controller
 
     public function index()
     {
-        $barangs = BarangTitipan::with('kategori')->where('status_barang', 'Tersedia')->get();
+        $barangs = BarangTitipan::with(['kategori', 'fotoBarang'])->where('status_barang', 'Tersedia')->get();
         return view('home', compact('barangs'));
     }
 
     public function showProducts()
     {
         // Mengambil semua produk barang titipan
-        $barangTitipan = BarangTitipan::all();
+        // $barangTitipan = BarangTitipan::all();
+        $barangTitipan = BarangTitipan::with(['kategori', 'fotoBarang'])->get();
 
         // Mengirim data produk ke view
         return view('home', compact('barangTitipan'));
@@ -30,7 +31,10 @@ class HomeController extends Controller
     public function showProductsByCategory($categoryId)
     {
         // Mengambil produk berdasarkan kategori
-        $barangTitipan = BarangTitipan::where('id_kategori', $categoryId)->get();
+        // $barangTitipan = BarangTitipan::where('id_kategori', $categoryId)->get();
+        $barangTitipan = BarangTitipan::with(['kategori', 'fotoBarang'])
+            ->where('id_kategori', $categoryId)
+            ->get();
 
         // Mengirim data ke view
         return view('home', compact('barangTitipan'));

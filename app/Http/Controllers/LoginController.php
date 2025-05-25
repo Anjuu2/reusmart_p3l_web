@@ -34,7 +34,7 @@ class LoginController extends Controller
             if ($user && $user->password === $password) {
                 Auth::guard('pembeli')->login($user);
                 $request->session()->regenerate();
-                return redirect()->route('home'); // jangan lupa disini ada masalah!!!
+                return redirect()->route('home'); 
             }
         }
 
@@ -45,7 +45,7 @@ class LoginController extends Controller
                 Auth::guard('penitip')->login($user);
                 $request->session()->regenerate();
                 // return redirect()->route('dashboard.penitip');
-                return redirect()->route('penitip.profil');
+                return redirect()->route('home');
             }
         }
 
@@ -84,6 +84,8 @@ class LoginController extends Controller
                         // return redirect()->route('dashboard.pembeli');
                     case 'kepala gudang':
                         return redirect()->route('dashboard.kepala_gudang');
+                    case 'pegawai gudang':
+                        return redirect()->route('dashboard.pegawai_gudang');
                     case 'customer service':
                         return redirect()->route('dashboard.cs');
                     default:

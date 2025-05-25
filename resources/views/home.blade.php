@@ -267,9 +267,20 @@
             object-fit: cover;
         }
 
+        .product-card img {
+            height: 170px;
+            width: 100%;
+            object-fit: contain;
+            margin-bottom: 10px;
+        }
+
         /* Informasi Produk */
         .product-info {
             margin-top: 15px;
+            flex-grow: 1;
+            display: flex;
+            flex-direction: column;
+            align-items: flex-start;
         }
 
         /* Nama Kategori Produk */
@@ -311,6 +322,7 @@
             justify-content: space-between;
             align-items: center;
             margin-top: 10px;
+            width: 100%;
         }
 
         /* Harga Produk (Di kiri) */
@@ -328,7 +340,8 @@
 
         .add-to-cart-container {
             display: flex;
-            justify-content: flex-end;
+            justify-content: center;
+            align-items: center;
         }
 
         /* Tombol Add to Cart */
@@ -345,7 +358,8 @@
         }
 
         .add-to-cart img {
-            margin-right: 10px; /* Jarak antara ikon cart dan teks Add */
+            margin-right: 5px; /* Jarak antara ikon cart dan teks Add */
+            height: 18px;
         }
 
         .add-to-cart:hover {
@@ -537,7 +551,9 @@
                 <div class="icons">
                     <a href="{{ route('keranjang') }}"><img src="https://img.icons8.com/material/24/ffffff/shopping-cart.png" alt="Cart"></a>
                     <a href="{{ route('diskusi.index') }}"><img src="https://img.icons8.com/?size=100&id=123773&format=png&color=ffffff" alt="Diskusi"></a>
-                    <a href="{{ route('pembeli.profil') }}"><img src="https://img.icons8.com/material/24/ffffff/user.png" alt="Account"></a>
+                    <a href="{{ route(Auth::guard('penitip')->check() ? 'penitip.profil' : 'pembeli.profil') }}">
+                        <img src="https://img.icons8.com/material/24/ffffff/user.png" alt="Account">
+                    </a>
                 </div>
             </div>
         </div>
@@ -584,7 +600,7 @@
                 @foreach($barangs->take(3) as $index => $barang)
                 <div class="carousel-item {{ $index === 0 ? 'active' : '' }}">
                     <a href="{{ url('product/' . $barang->id_barang) }}">
-                        <img src="{{ asset('images/' . $barang->foto_barang) }}" class="d-block w-100" alt="{{ $barang->nama_barang }}">
+                        <img src="{{ asset('images/barang/' . ($barang->fotoBarang->first()->nama_file ?? 'default.jpg')) }}" alt="Foto Barang" class="img-fluid">
                     </a>
                     <div class="carousel-caption d-none d-md-block">
                         <h5>{{ $barang->nama_barang }}</h5>
@@ -665,29 +681,25 @@
 
         <div class="product-container">
             @foreach($barangs->take(10) as $barang)
-                <div class="product-card">
-                    <a href="{{ url('product/' . $barang->id_barang) }}">
-                        <img src="{{ asset('images/' . $barang->foto_barang) }}" alt="{{ $barang->nama_barang }}" class="product-image">
-                        <div class="product-info">
-                            <p class="product-category">{{ $barang->kategori->nama_kategori ?? 'Kategori Tidak Ada' }}</p>
-                            <h3 class="product-name">{{ $barang->nama_barang }}</h3>
-                            <p class="product-status">{{ $barang->status_barang }}</p>
-                        </div>
-                    </a>
-                    <div class="product-price">
-                        <div class="price-container">
-                            <span class="current-price">Rp{{ number_format($barang->harga_jual, 0, ',', '.') }}</span>
-                        </div>
-                        <div class="add-to-cart-container">
-                            <form action="{{ route('keranjang.tambah') }}" method="POST">
-                                @csrf
-                                <input type="hidden" name="id_barang" value="{{ $barang->id_barang }}">
-                                <button type='submit' class="add-to-cart">
-                                    <img src="https://img.icons8.com/material/24/007848/shopping-cart.png" alt="Cart">
-                                    Add
-                                </button>
-                            </form>
-                        </div>
+            <a href="{{ url('product/' . $barang->id_barang) }}" class="product-card">
+                <img src="{{ asset('images/barang/' . ($barang->fotoBarang->first()->nama_file ?? 'default.jpg')) }}" alt="Foto Barang" class="img-fluid">
+                <div class="product-info">
+                    <p class="product-category">{{ $barang->kategori->nama_kategori ?? 'Kategori Tidak Ada' }}</p>
+                    <h3 class="product-name">{{ $barang->nama_barang }}</h3>
+                    <!-- <div class="product-rating">
+                        <span>★ ({{ rand(4,5) }}.{{ rand(0,9) }})</span>
+                    </div> -->
+                    <p class="product-status">{{ $barang->status_barang }}</p>
+                </div>
+                <div class="product-price">
+                    <div class="price-container">
+                        <span class="current-price">Rp{{ number_format($barang->harga_jual, 0, ',', '.') }}</span>
+                    </div>
+                    <div class="add-to-cart-container">
+                        <button class="add-to-cart">
+                            <img src="https://img.icons8.com/material/24/007848/shopping-cart.png" alt="Cart">
+                                Add
+                        </button>
                     </div>
                 </div>
             @endforeach

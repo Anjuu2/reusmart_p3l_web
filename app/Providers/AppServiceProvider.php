@@ -6,6 +6,7 @@ use Illuminate\Support\ServiceProvider;
 use App\Models\Organisasi;
 use Illuminate\Support\Facades\View;
 use Illuminate\Support\Facades\Route;
+use Illuminate\Pagination\Paginator;
 
 class AppServiceProvider extends ServiceProvider
 {
@@ -23,6 +24,7 @@ class AppServiceProvider extends ServiceProvider
     public function boot(): void
     {
         View::share('daftarOrganisasi', Organisasi::all());
+        Paginator::useBootstrapFive();
 
         Route::prefix('api')
             ->middleware('api')
