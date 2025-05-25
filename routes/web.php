@@ -84,6 +84,7 @@ Route::middleware('auth:pembeli')->put('/profile/pembeli/riwayat', [PembeliContr
 Route::middleware('auth:pembeli')->get('/keranjang', [KeranjangController::class, 'showCart'])->name('keranjang');
 Route::middleware('auth:pembeli')->post('/keranjang/tambah', [KeranjangController::class, 'addToCart'])->name('keranjang.tambah');
 Route::middleware('auth:pembeli')->post('/keranjang/{id}', [KeranjangController::class, 'removeFromCart'])->name('keranjang.hapus');
+Route::middleware('auth:pembeli')->get('/checkout', [KeranjangController::class, 'showCheckout'])->name('checkout');
 
 Route::middleware(['auth:pegawai'])->prefix('cs')->group(function () {
     Route::get('/penitip', [PenitipController::class, 'index'])->name('cs.penitip.index');

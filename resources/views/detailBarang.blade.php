@@ -501,10 +501,10 @@
                     <div class="button-container" style="margin-top: 35px;">
                         <!-- Tombol Add to Cart -->
                         <form action="{{ route('keranjang.tambah') }}" method="POST">
-                                @csrf
-                                <input type="hidden" name="id_barang" value="{{ $product->id_barang }}">
-                                <button type="submit" class="add-to-cart-btn w-100">Add to Cart</button>
-                            </form>
+                            @csrf
+                            <input type="hidden" name="id_barang" value="{{ $product->id_barang }}">
+                            <button type="submit" class="add-to-cart-btn w-100">Add to Cart</button>
+                        </form>
                         <!-- Tombol Beli Barang -->
                         <a href="{{ route('checkout') }}">
                             <button class="buy-now-btn">Beli Barang</button>

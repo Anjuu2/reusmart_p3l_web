@@ -79,4 +79,10 @@ class PembeliController extends Controller
             ->route('login')
             ->with('success', 'Pembeli berhasil dibuat.');
     }
+
+    public function showPoin(){
+        $pembeli = auth()->guard('pembeli')->user();
+
+        return view('checkout', ['poin' => $pembeli->poin]);
+    }
 }

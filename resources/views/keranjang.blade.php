@@ -364,7 +364,9 @@
             @endforelse
 
             <div class="d-flex justify-content-end align-items-center mt-4">
-            <button type="button" class="btn btn-success btn-lg">Checkout</button>
+                <a href="{{ route('checkout') }}" class="btn btn-success btn-lg">
+                    Checkout
+                </a>
             </div>
         </div>
 

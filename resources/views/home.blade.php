@@ -696,12 +696,17 @@
                         <span class="current-price">Rp{{ number_format($barang->harga_jual, 0, ',', '.') }}</span>
                     </div>
                     <div class="add-to-cart-container">
-                        <button class="add-to-cart">
-                            <img src="https://img.icons8.com/material/24/007848/shopping-cart.png" alt="Cart">
-                                Add
-                        </button>
+                        <form action="{{ route('keranjang.tambah') }}" method="POST">
+                            @csrf
+                            <input type="hidden" name="id_barang" value="{{ $barang->id_barang }}">
+                            <button type="submit" class="add-to-cart">
+                                <img src="https://img.icons8.com/material/24/007848/shopping-cart.png" alt="Cart">
+                                    Add
+                            </button>
+                        </form>
                     </div>
                 </div>
+            </a>
             @endforeach
         </div>
     </main>
