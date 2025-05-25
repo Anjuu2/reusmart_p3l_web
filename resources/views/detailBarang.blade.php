@@ -373,7 +373,7 @@
                 <div id="search-results"></div>
                 <!-- Icons -->
                 <div class="icons">
-                    <a href="#"><img src="https://img.icons8.com/material/24/ffffff/shopping-cart.png" alt="Cart"></a>
+                    <a href="{{ route('keranjang') }}"><img src="https://img.icons8.com/material/24/ffffff/shopping-cart.png" alt="Cart"></a>
                     <a href="{{ route('checkout') }}"><img src="https://img.icons8.com/material/24/ffffff/user.png" alt="Account"></a>
                 </div>
             </div>
@@ -384,6 +384,19 @@
     
     <!-- Main Section -->
     <main>
+        @if (session('success'))
+            <div class="alert alert-success alert-dismissible fade show mt-3" role="alert">
+                {{ session('success') }}
+                <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+            </div>
+        @endif
+
+        @if (session('warning'))
+            <div class="alert alert-warning alert-dismissible fade show mt-3" role="alert">
+                {{ session('warning') }}
+                <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+            </div>
+        @endif
         <section class="product-detail">
             <div class="product-container">
                 <!-- Gambar Produk - Carousel -->
@@ -446,8 +459,11 @@
                     <!-- Kontainer untuk Tombol -->
                     <div class="button-container" style="margin-top: 35px;">
                         <!-- Tombol Add to Cart -->
-                        <button class="add-to-cart-btn">Add to Cart</button>
-
+                        <form action="{{ route('keranjang.tambah') }}" method="POST">
+                                @csrf
+                                <input type="hidden" name="id_barang" value="{{ $product->id_barang }}">
+                                <button type="submit" class="add-to-cart-btn w-100">Add to Cart</button>
+                            </form>
                         <!-- Tombol Beli Barang -->
                         <a href="{{ route('checkout') }}">
                             <button class="buy-now-btn">Beli Barang</button>

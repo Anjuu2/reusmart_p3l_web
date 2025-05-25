@@ -535,7 +535,7 @@
             <div class="cart-search">
                 <!-- Icons -->
                 <div class="icons">
-                    <a href="#"><img src="https://img.icons8.com/material/24/ffffff/shopping-cart.png" alt="Cart"></a>
+                    <a href="{{ route('keranjang') }}"><img src="https://img.icons8.com/material/24/ffffff/shopping-cart.png" alt="Cart"></a>
                     <a href="{{ route('diskusi.index') }}"><img src="https://img.icons8.com/?size=100&id=123773&format=png&color=ffffff" alt="Diskusi"></a>
                     <a href="{{ route(Auth::guard('penitip')->check() ? 'penitip.profil' : 'pembeli.profil') }}">
                         <img src="https://img.icons8.com/material/24/ffffff/user.png" alt="Account">
@@ -640,28 +640,31 @@
 
         <div class="product-container">
             @foreach($barangs->take(10) as $barang)
-            <a href="{{ url('product/' . $barang->id_barang) }}" class="product-card">
-                <img src="{{ asset('images/' . $barang->foto_barang) }}" alt="{{ $barang->nama_barang }}" class="product-image">
-                <div class="product-info">
-                    <p class="product-category">{{ $barang->kategori->nama_kategori ?? 'Kategori Tidak Ada' }}</p>
-                    <h3 class="product-name">{{ $barang->nama_barang }}</h3>
-                    <!-- <div class="product-rating">
-                        <span>★ ({{ rand(4,5) }}.{{ rand(0,9) }})</span>
-                    </div> -->
-                    <p class="product-status">{{ $barang->status_barang }}</p>
-                </div>
-                <div class="product-price">
-                    <div class="price-container">
-                        <span class="current-price">Rp{{ number_format($barang->harga_jual, 0, ',', '.') }}</span>
+                <div class="product-card">
+                    <a href="{{ url('product/' . $barang->id_barang) }}">
+                        <img src="{{ asset('images/' . $barang->foto_barang) }}" alt="{{ $barang->nama_barang }}" class="product-image">
+                        <div class="product-info">
+                            <p class="product-category">{{ $barang->kategori->nama_kategori ?? 'Kategori Tidak Ada' }}</p>
+                            <h3 class="product-name">{{ $barang->nama_barang }}</h3>
+                            <p class="product-status">{{ $barang->status_barang }}</p>
+                        </div>
+                    </a>
+                    <div class="product-price">
+                        <div class="price-container">
+                            <span class="current-price">Rp{{ number_format($barang->harga_jual, 0, ',', '.') }}</span>
+                        </div>
+                        <div class="add-to-cart-container">
+                            <form action="{{ route('keranjang.tambah') }}" method="POST">
+                                @csrf
+                                <input type="hidden" name="id_barang" value="{{ $barang->id_barang }}">
+                                <button type='submit' class="add-to-cart">
+                                    <img src="https://img.icons8.com/material/24/007848/shopping-cart.png" alt="Cart">
+                                    Add
+                                </button>
+                            </form>
+                        </div>
                     </div>
-                    <div class="add-to-cart-container">
-                        <button class="add-to-cart">
-                            <img src="https://img.icons8.com/material/24/007848/shopping-cart.png" alt="Cart">
-                                Add
-                        </button>
-                    </div>
                 </div>
-            </a>
             @endforeach
         </div>
     </main>
