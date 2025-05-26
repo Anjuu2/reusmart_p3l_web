@@ -35,6 +35,40 @@ class BarangTitipanController extends Controller
         return view('kategori', compact('produk'));
     }
 
+    public function indexPenitip(Request $request)
+    {
+        $penitip = auth()->guard('penitip')->user();
+
+        $query = BarangTitipan::with('fotoBarang', 'kategori')
+                    ->where('id_penitip', $penitip->id_penitip);
+
+        if ($request->has('q') && $request->q != '') {
+            $search = $request->q;
+            $query->where('nama_barang', 'like', "%$search%");
+        }
+
+        $barangs = $query->paginate(10);
+
+        return view('dashboardP', compact('barangs'));
+    }
+
+    public function perpanjang($id)
+    {
+        $barang = BarangTitipan::where('id_barang', $id)
+            ->where('id_penitip', auth()->guard('penitip')->id())
+            ->firstOrFail();
+
+        if (!$barang->status_perpanjangan && Carbon::parse($barang->tanggal_akhir)->isPast()) {
+            $barang->tanggal_akhir = Carbon::parse($barang->tanggal_akhir)->addDays(30);
+            $barang->status_perpanjangan = true;
+            $barang->save();
+
+            return redirect()->back()->with('success', 'Perpanjangan masa penitipan berhasil dilakukan.');
+        }
+
+        return redirect()->back()->with('success', 'Barang sudah pernah diperpanjang atau belum melewati tanggal akhir.');
+    }
+
     public function index(Request $request)
     {
         $query = BarangTitipan::with(['kategori', 'penitip', 'pegawaiQc', 'hunter']);

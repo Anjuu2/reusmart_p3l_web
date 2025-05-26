@@ -44,8 +44,8 @@ class LoginController extends Controller
             if ($user && $user->password === $password) {
                 Auth::guard('penitip')->login($user);
                 $request->session()->regenerate();
-                // return redirect()->route('dashboard.penitip');
-                return redirect()->route('home');
+                return redirect()->route('dashboard.penitip');
+                // return redirect()->route('home');
             }
         }
 

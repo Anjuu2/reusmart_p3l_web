@@ -38,7 +38,13 @@ Route::get('login', [LoginController::class, 'showLoginForm'])->name('login');
 Route::post('/login', [LoginController::class, 'login']);
 
 Route::middleware('auth:pembeli')->get('/dashboard/pembeli', fn() => view('dashboard'))->name('dashboard.pembeli');
-Route::middleware('auth:penitip')->get('/dashboard/penitip', fn() => view('dashboardP'))->name('dashboard.penitip');
+Route::middleware('auth:penitip')->get('/dashboard/penitip', [BarangTitipanController::class, 'indexPenitip'])->name('dashboard.penitip');
+Route::middleware('auth:penitip')->prefix('penitip')->group(function () {
+    Route::get('/barang', [BarangTitipanController::class, 'indexPenitip'])->name('penitip.barang.index');
+    Route::post('/penitip/barang/{id}/perpanjang', [BarangTitipanController::class, 'perpanjang'])->name('penitip.perpanjang');
+    Route::post('/barang/{id}/tarik', [PenitipController::class, 'tarik'])->name('penitip.tarik');
+});
+
 Route::middleware('auth:organisasi')->get('/dashboard/organisasi', fn() => view('dashboardO'))->name('dashboard.organisasi');
 Route::middleware('auth:pegawai')->get('/dashboard/admin', fn() => view('dashboardAdmin'))->name('dashboard.admin');
 Route::middleware('auth:pegawai')->get('/dashboard/kurir', fn() => view('dashboard-kurir'))->name('dashboard.kurir');
