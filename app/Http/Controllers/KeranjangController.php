@@ -70,32 +70,4 @@ class KeranjangController extends Controller
 
         return back()->with('success', 'Barang dihapus dari keranjang.');
     }
-
-    public function showCheckout() {
-        $idPembeli = Auth::guard('pembeli')->id();
-        $pembeli = Auth::guard('pembeli')->user();
-
-        $keranjangIds = Keranjang::where('id_pembeli', $idPembeli)->pluck('id_keranjang');
-
-        $barangs = BarangTitipan::join('detail_keranjang', 'barang_titipan.id_barang', '=', 'detail_keranjang.id_barang')
-            ->leftJoin('foto_barang', function($join) {
-                $join->on('barang_titipan.id_barang', '=', 'foto_barang.id_barang')
-                    ->where('foto_barang.urutan', '=', 1);
-            })
-            ->whereIn('detail_keranjang.id_keranjang', $keranjangIds)
-            ->select(
-                'barang_titipan.id_barang',
-                'barang_titipan.nama_barang',
-                'barang_titipan.deskripsi',
-                'barang_titipan.harga_jual',
-                'foto_barang.nama_file as foto_utama'
-            )
-            ->get();
-
-        return view('checkout', [
-            'items' => $barangs,
-            'poin' => $pembeli->poin
-        ]);
-    }
-
 }

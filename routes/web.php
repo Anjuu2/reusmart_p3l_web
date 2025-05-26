@@ -22,6 +22,7 @@ use App\Http\Controllers\DonasiController;
 use App\Http\Controllers\PegawaiController;
 use App\Http\Controllers\TransaksiController;
 use App\Http\Controllers\KeranjangController;
+use App\Http\Controllers\CheckoutController;
 
 
 Route::get('/', [HomeController::class, 'index']);
@@ -84,7 +85,8 @@ Route::middleware('auth:pembeli')->put('/profile/pembeli/riwayat', [PembeliContr
 Route::middleware('auth:pembeli')->get('/keranjang', [KeranjangController::class, 'showCart'])->name('keranjang');
 Route::middleware('auth:pembeli')->post('/keranjang/tambah', [KeranjangController::class, 'addToCart'])->name('keranjang.tambah');
 Route::middleware('auth:pembeli')->post('/keranjang/{id}', [KeranjangController::class, 'removeFromCart'])->name('keranjang.hapus');
-Route::middleware('auth:pembeli')->get('/checkout', [KeranjangController::class, 'showCheckout'])->name('checkout');
+Route::middleware('auth:pembeli')->get('/checkout', [CheckoutController::class, 'showCheckout'])->name('checkout');
+Route::middleware('auth:pembeli')->post('/checkout/submit', [CheckoutController::class, 'submitCheckout'])->name('checkout.submit');
 
 Route::middleware(['auth:pegawai'])->prefix('cs')->group(function () {
     Route::get('/penitip', [PenitipController::class, 'index'])->name('cs.penitip.index');
