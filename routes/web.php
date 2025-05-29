@@ -42,7 +42,7 @@ Route::middleware('auth:penitip')->get('/dashboard/penitip', [BarangTitipanContr
 Route::middleware('auth:penitip')->prefix('penitip')->group(function () {
     Route::get('/barang', [BarangTitipanController::class, 'indexPenitip'])->name('penitip.barang.index');
     Route::post('/penitip/barang/{id}/perpanjang', [BarangTitipanController::class, 'perpanjang'])->name('penitip.perpanjang');
-    Route::post('/barang/{id}/tarik', [PenitipController::class, 'tarik'])->name('penitip.tarik');
+    Route::post('/penitip/barang/{id}/ambil', [BarangTitipanController::class, 'ambilBarang'])->name('penitip.ambil');
 });
 
 Route::middleware('auth:organisasi')->get('/dashboard/organisasi', fn() => view('dashboardO'))->name('dashboard.organisasi');

@@ -61,6 +61,10 @@
             background-color: #dee2e6;
             color: #495057;
         }
+        .status-diambil {
+            background-color: #dee2e6;
+            color:rgb(14, 180, 209);
+        }
         footer {
             background-color: #f4f4f4;
             padding: 10px 50px;  
@@ -98,21 +102,87 @@
         }
         .social-icon:hover img {
             transform: scale(1.2);
-        }
+        }     
     </style>
 </head>
 <body>
 
-<header class="d-flex justify-content-between align-items-center">
+<header class="p-3 mb-3 border-bottom">
+    <div class="container">
+      <div class="d-flex flex-wrap align-items-center justify-content-center justify-content-lg-start">
+        <div class="logo">
+            <a href="#"><img src="{{ asset('images/logo2.png') }}" alt="Logo"></a>
+        </div>
+
+        <ul class="nav col-12 col-lg-auto me-lg-auto mb-2 justify-content-center mb-md-0">
+        </ul>
+
+        <div class="dropdown text-end">
+            <a href="{{ route(Auth::guard('penitip')->check() ? 'penitip.profil' : 'pembeli.profil') }}" class="d-block link-dark text-decoration-none dropdown-toggle" id="dropdownUser1" data-bs-toggle="dropdown" aria-expanded="false">
+                <img src="https://img.icons8.com/material/24/ffffff/user.png" alt="Account" width="32" height="32" class="rounded-circle">
+            </a>
+            <ul class="dropdown-menu text-small" aria-labelledby="dropdownUser1">
+                <li>
+                    <a class="dropdown-item" href="{{ route(Auth::guard('penitip')->check() ? 'penitip.profil' : 'pembeli.profil') }}">
+                        Profile
+                    </a>
+                </li>
+                <li><hr class="dropdown-divider"></li>
+                <li>
+                    <form id="logout-form" action="{{ route('logout') }}" method="POST" style="display: none;">
+                        @csrf
+                    </form>
+                    <a href="#" class="dropdown-item" onclick="
+                        if(confirm('Yakin ingin logout?')) {
+                            event.preventDefault();
+                            document.getElementById('logout-form').submit();
+                        } else {
+                            event.preventDefault();
+                        }
+                    ">
+                        Logout
+                    </a>
+                </li>
+            </ul>
+        </div>
+      </div>
+    </div>
+  </header>
+
+<!-- <header class="d-flex justify-content-between align-items-center">
     <div class="logo">
-        <a href="{{ url('/') }}"><img src="{{ asset('images/logo2.png') }}" alt="Logo"></a>
+        <a href="#"><img src="{{ asset('images/logo2.png') }}" alt="Logo"></a>
     </div>
     <div class="title">Dashboard Penitip</div>
-    <form action="{{ route('logout') }}" method="POST">
-        @csrf
-        <button class="btn btn-danger btn-sm" onclick="return confirm('Yakin logout?')">Logout</button>
-    </form>
-</header>
+    <div class="dropdown text-end">
+        <a href="{{ route(Auth::guard('penitip')->check() ? 'penitip.profil' : 'pembeli.profil') }}" class="d-block link-dark text-decoration-none dropdown-toggle" id="dropdownUser1" data-bs-toggle="dropdown" aria-expanded="false">
+            <img src="https://img.icons8.com/material/24/ffffff/user.png" alt="Account" width="32" height="32" class="rounded-circle">
+        </a>
+        <ul class="dropdown-menu text-small" aria-labelledby="dropdownUser1">
+            <li>
+                <a class="dropdown-item" href="{{ route(Auth::guard('penitip')->check() ? 'penitip.profil' : 'pembeli.profil') }}">
+                    Profile
+                </a>
+            </li>
+            <li><hr class="dropdown-divider"></li>
+            <li>
+                <form id="logout-form" action="{{ route('logout') }}" method="POST" style="display: none;">
+                    @csrf
+                </form>
+                <a href="#" class="dropdown-item" onclick="
+                    if(confirm('Yakin ingin logout?')) {
+                        event.preventDefault();
+                        document.getElementById('logout-form').submit();
+                    } else {
+                        event.preventDefault();
+                    }
+                ">
+                    Logout
+                </a>
+            </li>
+        </ul>
+    </div>
+</header> -->
 
 <div class="container mt-4">
     @if(session('success'))
@@ -158,45 +228,64 @@
                                 {{ $status === 'tersedia' ? 'status-tersedia' : '' }}
                                 {{ $status === 'terjual' ? 'status-terjual' : '' }}
                                 {{ $status === 'didonasikan' ? 'status-didonasikan' : '' }}
-                                {{ $status === 'barang untuk donasi' ? 'status-donasi' : '' }}">
+                                {{ $status === 'barang untuk donasi' ? 'status-donasi' : '' }}
+                                {{ $status === 'diambil kembali' ? 'status-terjual' : '' }}">
                                 {{ $status === 'barang untuk donasi' ? 'barang untuk donasi' : $barang->status_barang }}
                             </span>
                         </td>
-                        <td>{{ \Carbon\Carbon::parse($barang->tanggal_masuk)->format('d M Y') }}</td>
-                        <td>{{ $barang->tanggal_keluar ? \Carbon\Carbon::parse($barang->tanggal_keluar)->format('d M Y') : '-' }}</td>
+                        <td>{{ \Carbon\Carbon::parse($barang->tanggal_masuk)->locale('id')->isoFormat('D MMMM YYYY') }}</td>
+                        <td>
+                        {{ $barang->tanggal_keluar 
+                            ? \Carbon\Carbon::parse($barang->tanggal_keluar)->locale('id')->isoFormat('D MMMM YYYY') 
+                            : '-' 
+                        }}
+                        </td>
                         <td>
                             @if($barang->status_barang === 'Tersedia')
                                 @php
                                     $tanggalAkhir = \Carbon\Carbon::parse($barang->tanggal_akhir);
-                                    $sisaHari = round(now()->diffInDays($tanggalAkhir, false));
+                                    $hariSekarang = now();
+
+                                    $sisaHari = round($hariSekarang->diffInDays($tanggalAkhir, false));
+                                    $hariLewat = round($hariSekarang->diffInDays($tanggalAkhir, false) * -1);
+                                    $batasAmbil = 7; 
                                 @endphp
+
                                 @if($sisaHari > 0)
                                     <span class="badge bg-success">{{ $sisaHari }} hari tersisa</span>
                                 @elseif($sisaHari === 0)
                                     <span class="badge bg-warning text-dark">Hari terakhir!</span>
+                                @elseif($hariLewat <= $batasAmbil)
+                                    <span class="badge bg-danger">Sisa {{ $batasAmbil - $hariLewat }} hari untuk Pengambilan</span>
                                 @else
-                                    <span class="badge bg-danger">Terlambat {{ abs($sisaHari) }} hari</span>
+                                    <span class="badge bg-danger">Terlambat {{ $hariLewat }} hari</span>
                                 @endif
                             @else
                                 -
                             @endif
                         </td>
+
                         <td>
                             @if($barang->status_barang === 'Tersedia')
-                                @if(!$barang->status_perpanjangan && \Carbon\Carbon::parse($barang->tanggal_akhir)->isPast())
+                                {{-- Tombol Perpanjang --}}
+                                @if(!$barang->status_perpanjangan && $hariSekarang->isAfter($tanggalAkhir))
                                     <form action="{{ route('penitip.perpanjang', $barang->id_barang) }}" method="POST" style="display:inline-block;">
                                         @csrf
                                         <button class="btn btn-sm btn-outline-primary">Perpanjang</button>
                                     </form>
                                 @endif
-                                <!-- <form action="{{ route('penitip.tarik', $barang->id_barang) }}" method="POST" style="display:inline-block;" onsubmit="return confirm('Tarik barang ini?')">
-                                    @csrf
-                                    <button class="btn btn-sm btn-outline-danger">Tarik</button>
-                                </form> -->
+
+                                {{-- Tombol Ambil Barang saat window 7 hari --}}
+                                @if($hariLewat >= 0 && $hariLewat <= $batasAmbil)
+                                    <form action="{{ route('penitip.ambil', $barang->id_barang) }}" method="POST" style="display:inline-block;" onsubmit="return confirm('Ambil barang ini sekarang?')">
+                                        @csrf
+                                        <button class="btn btn-sm btn-outline-success">Ambil Barang</button>
+                                    </form>
+                                @endif
                             @elseif($barang->status_barang === 'Terjual')
                                 <button class="btn btn-sm btn-outline-info" data-bs-toggle="modal" data-bs-target="#modalDetail{{ $barang->id_barang }}">Detail</button>
                             @endif
-                        </td>
+                        </td>                               
                     </tr>
 
                     <!-- Modal Deskripsi -->

@@ -69,6 +69,33 @@ class BarangTitipanController extends Controller
         return redirect()->back()->with('success', 'Barang sudah pernah diperpanjang atau belum melewati tanggal akhir.');
     }
 
+    public function ambilBarang($id)
+    {
+        $barang = BarangTitipan::where('id_barang', $id)
+                    ->where('id_penitip', auth()->guard('penitip')->id())
+                    ->firstOrFail();
+
+        if ($barang->status_barang === 'Tersedia') {
+            $tanggalAkhir = \Carbon\Carbon::parse($barang->tanggal_akhir);
+            $hariSekarang = now();
+            $hariLewat = $hariSekarang->diffInDays($tanggalAkhir, false) * -1;
+            $batasAmbil = 7;
+
+            // Cek jika dalam window pengambilan 7 hari
+            if ($hariLewat > 0 && $hariLewat <= $batasAmbil) {
+                $barang->status_barang = 'Diambil Kembali';
+                $barang->tanggal_keluar = $hariSekarang;
+                $barang->save();
+
+                return redirect()->back()->with('success', 'Barang berhasil diambil kembali.');
+            } else {
+                return redirect()->back()->with('error', 'Waktu pengambilan sudah lewat.');
+            }
+        }
+
+        return redirect()->back()->with('error', 'Status barang tidak memungkinkan untuk diambil.');
+    }                       
+
     public function index(Request $request)
     {
         $query = BarangTitipan::with(['kategori', 'penitip', 'pegawaiQc', 'hunter']);
