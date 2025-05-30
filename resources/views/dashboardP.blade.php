@@ -109,45 +109,46 @@
 
 <header class="p-3 mb-3 border-bottom">
     <div class="container">
-      <div class="d-flex flex-wrap align-items-center justify-content-center justify-content-lg-start">
-        <div class="logo">
-            <a href="#"><img src="{{ asset('images/logo2.png') }}" alt="Logo"></a>
-        </div>
+        <div class="d-flex flex-wrap align-items-center justify-content-between">
+            <div class="logo">
+                <a href="#"><img src="{{ asset('images/logo2.png') }}" alt="Logo"></a>
+            </div>
 
-        <ul class="nav col-12 col-lg-auto me-lg-auto mb-2 justify-content-center mb-md-0">
-        </ul>
+            <div class="mx-auto">
+                <h5 class="mb-0">Dashboard Penitip</h5>
+            </div>
 
-        <div class="dropdown text-end">
-            <a href="{{ route(Auth::guard('penitip')->check() ? 'penitip.profil' : 'pembeli.profil') }}" class="d-block link-dark text-decoration-none dropdown-toggle" id="dropdownUser1" data-bs-toggle="dropdown" aria-expanded="false">
-                <img src="https://img.icons8.com/material/24/ffffff/user.png" alt="Account" width="32" height="32" class="rounded-circle">
-            </a>
-            <ul class="dropdown-menu text-small" aria-labelledby="dropdownUser1">
-                <li>
-                    <a class="dropdown-item" href="{{ route(Auth::guard('penitip')->check() ? 'penitip.profil' : 'pembeli.profil') }}">
-                        Profile
-                    </a>
-                </li>
-                <li><hr class="dropdown-divider"></li>
-                <li>
-                    <form id="logout-form" action="{{ route('logout') }}" method="POST" style="display: none;">
-                        @csrf
-                    </form>
-                    <a href="#" class="dropdown-item" onclick="
-                        if(confirm('Yakin ingin logout?')) {
-                            event.preventDefault();
-                            document.getElementById('logout-form').submit();
-                        } else {
-                            event.preventDefault();
-                        }
-                    ">
-                        Logout
-                    </a>
-                </li>
-            </ul>
+            <div class="dropdown text-end">
+                <a href="{{ route(Auth::guard('penitip')->check() ? 'penitip.profil' : 'pembeli.profil') }}" class="d-block link-light text-decoration-none dropdown-toggle" id="dropdownUser1" data-bs-toggle="dropdown" aria-expanded="false">
+                    <img src="https://img.icons8.com/material/24/ffffff/user.png" alt="Account" width="32" height="32" class="rounded-circle">
+                </a>
+                <ul class="dropdown-menu text-small" aria-labelledby="dropdownUser1">
+                    <li>
+                        <a class="dropdown-item" href="{{ route(Auth::guard('penitip')->check() ? 'penitip.profil' : 'pembeli.profil') }}">
+                            Profile
+                        </a>
+                    </li>
+                    <li><hr class="dropdown-divider"></li>
+                    <li>
+                        <form id="logout-form" action="{{ route('logout') }}" method="POST" style="display: none;">
+                            @csrf
+                        </form>
+                        <a href="#" class="dropdown-item" onclick="
+                            if(confirm('Yakin ingin logout?')) {
+                                event.preventDefault();
+                                document.getElementById('logout-form').submit();
+                            } else {
+                                event.preventDefault();
+                            }
+                        ">
+                            Logout
+                        </a>
+                    </li>
+                </ul>
+            </div>
         </div>
-      </div>
     </div>
-  </header>
+</header>
 
 <!-- <header class="d-flex justify-content-between align-items-center">
     <div class="logo">

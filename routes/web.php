@@ -22,6 +22,7 @@ use App\Http\Controllers\DonasiController;
 use App\Http\Controllers\PegawaiController;
 use App\Http\Controllers\TransaksiController;
 use App\Http\Controllers\KeranjangController;
+use App\Http\Controllers\PengirimanController;
 
 
 Route::get('/', [HomeController::class, 'index']);
@@ -75,6 +76,9 @@ Route::middleware('auth:pegawai')->group(function () {
     Route::get('/pegawaiG/barangTitipan/{id}', [BarangTitipanController::class, 'showDetail'])->name('pegawai_gudang.barangTitipan.showDetail');
 
     // Route::get('/pegawaiG/barangTitipan/create', [BarangTitipanController::class, 'create'])->name('pegawai_gudang.barangTitipan.create');
+    Route::get('/pengiriman', [PengirimanController::class, 'index'])->name('pegawai_gudang.pengiriman.index');
+    Route::post('/pegawai_gudang/pengiriman/tambah-jadwal', [PengirimanController::class, 'tambahJadwal'])->name('pegawai_gudang.pengiriman.tambahJadwal');
+
 
 });
 
