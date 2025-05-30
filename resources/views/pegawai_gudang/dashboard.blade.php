@@ -118,6 +118,12 @@
                                 </a>
                             </li>
                             <li class="nav-item">
+                                <a class="nav-link" href="{{ route('pegawai_gudang.barang.pengembalian') }}">
+                                    <i class="bi bi-layer-backward"></i>
+                                    <p>Pengembalian Barang</p>
+                                </a>
+                            </li>
+                            <li class="nav-item">
                                 <a class="nav-link" href="{{ route('pegawai_gudang.pengiriman.index') }}">
                                     <i class="bi bi-truck"></i>
                                     <p>Pengiriman Barang</p>

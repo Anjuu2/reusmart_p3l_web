@@ -83,8 +83,7 @@ class BarangTitipanController extends Controller
 
             // Cek jika dalam window pengambilan 7 hari
             if ($hariLewat > 0 && $hariLewat <= $batasAmbil) {
-                $barang->status_barang = 'Diambil Kembali';
-                $barang->tanggal_keluar = $hariSekarang;
+                $barang->status_barang = 'Pengambilan Diproses';
                 $barang->save();
 
                 return redirect()->back()->with('success', 'Barang berhasil diambil kembali.');
@@ -94,7 +93,29 @@ class BarangTitipanController extends Controller
         }
 
         return redirect()->back()->with('error', 'Status barang tidak memungkinkan untuk diambil.');
-    }                       
+    }   
+    
+    // Daftar Barang Pengembalian
+    public function daftarPengembalian()
+    {
+        $barang = BarangTitipan::where('status_barang', 'Pengambilan Diproses')->paginate(10);
+
+        return view('pegawai_gudang.pengembalianBarang.index', compact('barang'));
+    }
+
+    // Konfirmasi Pengembalian
+    public function konfirmasiPengembalian($id_barang)
+    {
+        $barang = BarangTitipan::findOrFail($id_barang);
+
+        // Update status barang
+        $barang->update([
+            'status_barang' => 'Diambil Kembali',
+            'tanggal_keluar' => Carbon::now(),
+        ]);
+
+        return back()->with('success', 'Pengembalian barang berhasil dikonfirmasi!');
+    }
 
     public function index(Request $request)
     {

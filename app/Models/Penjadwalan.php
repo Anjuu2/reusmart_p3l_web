@@ -47,8 +47,8 @@ class Penjadwalan extends Model
 		return $this->belongsTo(Transaksi::class, 'id_transaksi');
 	}
 
-	public function pengirimen()
+	public function pengiriman()
 	{
-		return $this->hasMany(Pengiriman::class, 'id_jadwal');
+		return $this->hasOne(\App\Models\Pengiriman::class, 'id_jadwal');
 	}
 }

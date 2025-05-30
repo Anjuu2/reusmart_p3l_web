@@ -75,11 +75,13 @@ Route::middleware('auth:pegawai')->group(function () {
     Route::delete('/pegawaiG/barangTitipan/{id}', [BarangTitipanController::class, 'destroy'])->name('pegawai_gudang.barangTitipan.destroy');
     Route::get('/pegawaiG/barangTitipan/{id}', [BarangTitipanController::class, 'showDetail'])->name('pegawai_gudang.barangTitipan.showDetail');
 
+    Route::get('/barang-pengembalian', [BarangTitipanController::class, 'daftarPengembalian'])->name('pegawai_gudang.barang.pengembalian');
+    Route::put('/barang-pengembalian/konfirmasi/{id_barang}', [BarangTitipanController::class, 'konfirmasiPengembalian'])->name('pegawai_gudang.barang.konfirmasiPengembalian');
+
     // Route::get('/pegawaiG/barangTitipan/create', [BarangTitipanController::class, 'create'])->name('pegawai_gudang.barangTitipan.create');
     Route::get('/pengiriman', [PengirimanController::class, 'index'])->name('pegawai_gudang.pengiriman.index');
     Route::post('/pegawai_gudang/pengiriman/tambah-jadwal', [PengirimanController::class, 'tambahJadwal'])->name('pegawai_gudang.pengiriman.tambahJadwal');
-
-
+    Route::put('/pegawai_gudang/pengiriman/konfirmasi/{id_jadwal}', [PengirimanController::class, 'konfirmasi'])->name('pegawai_gudang.pengiriman.konfirmasi');
 });
 
 Route::middleware('auth:pegawai')->get('/dashboard/kepala-gudang', fn() => view('dashboard-kepala'))->name('dashboard.kepala_gudang');

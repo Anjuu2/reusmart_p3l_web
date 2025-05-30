@@ -2,7 +2,7 @@
 <html lang="id">
 <head>
     <meta charset="UTF-8">
-    <title>Jadwal Dikirim</title>
+    <title>Konfirmasi Pengiriman/Pengambilan Barang</title>
     <style>
         body {
             font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
@@ -17,6 +17,7 @@
             padding: 30px;
             border-radius: 8px;
             box-shadow: 0 4px 8px rgba(0,0,0,0.05);
+            text-align: left;
         }
         .logo {
             display: block;
@@ -47,30 +48,30 @@
             width: 150px;
             font-weight: 600;
         }
-        .highlight {
-            color: #007bff;
-            font-weight: bold;
-        }
         .footer {
             text-align: center;
             font-size: 13px;
             color: #888888;
             margin-top: 20px;
         }
+        .highlight {
+            color: #007bff;
+            font-weight: bold;
+        }
     </style>
 </head>
 <body>
     <div class="container">
         <!-- Tambahkan logo di sini -->
-         <img src="https://ik.imagekit.io/jh93hgpo3/logo2.png?updatedAt=1748623080633" alt="ReUseMart Logo" class="logo">
-
+        <img src="https://ik.imagekit.io/jh93hgpo3/logo2.png?updatedAt=1748623080633" alt="ReUseMart Logo" class="logo">
+        
         <h3>Halo,</h3>
-        <p>Berikut adalah detail jadwal pengiriman/pengambilan untuk transaksi nomor: <span class="highlight">#{{ $transaksi->id_transaksi }}</span></p>
+        <p>Status pengiriman/pengambilan untuk transaksi <span class="highlight">#{{ $jadwal->id_transaksi }}</span> telah diperbarui.</p>
 
         <ul>
             <li><strong>Jenis Jadwal:</strong> {{ $jadwal->jenis_jadwal }}</li>
+            <li><strong>Status Pengiriman:</strong> {{ $statusBaru }}</li>
             <li><strong>Tanggal Jadwal:</strong> {{ \Carbon\Carbon::parse($jadwal->tanggal_jadwal)->format('d/m/Y H:i') }}</li>
-            <li><strong>Status Jadwal:</strong> {{ $jadwal->status_jadwal }}</li>
         </ul>
 
         <p>Terima kasih telah menggunakan layanan kami.</p>

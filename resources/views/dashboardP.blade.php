@@ -230,7 +230,8 @@
                                 {{ $status === 'terjual' ? 'status-terjual' : '' }}
                                 {{ $status === 'didonasikan' ? 'status-didonasikan' : '' }}
                                 {{ $status === 'barang untuk donasi' ? 'status-donasi' : '' }}
-                                {{ $status === 'diambil kembali' ? 'status-terjual' : '' }}">
+                                {{ $status === 'diambil kembali' ? 'status-terjual' : '' }}
+                                {{ $status === 'pengambilan diproses' ? 'status-terjual' : '' }}">
                                 {{ $status === 'barang untuk donasi' ? 'barang untuk donasi' : $barang->status_barang }}
                             </span>
                         </td>
@@ -269,7 +270,7 @@
                         <td>
                             @if($barang->status_barang === 'Tersedia')
                                 {{-- Tombol Perpanjang --}}
-                                @if(!$barang->status_perpanjangan && $hariSekarang->isAfter($tanggalAkhir))
+                                @if(!$barang->status_perpanjangan && $hariSekarang->isAfter($tanggalAkhir) || ($batasAmbil - $hariLewat == 7))
                                     <form action="{{ route('penitip.perpanjang', $barang->id_barang) }}" method="POST" style="display:inline-block;">
                                         @csrf
                                         <button class="btn btn-sm btn-outline-primary">Perpanjang</button>

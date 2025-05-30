@@ -6,6 +6,9 @@ use App\Models\Penjadwalan;
 use App\Models\Pengiriman;
 use App\Models\Pegawai;
 use App\Mail\JadwalDikirim;
+use App\Mail\KonfirmasiPengiriman;
+use App\Models\BarangTitipan;
+use App\Models\Penitip;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Mail;
 
@@ -101,6 +104,47 @@ class PengirimanController extends Controller
         }
 
         return back()->with('success', 'Jadwal berhasil diperbarui, pengiriman disiapkan, dan email notifikasi dikirim!');
+    }
+
+   public function konfirmasi($id_jadwal)
+    {
+        $jadwal = Penjadwalan::with(['pengiriman', 'transaksi.pembeli', 'transaksi.detailTransaksi'])
+                    ->findOrFail($id_jadwal);
+
+        if (!$jadwal->pengiriman) {
+            return back()->with('error', 'Pengiriman tidak ditemukan.');
+        }
+
+        // Update status_pengiriman
+        $statusBaru = $jadwal->jenis_jadwal === 'Diambil' ? 'Diterima' : 'Sampai';
+        $jadwal->pengiriman->update(['status_pengiriman' => $statusBaru]);
+
+        // Email notifikasi ke Pembeli
+        $recipients = [];
+        if ($jadwal->transaksi->pembeli && $jadwal->transaksi->pembeli->email) {
+            $recipients[] = $jadwal->transaksi->pembeli->email;
+        }
+
+        // Email notifikasi ke Penitip (loop semua penitip di detail_transaksi)
+        $penitipEmails = [];
+        foreach ($jadwal->transaksi->detailTransaksi as $detail) {
+            $barang = BarangTitipan::find($detail->id_barang);
+            if ($barang) {
+                $penitip = Penitip::find($barang->id_penitip);
+                if ($penitip && $penitip->email && !in_array($penitip->email, $penitipEmails)) {
+                    $penitipEmails[] = $penitip->email;
+                }
+            }
+        }
+
+        $recipients = array_merge($recipients, $penitipEmails);
+
+        // Kirim Email
+        foreach ($recipients as $email) {
+            Mail::to($email)->send(new KonfirmasiPengiriman($jadwal, $statusBaru));
+        }
+
+        return back()->with('success', 'Status pengiriman berhasil diperbarui dan notifikasi email dikirim!');
     }
 
 }
