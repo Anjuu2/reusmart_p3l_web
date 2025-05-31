@@ -565,10 +565,10 @@
     <!-- Main Section -->
     <main>
         @if (session('error'))
-    <div class="alert alert-danger mt-2">
-        {{ session('error') }}
-    </div>
-@endif
+            <div class="alert alert-danger mt-2">
+                {{ session('error') }}
+            </div>
+        @endif
         @php
             $alamatPertama = $alamatList->first();
         @endphp
@@ -669,6 +669,8 @@
                                 @csrf
                                 <input type="hidden" name="total_pembayaran" id="totalPembayaranInput" value="0">
                                 <input type="hidden" name="jenis_pengiriman" id="inputJenisPengiriman" value="Kurir">
+                                <input type="hidden" name="poin_tukar" id="inputPoinTukar" value="0">
+                                <input type="hidden" name="id_alamat" id="inputIdAlamat" value="{{ $alamatPertama->id_alamat_pembeli }}">
                                 <button type="submit" class="btn btn-success w-100 mt-3">Bayar Sekarang</button>
                             </form>
                             <small class="d-block text-center text-muted mt-2">Dengan melanjutkan, anda menyetujui S&K</small>
@@ -836,8 +838,12 @@
                 document.getElementById('totalPembayaranInput').value = total;
             }
 
-            poinInput.addEventListener('input', hitungTotal);
-            hitungTotal(); // jalankan saat load
+            hitungTotal();
+
+            poinInput.addEventListener('input', function () {
+                document.getElementById('inputPoinTukar').value = poinInput.value;
+                hitungTotal();
+            });
         });
     </script>
 
@@ -855,6 +861,7 @@
             `;
 
             document.getElementById('alamatUtama').innerHTML = html;
+            document.getElementById('inputIdAlamat').value = data.id;
 
             // Tutup modal
             const modal = bootstrap.Modal.getInstance(document.getElementById('gantiAlamatModal'));

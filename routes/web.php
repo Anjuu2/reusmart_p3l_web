@@ -38,6 +38,8 @@ Route::get('/home', [HomeController::class, 'index'])->name('home');
 Route::get('login', [LoginController::class, 'showLoginForm'])->name('login');
 Route::post('/login', [LoginController::class, 'login']);
 
+// Route::get('/pembayaran/{id_transaksi}', [PembayaranController::class, 'showPembayaran'])->name('pembayaran');
+
 Route::middleware('auth:pembeli')->get('/dashboard/pembeli', fn() => view('dashboard'))->name('dashboard.pembeli');
 Route::middleware('auth:penitip')->get('/dashboard/penitip', fn() => view('dashboardP'))->name('dashboard.penitip');
 Route::middleware('auth:organisasi')->get('/dashboard/organisasi', fn() => view('dashboardO'))->name('dashboard.organisasi');
@@ -72,6 +74,7 @@ Route::middleware('auth:pegawai')->group(function () {
     // Route::get('/pegawaiG/barangTitipan/create', [BarangTitipanController::class, 'create'])->name('pegawai_gudang.barangTitipan.create');
 
 });
+Route::middleware('auth:pembeli')->get('/pembayaran', fn() => view('pembayaran'))->name('pembayaran');
 
 Route::middleware('auth:pegawai')->get('/dashboard/kepala-gudang', fn() => view('dashboard-kepala'))->name('dashboard.kepala_gudang');
 Route::middleware('auth:pegawai')->get('/dashboard/cs', [PenitipController::class, 'index'])->name('dashboard.cs');
@@ -87,6 +90,8 @@ Route::middleware('auth:pembeli')->post('/keranjang/tambah', [KeranjangControlle
 Route::middleware('auth:pembeli')->post('/keranjang/{id}', [KeranjangController::class, 'removeFromCart'])->name('keranjang.hapus');
 Route::middleware('auth:pembeli')->get('/checkout', [CheckoutController::class, 'showCheckout'])->name('checkout');
 Route::middleware('auth:pembeli')->post('/checkout/submit', [CheckoutController::class, 'submitCheckout'])->name('checkout.submit');
+Route::middleware('auth:pembeli')->post('/pembayaran/upload-bukti', [CheckoutController::class, 'uploadBukti'])->name('upload.bukti');
+Route::middleware('auth:pembeli')->post('/pembayaran/batal-transaksi', [CheckoutController::class, 'batalTransaksi'])->name('batal.transaksi');
 
 Route::middleware(['auth:pegawai'])->prefix('cs')->group(function () {
     Route::get('/penitip', [PenitipController::class, 'index'])->name('cs.penitip.index');

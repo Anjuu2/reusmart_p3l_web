@@ -734,11 +734,11 @@
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.min.js"></script>
 
     <script>
-    const toastLive = document.getElementById('liveToast');
-        if (toastLive) {
-            const toast = new bootstrap.Toast(toastLive);
-            toast.show();
-        }
+        const toastLive = document.getElementById('liveToast');
+            if (toastLive) {
+                const toast = new bootstrap.Toast(toastLive);
+                toast.show();
+            }
     </script>
 </body>
 </html>

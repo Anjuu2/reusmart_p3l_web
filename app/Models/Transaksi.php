@@ -44,7 +44,11 @@ class Transaksi extends Model
 		'tanggal_transaksi',
 		'total_pembayaran',
 		'status_transaksi',
-		'jenis_pengiriman'
+		'jenis_pengiriman',
+		'nomor_transaksi',
+		'poin_didapat',
+		'bukti_pembayaran',
+		'id_alamat'
 	];
 
 	public function pembeli()

@@ -28,23 +28,38 @@ class CheckoutController extends Controller
     public function submitCheckout(Request $request)
     {
         $pembeliId = Auth::guard('pembeli')->id();
-        $jenisPengiriman = $request->input('jenis_pengiriman'); // dari hidden input
-        $subtotal = $request->input('subtotal'); // dari input tersembunyi
-        $totalBayar = $request->input('total_pembayaran'); // dari input tersembunyi
+        $jenisPengiriman = $request->input('jenis_pengiriman');
+        $subtotal = $request->input('subtotal');
+        $totalBayar = $request->input('total_pembayaran');
+        $poinDitukar = $request->input('poin_tukar') ?? 0;
+        $idAlamat = $request->input('id_alamat'); // ambil id_alamat dari request
 
         DB::beginTransaction();
 
         try {
-            // 1. Simpan transaksi utama
+            // Hitung poin dasar dan bonus
+            $poinDasar = floor($totalBayar / 10000);
+            $bonus = $totalBayar > 500000 ? floor($poinDasar * 0.2) : 0;
+            $poinDidapat = $poinDasar + $bonus;
+
+            // 1. Simpan transaksi utama dengan poin_didapat dan id_alamat
             $transaksi = Transaksi::create([
-                'id_pembeli'       => $pembeliId,
-                'tanggal_transaksi'=> Carbon::now(),
-                'total_pembayaran' => $totalBayar,
-                'status_transaksi' => 'Menunggu Pembayaran',
-                'jenis_pengiriman' => $jenisPengiriman
+                'id_pembeli'        => $pembeliId,
+                'tanggal_transaksi' => Carbon::now(),
+                'total_pembayaran'  => $totalBayar,
+                'status_transaksi'  => 'Menunggu Pembayaran',
+                'jenis_pengiriman'  => $jenisPengiriman,
+                'nomor_transaksi'   => '',
+                'poin_didapat'      => $poinDidapat,
+                'id_alamat'         => $idAlamat, // simpan id_alamat ke database
             ]);
 
-            // 2. Ambil semua barang dari keranjang
+            // 2. Generate No Nota: yy.mm.xxx
+            $totalTransaksi = Transaksi::count() + 1;
+            $transaksi->nomor_transaksi = now()->format('y.m.') . str_pad($totalTransaksi, 3, '0', STR_PAD_LEFT);
+            $transaksi->save();
+
+            // 3. Ambil isi keranjang pembeli
             $keranjangIds = Keranjang::where('id_pembeli', $pembeliId)->pluck('id_keranjang');
 
             $barangList = DB::table('detail_keranjang')
@@ -54,18 +69,36 @@ class CheckoutController extends Controller
                 ->get();
 
             foreach ($barangList as $barang) {
+                // 4. Simpan detail transaksi
                 DetailTransaksi::create([
                     'id_transaksi' => $transaksi->id_transaksi,
                     'id_barang'    => $barang->id_barang,
                     'sub_total'    => $barang->harga_jual
                 ]);
+
+                // 5. Ubah status barang jadi Terjual
+                BarangTitipan::where('id_barang', $barang->id_barang)->update([
+                    'status_barang' => 'Terjual'
+                ]);
             }
 
-            // 3. (Opsional) Hapus isi keranjang pembeli setelah checkout
+            // 6. Kurangi poin jika dipakai
+            if ($poinDitukar > 0) {
+                $pembeli = Pembeli::find($pembeliId);
+
+                if ($pembeli->poin >= $poinDitukar) {
+                    $pembeli->poin -= $poinDitukar;
+                    $pembeli->save();
+                } else {
+                    return back()->with('error', 'Poin tidak cukup!');
+                }
+            }
+
+            // 7. Hapus keranjang
             DB::table('detail_keranjang')->whereIn('id_keranjang', $keranjangIds)->delete();
 
             DB::commit();
-            return redirect()->route('home'); // halaman sukses transaksi
+            return redirect()->route('pembayaran', ['id_transaksi' => $transaksi->id_transaksi])->with('success', 'Checkout berhasil. Silakan lakukan pembayaran.');
         } catch (Exception $e) {
             DB::rollBack();
             return back()->with('error', 'Checkout gagal: ' . $e->getMessage());
@@ -108,5 +141,64 @@ class CheckoutController extends Controller
             'subtotal' => $subtotal,
         ]);
     }
+
+    public function uploadBukti(Request $request)
+    {
+        // Validasi input
+        $request->validate([
+            'id_transaksi' => 'required|exists:transaksi,id_transaksi',
+            'bukti_pembayaran' => 'required|image|mimes:jpeg,png,jpg|max:2048',
+        ]);
+
+        DB::beginTransaction();
+        try {
+            // Ambil transaksi
+            $transaksi = Transaksi::find($request->id_transaksi);
+
+            // Simpan file ke folder public/images/bukti_pembayaran
+            $file = $request->file('bukti_pembayaran');
+            $extension = $file->getClientOriginalExtension();
+            $namaFile = uniqid() . '.' . $extension;
+            $file->move(public_path('images/bukti_pembayaran'), $namaFile);
+
+            // Update field bukti_pembayaran di database
+            $transaksi->bukti_pembayaran = $namaFile;
+            $transaksi->save();
+
+            DB::commit();
+            return redirect()->route('home')->with('success', 'Bukti pembayaran berhasil diunggah.');
+        } catch (Exception $e) {
+            DB::rollBack();
+            return back()->with('error', 'Gagal mengunggah bukti pembayaran: ' . $e->getMessage());
+        }
+    }
+
+    public function batalTransaksi(Request $request)
+    {
+        try {
+            $id = $request->input('id_transaksi');
+            $transaksi = Transaksi::find($id);
+            if ($transaksi && $transaksi->status_transaksi === 'Menunggu Pembayaran' && !$transaksi->bukti_pembayaran) {
+                $transaksi->status_transaksi = 'Batal';
+                $transaksi->save();
+
+                // Kembalikan barang jadi Tersedia
+                $details = DetailTransaksi::where('id_transaksi', $id)->get();
+                foreach ($details as $detail) {
+                    BarangTitipan::where('id_barang', $detail->id_barang)->update([
+                        'status_barang' => 'Tersedia'
+                    ]);
+                }
+
+                return response()->json(['success' => true, 'message' => 'Transaksi dibatalkan karena tidak ada bukti pembayaran.']);
+            }
+
+            return response()->json(['success' => false, 'message' => 'Transaksi tidak valid atau sudah dibayar.']);
+        } catch (Exception $e) {
+            Log::error($e->getMessage());
+            return response()->json(['success' => false, 'message' => 'Terjadi kesalahan server.', 'error' => $e->getMessage()], 500);
+        }
+    }
+
 }
 
