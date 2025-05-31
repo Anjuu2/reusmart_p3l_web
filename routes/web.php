@@ -22,7 +22,7 @@ use App\Http\Controllers\DonasiController;
 use App\Http\Controllers\PegawaiController;
 use App\Http\Controllers\TransaksiController;
 use App\Http\Controllers\KeranjangController;
-
+use App\Http\Controllers\NotaPenitipanController;
 
 Route::get('/', [HomeController::class, 'index']);
 Route::get('/kategori', [KategoriController::class, 'showAvailableProducts']);
@@ -68,7 +68,13 @@ Route::middleware('auth:pegawai')->group(function () {
     Route::delete('/pegawaiG/barangTitipan/{id}', [BarangTitipanController::class, 'destroy'])->name('pegawai_gudang.barangTitipan.destroy');
     Route::get('/pegawaiG/barangTitipan/{id}', [BarangTitipanController::class, 'showDetail'])->name('pegawai_gudang.barangTitipan.showDetail');
 
-    // Route::get('/pegawaiG/barangTitipan/create', [BarangTitipanController::class, 'create'])->name('pegawai_gudang.barangTitipan.create');
+    Route::get('/pegawaiG/barangTitipan/create/{id_nota}', [BarangTitipanController::class, 'create'])->name('pegawai_gudang.barangTitipan.create');
+    Route::get('/pegawaiG/nota-penitipan/create', [NotaPenitipanController::class, 'create'])->name('pegawai_gudang.notaPenitipan.create');
+    Route::post('/pegawaiG/nota-penitipan/store', [NotaPenitipanController::class, 'store'])->name('pegawai_gudang.notaPenitipan.store');
+
+    Route::get('/pegawaiG/nota-penitipan/print/{id_nota}',[NotaPenitipanController::class, 'printNotaPDF'])->name('pegawai_gudang.notaPenitipan.print');
+    Route::get('/pegawaiG/nota-penitipan/{id_nota}', [NotaPenitipanController::class, 'show'])->name('pegawai_gudang.notaPenitipan.show');
+    Route::get('/pegawaiG/nota-penitipan', [NotaPenitipanController::class, 'indexNota'])->name('pegawai_gudang.notaPenitipan.index');
 
 });
 

@@ -38,9 +38,10 @@
                     </span>
                 </td>
                 <td>
-                    <a href="{{ route('pegawai_gudang.barangTitipan.create', $p->id_penitip) }}" class="btn btn-success btn-sm">
-                        Pilih
-                    </a>
+                    <!-- <a href="{{ route('pegawai_gudang.barangTitipan.create', $p->id_penitip) }}" class="btn btn-success btn-sm"> -->
+                    <a href="{{ route('pegawai_gudang.notaPenitipan.create', ['id_penitip' => $p->id_penitip]) }}" class="btn btn-success btn-sm">Pilih</a> 
+                    <!-- Pilih
+                    </a> -->
                 </td>
             </tr>
             @endforeach
@@ -49,9 +50,9 @@
     @elseif(request('search'))
         <div class="d-flex-text-start">
             <p class="text-muted mb-2">Data Penitip tidak ditemukan.</p>
-            <a href="{{ route('dashboard.cs') }}" class="btn btn-outline-success">
+            <!-- <a href="{{ route('dashboard.cs') }}" class="btn btn-outline-success">
                 Buat Akun Penitip
-            </a>
+            </a> -->
         </div>
     @endif
 </div>

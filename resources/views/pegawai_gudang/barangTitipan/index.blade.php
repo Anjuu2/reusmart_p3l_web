@@ -37,12 +37,14 @@
                 value="{{ request('search') }}"
                 aria-label="Search" 
                 style="width: 250px;">
+            <input class="form-control me-2" type="date" name="date" value="{{ request('date') }}">
             <button class="btn btn-outline-dark" type="submit">
                 <i class="bi bi-search"></i>
             </button>
         </form>
 
-        <a href="{{ route('pegawai_gudang.barangTitipan.createBlank') }}" class="btn btn-success mb-3">Tambah Barang</a>
+        <!-- <a href="{{ route('pegawai_gudang.barangTitipan.createBlank') }}" class="btn btn-success mb-3">Tambah Barang</a> -->
+
     </div>
 
     {{-- Tabel --}}
@@ -67,12 +69,14 @@
                     <td>{{ $item->status_barang }}</td>
                     <td>T{{ $item->penitip->id_penitip}} - {{ $item->penitip->nama_penitip ?? '-' }}</td>
                     <td class="text-center">
-                        <a href="{{ route('pegawai_gudang.barangTitipan.showDetail', $item->id_barang) }}" class="btn btn-sm btn-info">Detail</a>
-                        <form action="{{ route('pegawai_gudang.barangTitipan.destroy', $item->id_barang) }}" method="POST" class="d-inline" onsubmit="return confirm('Yakin ingin menghapus Barang ini?')">
+                        <a href="{{ route('pegawai_gudang.barangTitipan.showDetail', $item->id_barang) }}" class="btn btn-sm btn-info">
+                            <i class="bi bi-eye"></i>
+                        </a>
+                        <!-- <form action="{{ route('pegawai_gudang.barangTitipan.destroy', $item->id_barang) }}" method="POST" class="d-inline" onsubmit="return confirm('Yakin ingin menghapus Barang ini?')">
                             @csrf
                             @method('DELETE')
                             <button class="btn btn-sm btn-danger">Hapus</button>
-                        </form>
+                        </form> -->
                     </td>
                 </tr>
                 @empty

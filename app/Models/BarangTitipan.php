@@ -62,7 +62,8 @@ class BarangTitipan extends Model
 		'garansi' => 'bool',
 		'tanggal_garansi' => 'datetime',
 		'barang_hunter' => 'bool',
-		'berat' => 'float'
+		'berat' => 'float',
+		'id_nota' => 'int'
 	];
 
 	protected $fillable = [
@@ -83,7 +84,8 @@ class BarangTitipan extends Model
 		'garansi',
 		'tanggal_garansi',
 		'barang_hunter',
-		'berat'
+		'berat',
+		'id_nota'
 	];
 
 	public function pegawai()
@@ -137,5 +139,10 @@ class BarangTitipan extends Model
 	public function fotoBarang()
 	{
     	return $this->hasMany(FotoBarang::class, 'id_barang', 'id_barang');
+	}
+
+	public function nota()
+	{
+		return $this->belongsTo(NotaPenitipan::class, 'id_nota');
 	}
 }

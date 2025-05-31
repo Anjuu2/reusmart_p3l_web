@@ -675,6 +675,7 @@
                         </button>
                     </div>
                 </div>
+            </a>
             @endforeach
         </div>
     </main>

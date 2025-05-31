@@ -8,10 +8,27 @@
 <div class="d-flex justify-content-center align-items-center" style="padding-top: 40px; padding-bottom: 40px;">
     <div class="card shadow" style="width: 1000px;">
         <div class="card-body">
-            <h2 class="mb-2 text-center"><strong>Edit Barang Titipan</strong></h2>
+            <h2 class="mb-2 text-center"><strong>Edit Barang: {{ $barang->nama_barang }}</strong></h2>
             <p class="text-center">
                 <strong>Oleh:</strong> P{{ $pegawai->id_pegawai }} - {{ $pegawai->nama_pegawai }}
             </p>
+
+            <!-- {{-- Tombol “Batal / Kembali” --}}
+            <div class="mb-3">
+                @if($context === 'create')
+                {{-- Kembali ke form Tambah Barang untuk nota yang sama --}}
+                <a href="{{ route('pegawai_gudang.barangTitipan.create', ['id_nota' => $idNota]) }}"
+                    class="btn btn-secondary">
+                    <i class="fas fa-arrow-left"></i> Kembali ke Form Tambah Barang
+                </a>
+                @else
+                {{-- context=="detail": Kembali ke Detail Barang --}}
+                <a href="{{ route('pegawai_gudang.barangTitipan.showDetail', $barang->id_barang) }}"
+                    class="btn btn-secondary">
+                    <i class="fas fa-arrow-left"></i> Kembali ke Detail Barang
+                </a>
+                @endif
+            </div> -->
 
             @if ($errors->any())
                 <div class="alert alert-danger">
@@ -28,6 +45,10 @@
                 @csrf
                 @method('PUT')
 
+                <input type="hidden" name="context" value="{{ $context }}">
+                @if($context === 'create')
+                    <input type="hidden" name="id_nota" value="{{ $idNota }}">
+                @endif
                 <input type="hidden" name="id_penitip" value="{{ $barang->id_penitip }}">
                 <input type="hidden" name="id_pegawai" value="{{ $barang->id_pegawai }}">
 
@@ -171,13 +192,33 @@
                 @endif
 
                 <div class="text-end">
-                    <a href="{{ route('pegawai_gudang.barangTitipan.index') }}" class="btn btn-secondary">Batal</a>
+                    <!-- <a href="{{ route('pegawai_gudang.barangTitipan.showDetail', $barang->id_barang) }}" class="btn btn-secondary">Batal</a> -->
                     <!-- @if ($errors->has('foto_barang'))
                         <div class="alert alert-danger mt-2">
                             {{ $errors->first('foto_barang') }}
                         </div>
                     @endif -->
-                    <button onclick="console.log('klik');" type="submit" class="btn btn-success">Simpan</button>
+                    {{-- Tombol Simpan --}}
+                    <div class="mb-3 row">
+                        <div class="col-sm-12">
+                            <div class="d-flex justify-content-end">
+                            <button type="submit" class="btn btn-success">
+                                <i class="fas fa-save"></i> Simpan
+                            </button>
+                            @if($context === 'create')
+                                <a href="{{ route('pegawai_gudang.barangTitipan.create', ['id_nota' => $idNota]) }}"
+                                class="btn btn-secondary ms-2">
+                                Batal
+                                </a>
+                            @else
+                                <a href="{{ route('pegawai_gudang.barangTitipan.showDetail', $barang->id_barang) }}"
+                                class="btn btn-secondary ms-2">
+                                Batal
+                                </a>
+                            @endif
+                            </div>
+                        </div>
+                    </div>
                 </div>
             </form>
         </div>
