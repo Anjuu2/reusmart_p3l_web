@@ -94,10 +94,18 @@ Route::middleware('auth:pembeli')->post('/pembayaran/upload-bukti', [CheckoutCon
 Route::middleware('auth:pembeli')->post('/pembayaran/batal-transaksi', [CheckoutController::class, 'batalTransaksi'])->name('batal.transaksi');
 
 Route::middleware(['auth:pegawai'])->prefix('cs')->group(function () {
+    Route::get('/dashboard', function () {
+        return view('cs.dashboard');
+    })->name('dashboard.cs');
     Route::get('/penitip', [PenitipController::class, 'index'])->name('cs.penitip.index');
     Route::post('/penitip', [PenitipController::class, 'store'])->name('cs.penitip.store');
     Route::put('/penitip/{id}', [PenitipController::class, 'update'])->name('cs.penitip.update');
     Route::delete('/penitip/{id}', [PenitipController::class, 'destroy'])->name('cs.penitip.destroy');
+
+    Route::get('/transaksi', [TransaksiController::class, 'index'])->name('cs.transaksi.index');
+    Route::post('/transaksi/{id_transaksi}', [TransaksiController::class, 'verifikasiTransaksi'])->name('cs.transaksi.verifikasi');
+    Route::delete('/transaksi/{id_transaksi}/tola', [TransaksiController::class, 'tolakTransaksi'])->name('cs.transaksi.tolak');
+
 });
 
 Route::middleware(['auth:organisasi'])->prefix('organisasi')->group(function () {

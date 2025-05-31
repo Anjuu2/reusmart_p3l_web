@@ -32,7 +32,7 @@ class PenitipController extends Controller
                         ->orWhere('no_ktp', 'like', "%$search%")->orWhere('username', 'like', "%$search%")->orWhere('email', 'like', "%$search%");
         })->paginate(10);
 
-        return view('dashboardCS', [
+        return view('CS.penitipIndex', [
             'penitips' => $penitips,
             'search' => $search
         ]);        
@@ -74,7 +74,7 @@ class PenitipController extends Controller
 
         Penitip::create($data);
 
-        return redirect()->route('cs.penitip.index')->with('success', 'Penitip berhasil ditambahkan.');
+        return redirect()->route('CS.penitipIndex')->with('success', 'Penitip berhasil ditambahkan.');
     }
 
     public function edit($id)
@@ -110,7 +110,7 @@ class PenitipController extends Controller
 
         $penitip->update($data);
 
-        return redirect()->route('cs.penitip.index')->with('success', 'Penitip berhasil diperbarui.');
+        return redirect()->route('CS.penitipIndex')->with('success', 'Penitip berhasil diperbarui.');
     }
 
     public function destroy($id)
@@ -120,6 +120,6 @@ class PenitipController extends Controller
             Storage::disk('public')->delete($penitip->foto_ktp);
         }
         $penitip->delete();
-        return redirect()->route('cs.penitip.index')->with('success', 'Penitip berhasil dihapus.');
+        return redirect()->route('CS.penitipIndex')->with('success', 'Penitip berhasil dihapus.');
     }
 }

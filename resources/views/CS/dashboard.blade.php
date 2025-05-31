@@ -3,11 +3,15 @@
     <head>
         <meta charset="utf-8">
         <meta name="viewport"content="width=device-width, initial-scale=1.0">
-        <title>Dashboard</title>
+        <title>Dashboard - Pegawai Gudang</title>
         
         <style>
-            .main-sidebar{
-                background: linear-gradient(135deg, rgba(0, 128, 0, 0.7) 0%, rgba(108, 241, 108, 0.7) 100%);
+            .main-sidebar {
+                background: linear-gradient(135deg, 
+                    rgba(111, 143, 70, 1), 
+                    rgba(145, 180, 90, 0.95), 
+                    rgba(200, 220, 150, 0.85)
+                );
             }
 
             .main-header{
@@ -63,7 +67,7 @@
         <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.6/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-4Q6Gf2aSP4eDXB8Miphtr37CMZZQ5oXLH2yaXMJ2w8e2ZtHTl7GptT4jmndRuHDT" crossorigin="anonymous">
         <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/admin-lte@3.2.0/dist/css/adminlte.min.css">
     </head>
-    <body class="hold-transition sidebar-mini">
+    <body class="hold-transition sidebar-mini d-flex flex-column min-vh-100">
         <div class="wrapper">
             <nav class="main-header navbar navbar-expand navbar-white navbar-light">
                 <ul class="navbar-nav">
@@ -92,18 +96,15 @@
             </nav>
 
             <aside class="main-sidebar sidebar-dark-primary elevation-4">
-                <a href="{{ url('dashboard.admin') }}" class="brand-link">
-
+                <!-- <a href="{{ route('dashboard.owner') }}" class="brand-link">
                     <span class="brand-text font-weight-light" style="padding-left:5vw;">Reusemart</span>
-                </a>
+                </a> -->
 
                 <div class="sidebar">
                     <div class="user-panel mt-3 pb-3 mb-3 d-flex">
                         <div class="image">
-                            <a href="{{ route('dashboard.admin') }}">
-                                <img src="{{ asset('images/logo2.png') }}" alt="Logo Reusmart"
-                                    class="brand-image img-circle elevation-3"
-                                    style="opacity: .8; width: 200px; height: 80px;">
+                            <a href="{{ route('dashboard.cs') }}">
+                                <img src="{{ asset('images/logo2.png') }}" alt="Logo Reusmart" class="brand-image img-circle elevation-3" style="opacity: .8; width: 200px; height: 80px;">
                             </a>
                         </div>
                     </div>
@@ -111,15 +112,20 @@
                     <nav class="mt-2">
                         <ul class="nav nav-pills nav-sidebar flex-column" data-widget="treeview" role="menu" data-acccordion="false">
                             <li class="nav-item">
-                                <a href="{{url('organisasi')}}" class="nav-link">
-                                    <i class="nav-icon bi bi-buildings-fill" style="padding-left: -10px;"></i>
-                                    <p>Organisasi</p>
+                                <a class="nav-link" href="{{ route('cs.penitip.index') }}">
+                                    <i class="bi bi-shop"></i>
+                                    <p>Penitip</p>
                                 </a>
                             </li>
+                        </ul>
+                    </nav>
+
+                    <nav class="mt-2">
+                        <ul class="nav nav-pills nav-sidebar flex-column" data-widget="treeview" role="menu" data-acccordion="false">
                             <li class="nav-item">
-                                <a href="{{ url('pegawai') }}" class="nav-link">
-                                    <i class="bi bi-person-badge-fill"></i>
-                                    <p>Pegawai</p>
+                                <a class="nav-link" href="{{ route('cs.transaksi.index') }}">
+                                    <i class="bi bi-file-earmark-check"></i>
+                                    <p>Verifikasi Bukti Pembayaran</p>
                                 </a>
                             </li>
                         </ul>
@@ -127,19 +133,20 @@
                 </div>
             </aside>
 
-            <div class="content-wrapper">
+            <main class="content-wrapper">
                 @yield('isi')
-            </div>
+            </main>
 
-            <footer class="main-footer">
-                
-                <strong>Kami ada untuk Anda </strong>
+            <footer class="main-footer mt-auto text-center py-3">
+                <strong>Kami ada untuk Anda</strong>
             </footer>
         </div>
 
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script> 
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.6/dist/js/bootstrap.bundle.min.js" integrity="sha384-j1CDi7MgGQ12Z7Qab0qlWQ/Qqz24Gc6BM0thvEMVjHnfYGF0rmFCozFSxQBxwHKO" crossorigin="anonymous"></script>
     <script src="https://cdn.jsdelivr.net/npm/admin-lte@3.1.0/dist/js/adminlte.min.js"></script>
+
+    @stack('scripts')
     </body>
         
     <div class="modal fade" id="staticBackdrop" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="staticBackdropLabel" aria-hidden="true">

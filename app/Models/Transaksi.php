@@ -48,7 +48,8 @@ class Transaksi extends Model
 		'nomor_transaksi',
 		'poin_didapat',
 		'bukti_pembayaran',
-		'id_alamat'
+		'id_alamat',
+		'poin_digunakan'
 	];
 
 	public function pembeli()

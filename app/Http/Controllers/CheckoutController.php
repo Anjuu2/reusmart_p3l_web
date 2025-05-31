@@ -42,7 +42,7 @@ class CheckoutController extends Controller
             $bonus = $totalBayar > 500000 ? floor($poinDasar * 0.2) : 0;
             $poinDidapat = $poinDasar + $bonus;
 
-            // 1. Simpan transaksi utama dengan poin_didapat dan id_alamat
+            // 1. Simpan transaksi utama dengan poin_didapat, poin_digunakan, dan id_alamat
             $transaksi = Transaksi::create([
                 'id_pembeli'        => $pembeliId,
                 'tanggal_transaksi' => Carbon::now(),
@@ -51,7 +51,8 @@ class CheckoutController extends Controller
                 'jenis_pengiriman'  => $jenisPengiriman,
                 'nomor_transaksi'   => '',
                 'poin_didapat'      => $poinDidapat,
-                'id_alamat'         => $idAlamat, // simpan id_alamat ke database
+                'poin_digunakan'    => $poinDitukar,   // Simpan poin yang digunakan
+                'id_alamat'         => $idAlamat,      // simpan id_alamat ke database
             ]);
 
             // 2. Generate No Nota: yy.mm.xxx
@@ -161,12 +162,13 @@ class CheckoutController extends Controller
             $namaFile = uniqid() . '.' . $extension;
             $file->move(public_path('images/bukti_pembayaran'), $namaFile);
 
-            // Update field bukti_pembayaran di database
+            // Update field bukti_pembayaran dan status_transaksi di database
             $transaksi->bukti_pembayaran = $namaFile;
+            $transaksi->status_transaksi = 'Lunas';  // ubah status menjadi lunas
             $transaksi->save();
 
             DB::commit();
-            return redirect()->route('home')->with('success', 'Bukti pembayaran berhasil diunggah.');
+            return redirect()->route('home')->with('success', 'Bukti pembayaran berhasil diunggah dan status transaksi diubah menjadi lunas.');
         } catch (Exception $e) {
             DB::rollBack();
             return back()->with('error', 'Gagal mengunggah bukti pembayaran: ' . $e->getMessage());
