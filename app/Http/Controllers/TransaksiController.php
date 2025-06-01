@@ -174,36 +174,39 @@ class TransaksiController extends Controller
             $id = $request->input('id_transaksi');
             \Log::info('batalTransaksi dipanggil', ['id_transaksi' => $id]);
 
-            $transaksi = Transaksi::find($id);
+            $transaksi = Transaksi::with('detailTransaksi.barang')->find($id);
             if (!$transaksi) {
                 return response()->json(['success' => false, 'message' => 'Transaksi tidak ditemukan']);
             }
 
-            // Tambahkan log nilai status transaksi dan bukti pembayaran
+            // Log nilai status transaksi dan bukti pembayaran
             \Log::info('Detail transaksi', [
                 'status_transaksi' => $transaksi->status_transaksi,
                 'bukti_pembayaran' => $transaksi->bukti_pembayaran,
             ]);
 
-            // Logika pembatalan
+            // Cek kondisi pembatalan
             if ($transaksi->status_transaksi === 'Menunggu Pembayaran' && !$transaksi->bukti_pembayaran) {
+                // Update status transaksi jadi Batal
                 $transaksi->status_transaksi = 'Batal';
                 $transaksi->save();
 
-                // Ambil detail transaksi (relasi detailTransaksi)
-                $detailBarang = $transaksi->detailTransaksi; // pastikan relasi sudah didefinisikan di model Transaksi
-
-                // Ubah status barang menjadi 'Tersedia'
-                foreach ($detailBarang as $detail) {
-                    if ($detail->barang) { // pastikan relasi barang ada
+                // Kembalikan status barang menjadi 'Tersedia'
+                foreach ($transaksi->detailTransaksi as $detail) {
+                    if ($detail->barang) {
                         $detail->barang->status_barang = 'Tersedia';
                         $detail->barang->save();
                     }
                 }
 
-                // Update poin jika perlu (sesuai logika kamu sebelumnya)
+                // Kembalikan poin yang digunakan ke pembeli
+                $pembeli = $transaksi->pembeli; // Pastikan relasi 'pembeli' ada di model Transaksi
+                if ($pembeli && $transaksi->poin_digunakan > 0) {
+                    $pembeli->poin += $transaksi->poin_digunakan;
+                    $pembeli->save();
+                }
 
-                return response()->json(['success' => true, 'message' => 'Transaksi dibatalkan dan status barang dikembalikan tersedia.']);
+                return response()->json(['success' => true, 'message' => 'Transaksi dibatalkan, status barang dikembalikan tersedia, dan poin dikembalikan.']);
             } else {
                 return response()->json(['success' => false, 'message' => 'Transaksi tidak valid atau sudah dibayar.']);
             }
