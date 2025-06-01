@@ -8,6 +8,7 @@ use App\Models\Kategori;
 use App\Models\Pegawai;
 use App\Models\Penitip;
 use App\Models\FotoBarang;
+use App\Models\NotaPenitipan;
 use Carbon\Carbon;
 use Illuminate\Http\Support\Facades\Storage;
 use PDF;
@@ -179,6 +180,7 @@ class BarangTitipanController extends Controller
         $query = BarangTitipan::with(['kategori', 'penitip', 'pegawaiQc', 'hunter']);
 
         $search = $request->search;
+        $date   = $request->input('date');
 
         if (!empty($search)) {
             $searchLower = strtolower(trim($search));
@@ -233,7 +235,11 @@ class BarangTitipanController extends Controller
             }
         }
 
-        $barang = $query->paginate(10)->appends($request->only('search'));
+        if ($date) {
+            $query->whereDate('tanggal_masuk', $date);
+        }
+
+        $barang = $query->paginate(10)->appends($request->only(['search','date']));
 
         return view('pegawai_gudang.barangTitipan.index', compact('barang'));
     }
@@ -256,10 +262,30 @@ class BarangTitipanController extends Controller
         return view('pegawai_gudang.barangTitipan.cariPenitip', compact('penitip'));
     }
 
-    public function create($id_penitip)
+    // public function create($id_nota)
+    // {
+    //     $nota = NotaPenitipan::findOrFail($id_nota);
+    //     $penitip = $nota->penitip;
+    //     $kategori = Kategori::all();
+    //     $pegawaiLogin = auth()->guard('pegawai')->user();
+    //     $pegawaiQc = Pegawai::whereHas('jabatan', function ($q) {
+    //         $q->where('nama_jabatan', 'Pegawai Gudang');
+    //     })
+    //     ->where('id_pegawai', '!=', $pegawaiLogin->id_pegawai)
+    //     ->get();
+    //     $pegawaiHunter = Pegawai::whereHas('jabatan', function ($q) {
+    //         $q->where('nama_jabatan', 'Hunter');
+    //     })->get();
+    //     return view('pegawai_gudang.barangTitipan.create', compact('kategori', 'pegawaiQc', 'pegawaiHunter', 'penitip', 'pegawaiLogin', 'nota'));
+    // }
+
+    public function create(Request $request, $id_nota)
     {
+        // $id_nota = $request->query('id_nota');
         
-        $penitip = Penitip::findOrFail($id_penitip);
+        // Ambil nota berdasarkan id_nota
+        $nota = NotaPenitipan::findOrFail($id_nota);
+        $penitip = $nota->penitip;
         $kategori = Kategori::all();
         $pegawaiLogin = auth()->guard('pegawai')->user();
         $pegawaiQc = Pegawai::whereHas('jabatan', function ($q) {
@@ -267,10 +293,17 @@ class BarangTitipanController extends Controller
         })
         ->where('id_pegawai', '!=', $pegawaiLogin->id_pegawai)
         ->get();
+
         $pegawaiHunter = Pegawai::whereHas('jabatan', function ($q) {
             $q->where('nama_jabatan', 'Hunter');
         })->get();
-        return view('pegawai_gudang.barangTitipan.create', compact('kategori', 'pegawaiQc', 'pegawaiHunter', 'penitip', 'pegawaiLogin'));
+
+        // Ambil barang yang sudah ditambahkan dalam nota ini
+        $barangNota = BarangTitipan::where('id_nota', $id_nota)->paginate(10);
+
+        // dd($barangNota);
+
+        return view('pegawai_gudang.barangTitipan.create', compact('kategori', 'pegawaiQc', 'pegawaiHunter', 'penitip', 'pegawaiLogin', 'nota', 'barangNota'));
     }
 
     public function createBlank()
@@ -280,8 +313,17 @@ class BarangTitipanController extends Controller
 
     public function store(Request $request)
     {
+        // dd($request->all());
+        if ($request->input('action') === 'finish') {
+            $idNota = $request->input('id_nota');
+            
+            return redirect()
+                ->route('pegawai_gudang.notaPenitipan.show', $idNota)
+                ->with('success', 'Anda telah menyelesaikan penambahan barang. Berikut detail notanya.');
+        }
 
         $request->validate([
+            'id_nota' => 'required|exists:nota_penitipan,id_nota',
             'nama_barang' => 'required',
             'harga_jual' => 'required|numeric',
             'id_penitip' => 'required|exists:penitip,id_penitip',
@@ -294,14 +336,16 @@ class BarangTitipanController extends Controller
 
         ]);
 
-        $tanggalMasuk = Carbon::now();
-        $tanggalAkhir = $tanggalMasuk->copy()->addDays(30);
+        $nota = NotaPenitipan::findOrFail($request->id_nota);
+        // $tanggalMasuk = Carbon::now();
+        // $tanggalAkhir = $tanggalMasuk->copy()->addDays(30);
 
         $barang = new BarangTitipan([
             'nama_barang' => $request->nama_barang,
-            'id_penitip' => $request->id_penitip,
+            'id_nota' => $request->id_nota,
+            'id_penitip' => NotaPenitipan::find($request->id_nota)->id_penitip,
             'id_kategori' => $request->id_kategori,
-            'id_qc_pegawai' => $request->id_qc_pegawai, // ✅ DITAMBAHKAN DI SINI
+            'id_qc_pegawai' => $request->id_qc_pegawai,
             'id_hunter' => $request->id_hunter,
             'barang_hunter' => $request->id_hunter ? 1 : 0,
             'id_pegawai' => auth()->guard('pegawai')->user()->id_pegawai,
@@ -312,8 +356,8 @@ class BarangTitipanController extends Controller
             'status_perpanjangan' => $request->status_perpanjangan,
             'garansi' => $request->garansi,
             'tanggal_garansi' => $request->tanggal_garansi,
-            'tanggal_masuk' => $tanggalMasuk,
-            'tanggal_akhir' => $tanggalAkhir,
+            'tanggal_masuk' => $nota->tanggal_penitipan,
+            'tanggal_akhir' => \Carbon\Carbon::parse($nota->tanggal_penitipan)->addDays(30),
         ]);
         
         $barang->save();
@@ -329,12 +373,19 @@ class BarangTitipanController extends Controller
             ]);
         }
 
-        return redirect()->route('pegawai_gudang.barangTitipan.index')->with('success', 'Barang berhasil ditambahkan!');
+        // Tampilkan notifikasi sukses (optional)
+        session()->flash('success', 'Barang berhasil ditambahkan.');
+
+        // return redirect()->route('pegawai_gudang.barangTitipan.index')->with('success', 'Barang berhasil ditambahkan!');
+        return redirect()->route('pegawai_gudang.barangTitipan.create', ['id_nota' => $request->id_nota])
+                 ->with('success', 'Barang berhasil ditambahkan ke nota.');
     }
 
-    public function edit($id)
+    public function edit(Request $request, $id)
     {
-        $barang = BarangTitipan::findOrFail($id);
+        $barang = BarangTitipan::with('nota')->findOrFail($id);
+        $context = $request->query('context', 'detail');
+
         $penitip = $barang->penitip;
 
         $kategori = Kategori::all();
@@ -350,12 +401,21 @@ class BarangTitipanController extends Controller
             $q->where('nama_jabatan', 'Hunter');
         })->get();
 
-        return view('pegawai_gudang.barangTitipan.edit', compact('barang', 'penitip', 'kategori', 'pegawaiLogin', 'pegawaiQc', 'pegawaiHunter'));
+        $idNota = null;
+        if ($context === 'create') {
+            $idNota = $request->query('id_nota');
+            // Validasi sederhana agar id_nota benar
+            if (! $idNota || $barang->id_nota != $idNota) {
+                abort(404, 'Nota tidak valid untuk barang ini.');
+            }
+        }
+
+        return view('pegawai_gudang.barangTitipan.edit', compact('barang', 'penitip', 'kategori', 'pegawaiLogin', 'pegawaiQc', 'pegawaiHunter', 'context', 'idNota'));
     }
 
     public function update(Request $request, $id)
     {
-        $barang = BarangTitipan::findOrFail($id);
+        $barang = BarangTitipan::with('nota')->findOrFail($id);
 
         $jumlahFotoLama = $barang->fotoBarang()->count();
         $jumlahFotoDihapus = is_array($request->hapus_foto) ? count($request->hapus_foto) : 0;
@@ -383,7 +443,13 @@ class BarangTitipanController extends Controller
             'tanggal_garansi' => 'nullable|date',
             'id_hunter' => 'nullable|exists:pegawai,id_pegawai',
             'foto_barang.*' => 'image|mimes:jpg,jpeg,png|max:2048',
+            'context' => 'required|in:create,detail',
+            'id_nota' => 'required_if:context,create|exists:nota_penitipan,id_nota',
         ]);
+
+        $context = $request->input('context');
+
+        $idNota = $context === 'create' ? $request->input('id_nota') : null;
 
         // Hapus foto yang ditandai
         if ($request->filled('hapus_foto')) {
@@ -431,9 +497,21 @@ class BarangTitipanController extends Controller
                 ]);
             }
         }
+
+        if ($context === 'create') {
+            // Kembali ke form tambah barang untuk nota yang sama
+            return redirect()
+                ->route('pegawai_gudang.barangTitipan.create', ['id_nota' => $idNota])
+                ->with('success', 'Barang berhasil diperbarui. Kembali ke form tambah barang.');
+        } else {
+            // context == detail
+            return redirect()
+                ->route('pegawai_gudang.barangTitipan.showDetail', $barang->id_barang)
+                ->with('success', 'Barang berhasil diperbarui.');
+        }
         // return redirect()->route('pegawai_gudang.barangTitipan.index')->with('success', 'Barang berhasil diperbarui!');
-        return redirect()->route('pegawai_gudang.barangTitipan.showDetail', $barang->id_barang)
-            ->with('success', 'Barang berhasil diperbarui!');
+        // return redirect()->route('pegawai_gudang.barangTitipan.showDetail', $barang->id_barang)
+        //     ->with('success', 'Barang berhasil diperbarui!');
     }
 
     public function hapusFoto($id)
@@ -461,12 +539,9 @@ class BarangTitipanController extends Controller
     public function showDetail($id)
     {
         $barang = BarangTitipan::with(['penitip', 'kategori', 'pegawaiQc', 'hunter'])->findOrFail($id);
-        return view('pegawai_gudang.barangTitipan.showDetail', compact('barang'));
-    }
-
-    public function searchAll(Request $request)
-    {
-
+        $nota = $barang->nota;
+        $idNota  = $barang->nota->id_nota;
+        return view('pegawai_gudang.barangTitipan.showDetail', compact('barang', 'nota', 'idNota'));
     }
 
 }

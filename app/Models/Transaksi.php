@@ -71,6 +71,16 @@ class Transaksi extends Model
 		return $this->hasMany(Pembayaran::class, 'id_transaksi');
 	}
 
+	// public function penjadwalans()
+	// {
+	// 	return $this->hasMany(Penjadwalan::class, 'id_transaksi');
+	// }
+
+	public function penjadwalans()
+	{
+		return $this->hasMany(Penjadwalan::class, 'id_transaksi');
+	}
+
 	public function penjadwalan()
 	{
 		return $this->hasMany(Penjadwalan::class, 'id_transaksi');
@@ -118,5 +128,4 @@ class Transaksi extends Model
 		return $this->belongsTo(AlamatPembeli::class, 'id_alamat');
 	}
 	
-
 }
