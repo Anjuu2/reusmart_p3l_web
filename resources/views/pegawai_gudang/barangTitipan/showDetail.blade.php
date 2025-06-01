@@ -47,6 +47,18 @@
     <div class="row">
         <div class="col-12">
 
+        <!-- <input type="hidden" name="id_nota" value="{{ request('id_nota') }}"> -->
+        <div class="row">
+            <div class="col-md-9">
+                <table class="table table-bordered table-striped table-hover">
+                    <tr>
+                        <th>No Nota</th>
+                        <td>{{ $nota->no_nota }}</td>
+                    </tr>
+                </table>
+            </div>
+        </div>
+
         <div class="row">
             <div class="col-md-9">
                 <table class="table table-bordered table-striped table-hover">
@@ -89,7 +101,7 @@
                     </tr>
                     <tr>
                         <th>Deskripsi</th>
-                        <td>{{ $barang->deskripsi }}</td>
+                        <td style="text-align: justify;">{{ $barang->deskripsi }}</td>
                     </tr>
                 </table>
             </div>
@@ -177,10 +189,26 @@
         </div>
     </div>
 
-    <div class="d-flex justify-content-between mt-4">
-        <a href="{{ route('pegawai_gudang.barangTitipan.index') }}" class="btn btn-secondary mt-4 mb-4 px-4">← Kembali</a>
-        <a href="{{ route('pegawai_gudang.barangTitipan.edit', $barang->id_barang) }}" class="btn btn-sm btn-warning mt-4 mb-4 px-4 w-20" style="font-size: 16px; ">Edit</a>
+    <div class="d-flex justify-content-between mt-4 mb-4">
+        {{-- Tombol Kembali di paling kiri --}}
+        <a href="{{ route('pegawai_gudang.barangTitipan.index') }}"
+            class="btn btn-secondary px-4 py-2">
+            ← Kembali
+        </a>
+
+        {{-- Kelompokkan Detail Nota & Edit agar berdempetan di kanan --}}
+        <div class="d-flex">
+            {{-- Tombol Detail Nota --}}
+            <a href="{{ route('pegawai_gudang.notaPenitipan.show', $barang->nota->id_nota) }}" class="btn btn-danger px-4 py-2 me-2">
+                <i class="bi bi-clipboard"></i> Detail Nota
+            </a>
+            {{-- Tombol Edit --}}
+            <a href="{{ route('pegawai_gudang.barangTitipan.edit', [
+                    'id'        => $barang->id_barang,
+                    'context'   => 'detail'
+                ]) }}" class="btn btn-warning"><i class="fas fa-edit"></i> Edit Barang
+            </a>
+        </div>
     </div>
-    
 </div>
 @endsection

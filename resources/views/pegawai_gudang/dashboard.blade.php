@@ -112,6 +112,12 @@
                     <nav class="mt-2">
                         <ul class="nav nav-pills nav-sidebar flex-column" data-widget="treeview" role="menu" data-acccordion="false">
                             <li class="nav-item">
+                                <a class="nav-link" href="{{ route('pegawai_gudang.notaPenitipan.index') }}">
+                                    <i class="nav-icon bi bi-bag"></i>
+                                    <p>Penitipan</p>
+                                </a>
+                            </li>
+                            <li class="nav-item">
                                 <a class="nav-link" href="{{ route('pegawai_gudang.barangTitipan.index') }}">
                                     <i class="nav-icon bi bi-inbox"></i>
                                     <p>Barang Titipan</p>
