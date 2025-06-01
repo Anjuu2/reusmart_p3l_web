@@ -371,6 +371,34 @@
     </style>
 </head>
 <body>
+
+{{-- Toast tetap menempel di layar --}}
+    <div class="toast-container position-fixed top-0 end-0 p-3" style="z-index: 1055;">
+        @if (session('success'))
+            <div id="liveToast" class="toast fade" role="alert" aria-live="assertive" aria-atomic="true">
+                <div class="toast-header bg-success text-white">
+                    <strong class="me-auto">Sukses</strong>
+                    <button type="button" class="btn-close btn-close-white" data-bs-dismiss="toast" aria-label="Close"></button>
+                </div>
+                <div class="toast-body">
+                    {{ session('success') }}
+                </div>
+            </div>
+        @endif
+
+        @if (session('warning'))
+            <div id="liveToast" class="toast fade" role="alert" aria-live="assertive" aria-atomic="true">
+                <div class="toast-header bg-danger text-white">
+                    <strong class="me-auto">Peringatan</strong>
+                    <button type="button" class="btn-close btn-close-white" data-bs-dismiss="toast" aria-label="Close"></button>
+                </div>
+                <div class="toast-body">
+                    {{ session('warning') }}
+                </div>
+            </div>
+        @endif
+    </div>
+    
     <!-- Header Section -->
     <header>
         <div class="container">
@@ -404,19 +432,6 @@
     
     <!-- Main Section -->
     <main>
-        @if (session('success'))
-            <div class="alert alert-success alert-dismissible fade show mt-3" role="alert">
-                {{ session('success') }}
-                <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
-            </div>
-        @endif
-
-        @if (session('warning'))
-            <div class="alert alert-warning alert-dismissible fade show mt-3" role="alert">
-                {{ session('warning') }}
-                <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
-            </div>
-        @endif
         <section class="product-detail">
             <div class="product-container">
                 <!-- Gambar Produk - Carousel -->
@@ -524,10 +539,10 @@
                     <div class="button-container" style="margin-top: 35px;">
                         <!-- Tombol Add to Cart -->
                         <form action="{{ route('keranjang.tambah') }}" method="POST">
-                                @csrf
-                                <input type="hidden" name="id_barang" value="{{ $product->id_barang }}">
-                                <button type="submit" class="add-to-cart-btn w-100">Add to Cart</button>
-                            </form>
+                            @csrf
+                            <input type="hidden" name="id_barang" value="{{ $product->id_barang }}">
+                            <button type="submit" class="add-to-cart-btn w-100">Add to Cart</button>
+                        </form>
                         <!-- Tombol Beli Barang -->
                         <a href="{{ route('checkout') }}">
                             <button class="buy-now-btn">Beli Barang</button>
@@ -578,5 +593,13 @@
     <!-- Bootstrap JS and dependencies (Popper.js and Bootstrap JS) -->
     <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.11.6/dist/umd/popper.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.min.js"></script>
+
+    <script>
+    const toastLive = document.getElementById('liveToast');
+        if (toastLive) {
+            const toast = new bootstrap.Toast(toastLive);
+            toast.show();
+        }
+    </script>
 </body>
 </html>
