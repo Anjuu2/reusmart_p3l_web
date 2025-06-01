@@ -11,6 +11,7 @@ use App\Models\Penjadwalan;
 use App\Models\Rating;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Hash;
+use Illuminate\Support\Facades\DB;
 
 class PembeliController extends Controller
 {
