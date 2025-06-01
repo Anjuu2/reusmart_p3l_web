@@ -23,6 +23,7 @@ use App\Http\Controllers\PegawaiController;
 use App\Http\Controllers\TransaksiController;
 use App\Http\Controllers\KeranjangController;
 use App\Http\Controllers\CheckoutController;
+use App\Http\Controllers\PengirimanController;
 
 
 Route::get('/', [HomeController::class, 'index']);
@@ -41,7 +42,13 @@ Route::post('/login', [LoginController::class, 'login']);
 // Route::get('/pembayaran/{id_transaksi}', [PembayaranController::class, 'showPembayaran'])->name('pembayaran');
 
 Route::middleware('auth:pembeli')->get('/dashboard/pembeli', fn() => view('dashboard'))->name('dashboard.pembeli');
-Route::middleware('auth:penitip')->get('/dashboard/penitip', fn() => view('dashboardP'))->name('dashboard.penitip');
+Route::middleware('auth:penitip')->get('/dashboard/penitip', [BarangTitipanController::class, 'indexPenitip'])->name('dashboard.penitip');
+Route::middleware('auth:penitip')->prefix('penitip')->group(function () {
+    Route::get('/barang', [BarangTitipanController::class, 'indexPenitip'])->name('penitip.barang.index');
+    Route::post('/penitip/barang/{id}/perpanjang', [BarangTitipanController::class, 'perpanjang'])->name('penitip.perpanjang');
+    Route::post('/penitip/barang/{id}/ambil', [BarangTitipanController::class, 'ambilBarang'])->name('penitip.ambil');
+});
+
 Route::middleware('auth:organisasi')->get('/dashboard/organisasi', fn() => view('dashboardO'))->name('dashboard.organisasi');
 Route::middleware('auth:pegawai')->get('/dashboard/admin', fn() => view('dashboardAdmin'))->name('dashboard.admin');
 Route::middleware('auth:pegawai')->get('/dashboard/kurir', fn() => view('dashboard-kurir'))->name('dashboard.kurir');
@@ -71,8 +78,16 @@ Route::middleware('auth:pegawai')->group(function () {
     Route::delete('/pegawaiG/barangTitipan/{id}', [BarangTitipanController::class, 'destroy'])->name('pegawai_gudang.barangTitipan.destroy');
     Route::get('/pegawaiG/barangTitipan/{id}', [BarangTitipanController::class, 'showDetail'])->name('pegawai_gudang.barangTitipan.showDetail');
 
-    // Route::get('/pegawaiG/barangTitipan/create', [BarangTitipanController::class, 'create'])->name('pegawai_gudang.barangTitipan.create');
+    Route::get('/barang-pengembalian', [BarangTitipanController::class, 'daftarPengembalian'])->name('pegawai_gudang.barang.pengembalian');
+    Route::put('/barang-pengembalian/konfirmasi/{id_barang}', [BarangTitipanController::class, 'konfirmasiPengembalian'])->name('pegawai_gudang.barang.konfirmasiPengembalian');
 
+    // Route::get('/pegawaiG/barangTitipan/create', [BarangTitipanController::class, 'create'])->name('pegawai_gudang.barangTitipan.create');
+    Route::get('/pengiriman', [PengirimanController::class, 'index'])->name('pegawai_gudang.pengiriman.index');
+    Route::post('/pegawai_gudang/pengiriman/tambah-jadwal', [PengirimanController::class, 'tambahJadwal'])->name('pegawai_gudang.pengiriman.tambahJadwal');
+    Route::put('/pegawai_gudang/pengiriman/konfirmasi/{id_jadwal}', [PengirimanController::class, 'konfirmasi'])->name('pegawai_gudang.pengiriman.konfirmasi');
+    Route::get('/nota', [TransaksiController::class, 'indexNota'])->name('pegawai_gudang.cetakNotaIndex');
+    Route::get('/cetak-nota/{id}', [TransaksiController::class, 'cetakNota'])->name('pegawai_gudang.cetakNota');
+    Route::get('/cetak-nota/pdf/{id}', [TransaksiController::class, 'cetakNotaPdf'])->name('pegawai_gudang.cetakNotaPdf');
 });
 Route::middleware('auth:pembeli')->get('/pembayaran', fn() => view('pembayaran'))->name('pembayaran');
 

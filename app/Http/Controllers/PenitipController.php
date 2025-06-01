@@ -137,4 +137,20 @@ class PenitipController extends Controller
             'penitip' => $penitip
         ]);
     }
+
+    public function dashboard(Request $request)
+    {
+        $penitip = auth()->guard('penitip')->user();
+
+        $query = BarangTitipan::where('id_penitip', $penitip->id_penitip);
+
+        if ($request->filled('search')) {
+            $query->where('nama_barang', 'like', '%' . $request->search . '%');
+        }
+
+        $barangs = $query->orderByDesc('tanggal_masuk')->paginate(10);
+
+        return view('penitip.dashboard', compact('barangs'));
+    }
+
 }

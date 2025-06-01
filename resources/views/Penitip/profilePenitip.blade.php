@@ -98,7 +98,7 @@
                     <small>{{ $penitip->email }}</small>
                 </div>
             </div>
-            <a href="{{ route('home') }}" class="back-btn">← Kembali ke Beranda</a>
+            <a href="{{ route('dashboard.penitip') }}" class="back-btn">← Kembali ke Beranda</a>
         </div>
 
         <div class="profile-info">

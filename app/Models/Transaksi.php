@@ -71,8 +71,52 @@ class Transaksi extends Model
 		return $this->hasMany(Pembayaran::class, 'id_transaksi');
 	}
 
-	public function penjadwalans()
+	public function penjadwalan()
 	{
 		return $this->hasMany(Penjadwalan::class, 'id_transaksi');
 	}
+	public function penitip()
+	{
+		return $this->hasOneThrough(
+			Penitip::class,
+			BarangTitipan::class,
+			'id_barang', // FK di BarangTitipan
+			'id_penitip', // FK di Penitip
+			'id_transaksi', // FK di Transaksi
+			'id_penitip'    // PK di Penitip
+		)->join('detail_transaksi', 'barang_titipan.id_barang', '=', 'detail_transaksi.id_barang')
+		->whereColumn('detail_transaksi.id_transaksi', 'transaksi.id_transaksi');
+	}
+
+	public function penitipSafe()
+	{
+		// Ambil salah satu barang titipan dari detail transaksi pertama
+		$firstDetail = $this->detailTransaksi()->first();
+		if ($firstDetail && $firstDetail->barang) {
+			return $firstDetail->barang->penitip;
+		}
+		return null;
+	}
+
+	public function getPenitipAttribute()
+	{
+		$detailTransaksi = $this->detailTransaksi()->first();
+		if (!$detailTransaksi) {
+			return null;
+		}
+
+		$barang = \App\Models\BarangTitipan::find($detailTransaksi->id_barang);
+		if (!$barang) {
+			return null;
+		}
+
+		return \App\Models\Penitip::find($barang->id_penitip);
+	}
+
+	public function alamat()
+	{
+		return $this->belongsTo(AlamatPembeli::class, 'id_alamat');
+	}
+	
+
 }
