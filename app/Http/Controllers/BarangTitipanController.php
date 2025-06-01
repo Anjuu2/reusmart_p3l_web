@@ -244,6 +244,30 @@ class BarangTitipanController extends Controller
         return view('pegawai_gudang.barangTitipan.index', compact('barang'));
     }
 
+    public function cekStatusPenitipanDanDonasi()
+    {
+        $hariSekarang = Carbon::now();
+        $batasAmbil = 7;
+
+        $barangs = BarangTitipan::where('status_barang', 'Tersedia')->get();
+
+        foreach ($barangs as $barang) {
+            $tanggalAkhir = Carbon::parse($barang->tanggal_akhir);
+            
+            if ($barang->status_perpanjangan == 1 && $barang->tanggal_akhir_perpanjangan) {
+                $tanggalAkhir = Carbon::parse($barang->tanggal_akhir_perpanjangan);
+            }
+
+            // Hitung selisih hari sekarang dengan tanggal akhir
+            $selisihHari = $hariSekarang->diffInDays($tanggalAkhir, false);
+
+            if ($selisihHari < -$batasAmbil) {
+                $barang->status_barang = 'barang untuk donasi';
+                $barang->save();
+            }
+        }
+    }
+
     public function cariPenitipForm(Request $request)
     {
         $penitip = [];

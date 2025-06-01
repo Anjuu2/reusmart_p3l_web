@@ -6,8 +6,11 @@ $vendorDir = dirname(__DIR__);
 $baseDir = dirname($vendorDir);
 
 return array(
+    'App\\Console\\Commands\\AutoPembatalanTransaksi' => $baseDir . '/app/Console/Commands/AutoPembatalanTransaksi.php',
+    'App\\Console\\Kernel' => $baseDir . '/app/Console/Kernel.php',
     'App\\Http\\Controllers\\AlamatController' => $baseDir . '/app/Http/Controllers/AlamatController.php',
     'App\\Http\\Controllers\\BarangTitipanController' => $baseDir . '/app/Http/Controllers/BarangTitipanController.php',
+    'App\\Http\\Controllers\\CheckoutController' => $baseDir . '/app/Http/Controllers/CheckoutController.php',
     'App\\Http\\Controllers\\Controller' => $baseDir . '/app/Http/Controllers/Controller.php',
     'App\\Http\\Controllers\\DetailBarangController' => $baseDir . '/app/Http/Controllers/DetailBarangController.php',
     'App\\Http\\Controllers\\DiskusiController' => $baseDir . '/app/Http/Controllers/DiskusiController.php',
@@ -60,6 +63,7 @@ return array(
     'App\\Models\\Transaksi' => $baseDir . '/app/Models/Transaksi.php',
     'App\\Models\\User' => $baseDir . '/app/Models/User.php',
     'App\\Notifications\\BarangDidonasikan' => $baseDir . '/app/Notifications/BarangDidonasikan.php',
+    'App\\Notifications\\transaksiDisiapkan' => $baseDir . '/app/Notifications/transaksiDisiapkan.php',
     'App\\Providers\\AppServiceProvider' => $baseDir . '/app/Providers/AppServiceProvider.php',
     'Attribute' => $vendorDir . '/symfony/polyfill-php80/Resources/stubs/Attribute.php',
     'Barryvdh\\DomPDF\\Facade\\Pdf' => $vendorDir . '/barryvdh/laravel-dompdf/src/Facade/Pdf.php',

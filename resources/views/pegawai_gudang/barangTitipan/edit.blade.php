@@ -153,13 +153,18 @@
                     <div class="col-md-6 mb-3">
                         <label class="form-label">Tanggal Masuk</label>
                         <input type="datetime-local" name="tanggal_masuk" class="form-control"
-                            value="{{ \Carbon\Carbon::parse($barang->tanggal_masuk)->format('Y-m-d\TH:i') }}">
+                            value="{{ \Carbon\Carbon::parse($barang->tanggal_masuk)->format('Y-m-d\TH:i') }}" readonly>
                     </div>
+
+                    <!-- {{$barang->tanggal_akhir}} -->
+                     @php
+                        $tanggalAkhirLocal = \Carbon\Carbon::parse($barang->tanggal_akhir)->setTimezone('Asia/Jakarta');
+                    @endphp
 
                     <div class="col-md-6 mb-3">
                         <label class="form-label">Tanggal Akhir</label>
                         <input type="datetime-local" name="tanggal_akhir" class="form-control"
-                            value="{{ \Carbon\Carbon::parse($barang->tanggal_akhir)->format('Y-m-d\TH:i') }}" readonly>
+                            value="{{ $tanggalAkhirLocal->format('Y-m-d\TH:i') }}" readonly>
                     </div>
                 </div>
 
@@ -226,7 +231,7 @@
 </div>
 @endsection
 @push('scripts')
-<script>
+<!-- <script>
     document.addEventListener('DOMContentLoaded', function () {
         const tglMasuk = document.querySelector('input[name="tanggal_masuk"]');
         const tglAkhir = document.querySelector('input[name="tanggal_akhir"]');
@@ -252,7 +257,7 @@
         tglMasuk.addEventListener('input', updateTanggalAkhir);
         tglMasuk.addEventListener('change', updateTanggalAkhir);
     });
-</script>
+</script> -->
 
 <script>
 document.addEventListener('DOMContentLoaded', function () {

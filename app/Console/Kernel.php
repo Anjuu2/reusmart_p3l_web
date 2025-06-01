@@ -13,9 +13,15 @@ class Kernel extends ConsoleKernel
 
     protected function schedule(Schedule $schedule)
     {
+        dd('Kernel.php loaded');
+
         $schedule->command('transaksi:auto-pembatalan')
                 ->everyMinute()
                 ->appendOutputTo(storage_path('logs/schedule.log'));
+
+        $schedule->call(function () {
+            app()->call('App\Http\Controllers\BarangTitipanController@cekStatusPenitipanDanDonasi');
+        })->everyMinute();
     }
 
     protected function commands()
