@@ -9,10 +9,10 @@ use App\Models\Pegawai;
 
 use App\Notifications\transaksiDisiapkan;
 use Illuminate\Support\Facades\DB;
+use Carbon\Carbon;
 
 use Illuminate\Http\Request;
 use Barryvdh\DomPDF\Facade\Pdf;
-use App\Models\Transaksi;
 
 class TransaksiController extends Controller
 {
@@ -23,7 +23,31 @@ class TransaksiController extends Controller
 
         // Kirim data pembayaran ke view dengan variabel 'pembayarans'
         return view('CS.pembayaranIndex', compact('pembayarans'));
-}
+    }
+
+    public function showPembayaran(Request $request)
+    {
+        $idTransaksi = $request->query('id_transaksi');
+        if (!$idTransaksi) {
+            abort(404, 'ID transaksi tidak ditemukan.');
+        }
+
+        $transaksi = Transaksi::with('detailTransaksi')->find($idTransaksi);
+        if (!$transaksi) {
+            abort(404, 'Transaksi tidak ditemukan.');
+        }
+
+        // Hitung total harga dari detail transaksi
+        $totalHarga = $transaksi->detailTransaksi->sum('sub_total');
+
+        $tanggalTransaksiPlus1Menit = \Carbon\Carbon::parse($transaksi->tanggal_transaksi)->copy()->addMinute();
+
+        return view('pembayaran', [
+            'transaksi' => $transaksi,
+            'totalHarga' => $totalHarga,
+            'tanggalTransaksiPlus1Menit' => $tanggalTransaksiPlus1Menit,
+        ]);
+    }
 
     public function uploadBukti(Request $request)
     {
@@ -139,34 +163,43 @@ class TransaksiController extends Controller
     {
         try {
             $id = $request->input('id_transaksi');
-            $transaksi = Transaksi::find($id);
+            \Log::info('batalTransaksi dipanggil', ['id_transaksi' => $id]);
 
-            if ($transaksi && $transaksi->status_transaksi === 'Menunggu Pembayaran' && !$transaksi->bukti_pembayaran) {
+            $transaksi = Transaksi::find($id);
+            if (!$transaksi) {
+                return response()->json(['success' => false, 'message' => 'Transaksi tidak ditemukan']);
+            }
+
+            // Tambahkan log nilai status transaksi dan bukti pembayaran
+            \Log::info('Detail transaksi', [
+                'status_transaksi' => $transaksi->status_transaksi,
+                'bukti_pembayaran' => $transaksi->bukti_pembayaran,
+            ]);
+
+            // Logika pembatalan
+            if ($transaksi->status_transaksi === 'Menunggu Pembayaran' && !$transaksi->bukti_pembayaran) {
                 $transaksi->status_transaksi = 'Batal';
                 $transaksi->save();
 
-                // Kembalikan barang jadi Tersedia
-                $details = DetailTransaksi::where('id_transaksi', $id)->get();
-                foreach ($details as $detail) {
-                    BarangTitipan::where('id_barang', $detail->id_barang)->update([
-                        'status_barang' => 'Tersedia'
-                    ]);
+                // Ambil detail transaksi (relasi detailTransaksi)
+                $detailBarang = $transaksi->detailTransaksi; // pastikan relasi sudah didefinisikan di model Transaksi
+
+                // Ubah status barang menjadi 'Tersedia'
+                foreach ($detailBarang as $detail) {
+                    if ($detail->barang) { // pastikan relasi barang ada
+                        $detail->barang->status_barang = 'Tersedia';
+                        $detail->barang->save();
+                    }
                 }
 
-                // Kembalikan poin yang digunakan ke pembeli
-                $pembeli = Pembeli::find($transaksi->id_pembeli);
-                if ($pembeli) {
-                    $poinDigunakan = $transaksi->poin_digunakan ?? 0;
-                    $pembeli->poin += $poinDigunakan;
-                    $pembeli->save();
-                }
+                // Update poin jika perlu (sesuai logika kamu sebelumnya)
 
-                return response()->json(['success' => true, 'message' => 'Transaksi dibatalkan karena tidak ada bukti pembayaran dan poin dikembalikan.']);
+                return response()->json(['success' => true, 'message' => 'Transaksi dibatalkan dan status barang dikembalikan tersedia.']);
+            } else {
+                return response()->json(['success' => false, 'message' => 'Transaksi tidak valid atau sudah dibayar.']);
             }
-
-            return response()->json(['success' => false, 'message' => 'Transaksi tidak valid atau sudah dibayar.']);
-        } catch (Exception $e) {
-            Log::error($e->getMessage());
+        } catch (\Exception $e) {
+            \Log::error('Error batalTransaksi: ' . $e->getMessage());
             return response()->json(['success' => false, 'message' => 'Terjadi kesalahan server.', 'error' => $e->getMessage()], 500);
         }
     }
