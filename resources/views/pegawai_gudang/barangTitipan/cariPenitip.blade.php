@@ -38,10 +38,16 @@
                     </span>
                 </td>
                 <td>
-                    <!-- <a href="{{ route('pegawai_gudang.barangTitipan.create', $p->id_penitip) }}" class="btn btn-success btn-sm"> -->
-                    <a href="{{ route('pegawai_gudang.notaPenitipan.create', ['id_penitip' => $p->id_penitip]) }}" class="btn btn-success btn-sm">Pilih</a> 
-                    <!-- Pilih
-                    </a> -->
+                    @if($p->status_aktif == 1)
+                        <a href="{{ route('pegawai_gudang.notaPenitipan.create', ['id_penitip' => $p->id_penitip]) }}" 
+                        class="btn btn-success btn-sm">
+                            Pilih
+                        </a>
+                    @else
+                        <button class="btn btn-secondary btn-sm" disabled title="Penitip tidak aktif">
+                            Pilih
+                        </button>
+                    @endif
                 </td>
             </tr>
             @endforeach
