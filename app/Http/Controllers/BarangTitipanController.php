@@ -96,9 +96,66 @@ class BarangTitipanController extends Controller
     }   
     
     // Daftar Barang Pengembalian
-    public function daftarPengembalian()
+    public function daftarPengembalian(Request $request)
     {
-        $barang = BarangTitipan::where('status_barang', 'Pengambilan Diproses')->paginate(10);
+        $query = BarangTitipan::with(['penitip'])
+            ->where('status_barang', 'Pengambilan Diproses');
+
+        $search = $request->input('search');
+        if (!empty($search)) {
+            $searchLower = strtolower(trim($search));
+
+            $query->where(function ($q) use ($search) {
+                $q->where('nama_barang', 'like', "%$search%")
+                    ->orWhere('id_barang', 'like', "%$search%")
+                    ->orWhere('deskripsi', 'like', "%$search%")
+                    ->orWhere('harga_jual', 'like', "%$search%")
+                    ->orWhere('berat', 'like', "%$search%")
+                    ->orWhere('tanggal_masuk', 'like', "%$search%")
+                    ->orWhere('tanggal_akhir', 'like', "%$search%")
+                    ->orWhere('tanggal_keluar', 'like', "%$search%")
+                    ->orWhere('status_barang', 'like', "%$search%")
+                    ->orWhere('garansi', 'like', "%$search%")
+                    ->orWhere('tanggal_garansi', 'like', "%$search%")
+                    ->orWhere('status_perpanjangan', 'like', "%$search%")
+                    ->orWhere('barang_hunter', 'like', "%$search%")
+                    ->orWhere('id_pegawai', 'like', "%$search%")
+                    ->orWhereHas('penitip', function ($p) use ($search) {
+                        $p->where('nama_penitip', 'like', "%$search%");
+                    });
+            });
+
+            // Optional: filter berdasarkan nama bulan
+            $bulanMap = [
+                'januari' => 1, 'februari' => 2, 'maret' => 3, 'april' => 4,
+                'mei' => 5, 'juni' => 6, 'juli' => 7, 'agustus' => 8,
+                'september' => 9, 'oktober' => 10, 'november' => 11, 'desember' => 12
+            ];
+
+            if (isset($bulanMap[$searchLower])) {
+                $query->orWhereMonth('tanggal_masuk', $bulanMap[$searchLower]);
+            }
+
+            // Optional: filter berdasarkan X hari terakhir
+            if (preg_match('/(\d+)\s*hari/', $searchLower, $matches)) {
+                $jumlahHari = (int) $matches[1];
+                $tanggalBatas = now()->subDays($jumlahHari);
+                $query->orWhere('tanggal_masuk', '>=', $tanggalBatas);
+            }
+
+            // Optional: filter dengan format Kode Barang seperti L29, G10
+            if (preg_match('/^([A-Za-z])(\d+)$/', $search, $match)) {
+                $huruf = strtoupper($match[1]);
+                $angka = $match[2];
+
+                $query->orWhere(function ($q) use ($huruf, $angka) {
+                    $q->where('id_barang', $angka)
+                    ->whereRaw('UPPER(LEFT(nama_barang, 1)) = ?', [$huruf]);
+                });
+            }
+        }
+
+        $barang = $query->paginate(10)->appends($request->only('search'));
 
         return view('pegawai_gudang.pengembalianBarang.index', compact('barang'));
     }

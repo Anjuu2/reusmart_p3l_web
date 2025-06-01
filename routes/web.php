@@ -82,6 +82,9 @@ Route::middleware('auth:pegawai')->group(function () {
     Route::get('/pengiriman', [PengirimanController::class, 'index'])->name('pegawai_gudang.pengiriman.index');
     Route::post('/pegawai_gudang/pengiriman/tambah-jadwal', [PengirimanController::class, 'tambahJadwal'])->name('pegawai_gudang.pengiriman.tambahJadwal');
     Route::put('/pegawai_gudang/pengiriman/konfirmasi/{id_jadwal}', [PengirimanController::class, 'konfirmasi'])->name('pegawai_gudang.pengiriman.konfirmasi');
+    Route::get('/nota', [TransaksiController::class, 'indexNota'])->name('pegawai_gudang.cetakNotaIndex');
+    Route::get('/cetak-nota/{id}', [TransaksiController::class, 'cetakNota'])->name('pegawai_gudang.cetakNota');
+    Route::get('/cetak-nota/pdf/{id}', [TransaksiController::class, 'cetakNotaPdf'])->name('pegawai_gudang.cetakNotaPdf');
 });
 
 Route::middleware('auth:pegawai')->get('/dashboard/kepala-gudang', fn() => view('dashboard-kepala'))->name('dashboard.kepala_gudang');

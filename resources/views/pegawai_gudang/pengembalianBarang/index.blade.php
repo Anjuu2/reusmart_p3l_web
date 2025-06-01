@@ -44,7 +44,7 @@
 </style>
 
 <div class="container-fluid mt-2">
-    <h3 class="mb-4 text-center"><strong>Daftar Barang Pengembalian Diproses</strong></h3>
+    <h3 class="mb-4 text-center"><strong>Daftar Barang Pengembalian</strong></h3>
     @if ($errors->any())
         <div class="alert alert-danger">
             <ul class="mb-0">
@@ -54,10 +54,25 @@
             </ul>
         </div>
     @endif
+    <div class="container d-flex justify-content-between align-items-center">
+        <form class="d-flex mb-3" action="{{ route('pegawai_gudang.barang.pengembalian') }}" method="GET">
+            <input class="form-control me-2" 
+                type="search" 
+                name="search" 
+                placeholder="Cari pengembalian..." 
+                value="{{ request('search') }}"
+                aria-label="Search" 
+                style="width: 250px;">
+            <input class="form-control me-2" type="date" name="date" value="{{ request('date') }}">
+            <button class="btn btn-outline-dark" type="submit">
+                <i class="bi bi-search"></i>
+            </button>
+        </form>
+    </div>
     <table class="table table-bordered table-striped table-sm align-middle">
         <thead class="table-dark text-center">
             <tr>
-                <th>ID Barang</th>
+                <th>Kode Barang</th>
                 <th>Nama Barang</th>
                 <th>Penitip</th>
                 <th>Tanggal Masuk</th>
@@ -70,7 +85,7 @@
         <tbody>
             @forelse ($barang as $item)
                 <tr>
-                    <td>{{ $item->id_barang }}</td>
+                    <td class="text-center">{{ strtoupper(substr($item->nama_barang, 0, 1)) . $item->id_barang }}</td>
                     <td>{{ $item->nama_barang }}</td>
                     <td>{{ $item->penitip->nama_penitip ?? '-' }}</td>
                     <td>
@@ -80,7 +95,7 @@
                         {{ $item->tanggal_akhir ? \Carbon\Carbon::parse($item->tanggal_akhir)->format('d/m/Y') : '-' }}
                     </td>
                     <td>Rp{{ number_format($item->harga_jual, 0, ',', '.') }}</td>
-                    <td>
+                    <td class="text-center">
                         <span class="badge bg-warning text-dark">{{ $item->status_barang }}</span>
                     </td>
                     <td>

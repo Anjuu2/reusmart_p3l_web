@@ -83,6 +83,16 @@ class Transaksi extends Model
 		->whereColumn('detail_transaksi.id_transaksi', 'transaksi.id_transaksi');
 	}
 
+	public function penitipSafe()
+	{
+		// Ambil salah satu barang titipan dari detail transaksi pertama
+		$firstDetail = $this->detailTransaksi()->first();
+		if ($firstDetail && $firstDetail->barang) {
+			return $firstDetail->barang->penitip;
+		}
+		return null;
+	}
+
 	public function getPenitipAttribute()
 	{
 		$detailTransaksi = $this->detailTransaksi()->first();
@@ -97,5 +107,11 @@ class Transaksi extends Model
 
 		return \App\Models\Penitip::find($barang->id_penitip);
 	}
+
+	public function alamat()
+	{
+		return $this->belongsTo(AlamatPembeli::class, 'id_alamat');
+	}
+	
 
 }

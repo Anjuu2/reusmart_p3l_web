@@ -54,23 +54,50 @@
             </ul>
         </div>
     @endif
+    <div class="container d-flex justify-content-between align-items-center">
+        <form class="d-flex mb-3" action="{{ route('pegawai_gudang.pengiriman.index') }}" method="GET">
+            <input class="form-control me-2" 
+                type="search" 
+                name="search" 
+                placeholder="Cari transaksi barang..." 
+                value="{{ request('search') }}"
+                aria-label="Search" 
+                style="width: 250px;">
+
+            <input class="form-control me-2" type="date" name="date" value="{{ request('date') }}">
+
+            <select name="status_pengiriman" class="form-select me-2" style="width: 200px;">
+                <option value="" disabled selected>Status</option>
+                <option value="Diterima">Diterima</option>
+                <option value="Dibatalkan">Dibatalkan</option>
+                <option value="Sampai">Sampai</option>
+                <option value="Disiapkan">Disiapkan</option>
+                <option value="Diantar">Diantar</option>
+            </select>
+
+            <button class="btn btn-outline-dark" type="submit">
+                <i class="bi bi-search"></i>
+            </button>
+        </form>
+    </div>
+    
     <table class="table table-bordered table-striped table-sm align-middle">
         <thead class="table-dark text-center">
             <tr>
-                <th>Nomor Transaksi</th>
-                <th>Nama Pembeli</th>
-                <th>Tanggal Transaksi</th>
-                <th>Tanggal Jadwal</th>
-                <th>Jenis Pengiriman</th>
+                <th class="text-center">Nomor Transaksi</th>
+                <th class="text-center">Nama Pembeli</th>
+                <th class="text-center">Tanggal Transaksi</th>
+                <th class="text-center">Tanggal Jadwal</th>
+                <th class="text-center">Jenis Pengiriman</th>
                 <!-- <th>Status Jadwal</th> -->
-                <th>Status Pengiriman</th>
-                <th>Aksi</th>
+                <th class="text-center">Status Pengiriman</th>
+                <th class="text-center">Aksi</th>
             </tr>
         </thead>
         <tbody>
             @forelse ($transaksi as $item)
                 <tr>
-                    <td>{{ $item->id_transaksi }}</td>
+                    <td class="text-center">{{ $item->id_transaksi }}</td>
                     <td>{{ $item->pembeli->nama_pembeli ?? '-' }}</td>
                     <td>
                         @if ($item->tanggal_transaksi)
@@ -92,7 +119,7 @@
                     </td>
                     <td>{{ $jadwal->jenis_jadwal ?? '-' }}</td>
                     <!-- <td>{{ $jadwal->status_jadwal ?? '-' }}</td> -->
-                    <td>
+                    <td class="text-center">
                         @if ($jadwal && $jadwal->pengiriman && $jadwal->pengiriman->status_pengiriman)
                             @php
                                 $status = $jadwal->pengiriman->status_pengiriman;
@@ -110,7 +137,7 @@
                             <em style="color: #888;">Belum Disiapkan</em>
                         @endif
                     </td>
-                    <td>
+                    <td class="text-center">
                         @if (!$jadwal || !$jadwal->tanggal_jadwal)
                             @if ($jadwal && $jadwal->jenis_jadwal === 'Pengiriman')
                                 <!-- Pengiriman -->

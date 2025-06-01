@@ -129,6 +129,12 @@
                                     <p>Pengiriman Barang</p>
                                 </a>
                             </li>
+                            <li class="nav-item">
+                                <a class="nav-link" href="{{ route('pegawai_gudang.cetakNotaIndex') }}">
+                                    <i class="bi bi-receipt"></i>
+                                    <p>Cetak Nota</p>
+                                </a>
+                            </li>
                         </ul>
                     </nav>
                 </div>
