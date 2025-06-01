@@ -86,26 +86,49 @@ class PembeliController extends Controller
             ->with('success', 'Pembeli berhasil dibuat.');
     }
 
-    public function riwayatTransaksi()
+    public function riwayatTransaksi(Request $request)
     {
-        // Ambil data Pembeli yg sedang login
         $pembeli = auth()->guard('pembeli')->user();
-        $userId  = $pembeli->id_pembeli;
+        $userId = $pembeli->id_pembeli;
+        $search = $request->input('search');
 
-        // Ambil semua transaksi milik pembeli, beserta detail dan barang‐nya
-        $transaksiList = Transaksi::with([
+        $query = Transaksi::with([
             'detailTransaksi.barang.ratingDetail',
-            'penjadwalans.pengiriman' // gunakan nama relasi baru yg benar
-        ])
-        ->where('id_pembeli', $userId)
-        ->orderByDesc('tanggal_transaksi')
-        ->paginate(5);
+            'penjadwalans.pengiriman'
+        ])->where('id_pembeli', $userId);
 
-        foreach ($transaksiList as $transaksi) {
-            $transaksi->status_pengiriman = $transaksi->penjadwalan->pengiriman->status_pengiriman ?? 'Belum ada pengiriman';
+        if ($search) {
+            $query->where(function ($q) use ($search) {
+                $q->where('id_transaksi', 'like', "%{$search}%")
+                ->orWhere('status_transaksi', 'like', "%{$search}%")
+                ->orWhereHas('detailTransaksi.barang', function ($q2) use ($search) {
+                    $q2->where('nama_barang', 'like', "%{$search}%");
+                })
+                ->orWhereHas('penjadwalans.pengiriman', function ($q3) use ($search) {
+                    $q3->where('status_pengiriman', 'like', "%{$search}%");
+                });
+            });
         }
 
-        // Kirim ke view khusus riwayat
+        $transaksiList = $query->orderByDesc('tanggal_transaksi')->paginate(5);
+
+        // Ambil status pengiriman untuk tiap transaksi
+        foreach ($transaksiList as $transaksi) {
+            $statusPengirimanText = 'Belum ada pengiriman';
+
+            if ($transaksi->penjadwalans) {
+                foreach ($transaksi->penjadwalans as $penjadwalan) {
+                    if ($penjadwalan && $penjadwalan->pengiriman) {
+                        $statusPengirimanText = strtolower(trim($penjadwalan->pengiriman->status_pengiriman));
+                        if (in_array($statusPengirimanText, ['diterima', 'sampai'])) {
+                            break;
+                        }
+                    }
+                }
+            }
+            $transaksi->status_pengiriman = $statusPengirimanText;
+        }
+
         return view('pembeli.riwayatTransaksi', compact('pembeli', 'transaksiList'));
     }
 

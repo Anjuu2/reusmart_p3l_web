@@ -24,6 +24,18 @@
         </div>
       </div>
       <div class="card-body">
+        <form method="GET" action="{{ route('pembeli.riwayatTransaksi') }}" class="mb-4">
+          <div class="input-group">
+            <input 
+              type="text" 
+              name="search" 
+              class="form-control" 
+              placeholder="Cari Riwayat..." 
+              value="{{ request('search') }}"
+            >
+            <button type="submit" class="btn btn-outline-success">Cari</button>
+          </div>
+        </form>
         @forelse ($transaksiList as $transaksi)
             @php
                 $terdapatDiterima = false;
@@ -102,7 +114,7 @@
         @endforelse
 
         <div class="d-flex justify-content-center mt-4">
-          {{ $transaksiList->links() }}
+          {{ $transaksiList->appends(['search' => request('search')])->links() }}
         </div>
       </div>
     </div>
