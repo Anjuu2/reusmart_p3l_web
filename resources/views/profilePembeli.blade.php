@@ -140,7 +140,7 @@
             </div>
         </div>
 
-        <!-- Modal Riwayat Pembelian -->
+        <!-- Modal Riwayat Pembelian
         <div class="modal fade" id="historyModal" tabindex="-1" aria-labelledby="historyModalLabel" aria-hidden="true">
         <div class="modal-dialog modal-xl modal-dialog-scrollable">
             <div class="modal-content">
@@ -189,7 +189,7 @@
             </div>
             </div>
         </div>
-        </div>
+        </div> -->
 
         <div class="modal fade" id="editProfileModal" tabindex="-1" aria-labelledby="editProfileModalLabel" aria-hidden="true">
         <div class="modal-dialog modal-lg">
@@ -230,9 +230,12 @@
 
         <div class="profile-actions d-flex justify-content-between align-items-center mt-4">
             <div class="d-flex gap-2">
-                <button type="button" class="btn btn-outline-primary" data-bs-toggle="modal" data-bs-target="#historyModal">
+                <!-- <button type="button" class="btn btn-outline-primary" data-bs-toggle="modal" data-bs-target="#historyModal">
                     Lihat Riwayat Pembelian
-                </button>
+                </button> -->
+                <a href="{{ route('pembeli.riwayatTransaksi') }}" class="btn btn-outline-primary">
+                    Lihat Riwayat Pembelian
+                </a>
                 <button type="button" class="btn btn-custom" data-bs-toggle="modal" data-bs-target="#editProfileModal">
                     Edit Profil
                 </button>

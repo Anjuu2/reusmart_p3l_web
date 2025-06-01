@@ -136,6 +136,11 @@ class BarangTitipan extends Model
 		return $this->hasMany(Rating::class, 'id_barang');
 	}
 
+	public function ratingDetail()
+    {
+        return $this->hasOne(Rating::class, 'id_barang', 'id_barang')->where('id_pembeli', auth()->guard('pembeli')->id());
+    }
+
 	public function fotoBarang()
 	{
     	return $this->hasMany(FotoBarang::class, 'id_barang', 'id_barang');

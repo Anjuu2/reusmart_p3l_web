@@ -42,13 +42,24 @@ class Penjadwalan extends Model
 		'status_jadwal'
 	];
 
+	// public function transaksi()
+	// {
+	// 	return $this->belongsTo(Transaksi::class, 'id_transaksi');
+	// }
+
+	// public function pengirimen()
+	// {
+	// 	return $this->hasMany(Pengiriman::class, 'id_jadwal');
+	// }
+
 	public function transaksi()
 	{
-		return $this->belongsTo(Transaksi::class, 'id_transaksi');
+		return $this->belongsTo(Transaksi::class, 'id_transaksi', 'id_transaksi');
 	}
 
-	public function pengirimen()
+	public function pengiriman()
 	{
-		return $this->hasMany(Pengiriman::class, 'id_jadwal');
+		return $this->hasOne(Pengiriman::class, 'id_jadwal', 'id_jadwal');
 	}
+
 }
