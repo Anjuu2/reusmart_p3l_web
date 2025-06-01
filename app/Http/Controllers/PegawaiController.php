@@ -114,4 +114,19 @@ class PegawaiController extends Controller
         return view('pegawai.index', compact('pegawai'));
     }
 
+    public function showM(Request $request)
+    {
+        // Ambil pegawai yang sedang login
+        $pegawai = Auth::guard('pegawai')->user();
+
+        if (!$pegawai) {
+            return response()->json(['error' => 'Pegawai tidak ditemukan.'], 404);
+        }
+
+        return response()->json([
+            'success' => true,
+            'pegawai' => $pegawai
+        ]);
+    }
+
 }

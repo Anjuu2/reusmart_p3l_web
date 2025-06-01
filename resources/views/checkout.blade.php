@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>ReUseMart - Home</title>
+    <title>ReUseMart - Checkout</title>
 
     <!-- Bootstrap CSS -->
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/css/bootstrap.min.css" rel="stylesheet">
@@ -529,6 +529,7 @@
             }
         }
     </style>
+
 </head>
 <body>
     <!-- Header Section -->
@@ -559,155 +560,124 @@
         </div>
     </header>
 
-    {{-- Toast tetap menempel di layar --}}
-    <div class="toast-container position-fixed top-0 end-0 p-3" style="z-index: 1055;">
-        @if (session('success'))
-            <div id="liveToast" class="toast fade" role="alert" aria-live="assertive" aria-atomic="true">
-                <div class="toast-header bg-success text-white">
-                    <strong class="me-auto">Sukses</strong>
-                    <button type="button" class="btn-close btn-close-white" data-bs-dismiss="toast" aria-label="Close"></button>
-                </div>
-                <div class="toast-body">
-                    {{ session('success') }}
-                </div>
-            </div>
-        @endif
-
-        @if (session('warning'))
-            <div id="liveToast" class="toast fade" role="alert" aria-live="assertive" aria-atomic="true">
-                <div class="toast-header bg-danger text-white">
-                    <strong class="me-auto">Peringatan</strong>
-                    <button type="button" class="btn-close btn-close-white" data-bs-dismiss="toast" aria-label="Close"></button>
-                </div>
-                <div class="toast-body">
-                    {{ session('warning') }}
-                </div>
-            </div>
-        @endif
-    </div>
-
     <!-- <div class="navbar-shadow-separator"></div> -->
     
     <!-- Main Section -->
     <main>
-        <div id="carouselExampleCaptions" class="carousel slide">
-            <div class="carousel-indicators">
-                <button type="button" data-bs-target="#carouselExampleCaptions" data-bs-slide-to="0" class="active" aria-current="true" aria-label="Slide 1"></button>
-                <button type="button" data-bs-target="#carouselExampleCaptions" data-bs-slide-to="1" aria-label="Slide 2"></button>
-                <button type="button" data-bs-target="#carouselExampleCaptions" data-bs-slide-to="2" aria-label="Slide 3"></button>
+        @if (session('error'))
+            <div class="alert alert-danger mt-2">
+                {{ session('error') }}
             </div>
-            <div class="carousel-inner">
-                @foreach($barangs->take(3) as $index => $barang)
-                <div class="carousel-item {{ $index === 0 ? 'active' : '' }}">
-                    <a href="{{ url('product/' . $barang->id_barang) }}">
-                        <img src="{{ asset('images/barang/' . ($barang->fotoBarang->first()->nama_file ?? 'default.jpg')) }}" alt="Foto Barang" class="img-fluid">
-                    </a>
-                    <div class="carousel-caption d-none d-md-block">
-                        <h5>{{ $barang->nama_barang }}</h5>
-                        <p>{{ Str::limit($barang->deskripsi, 100) }}</p>
-                    </div>
-                </div>
-                @endforeach
-            </div>
-            <button class="carousel-control-prev" type="button" data-bs-target="#carouselExampleCaptions" data-bs-slide="prev">
-                <span class="carousel-control-prev-icon" aria-hidden="true"></span>
-                <span class="visually-hidden">Previous</span>
-            </button>
-            <button class="carousel-control-next" type="button" data-bs-target="#carouselExampleCaptions" data-bs-slide="next">
-                <span class="carousel-control-next-icon" aria-hidden="true"></span>
-                <span class="visually-hidden">Next</span>
-            </button>
-        </div>
+        @endif
+        @php
+            $alamatPertama = $alamatList->first();
+        @endphp
 
-        <div class="carousel-divider"></div>
-
-        <div class="category-title">
-            <h2>Kategori</h2>
-        </div>
-
-        <!-- Featured Categories -->
-        <div class="category-container">
-            <!-- Category 1 -->
-            <a href="{{ url('kategori/1') }}" class="category-card">
-                <img src="{{ asset('images/kategori/laptop.png') }}" alt="Elektronik & Gadget">
-                <h3>Elektronik & Gadget</h3>
-            </a>
-            <!-- Category 2 -->
-            <a href="{{ url('kategori/2') }}" class="category-card">
-                <img src="{{ asset('images/kategori/baju.png') }}" alt="Pakaian & Aksesori">
-                <h3>Pakaian & Aksesori</h3>
-            </a>
-            <!-- Category 3 -->
-            <a href="{{ url('kategori/3') }}" class="category-card">
-                <img src="{{ asset('images/kategori/sofa.png') }}" alt="Perabotan Rumah Tangga">
-                <h3>Perabotan Rumah Tangga</h3>
-            </a>
-            <!-- Category 4 -->
-            <a href="{{ url('kategori/4') }}" class="category-card">
-                <img src="{{ asset('images/kategori/tas.png') }}" alt="Buku & Peralatan Sekolah">
-                <h3>Buku, Alat Tulis, Peralatan Sekolah</h3>
-            </a>
-            <!-- Category 5 -->
-            <a href="{{ url('kategori/5') }}" class="category-card">
-                <img src="{{ asset('images/kategori/mainan.png') }}" alt="Hobi & Mainan">
-                <h3>Hobi, Mainan, Koleksi</h3>
-            </a>
-            <!-- Category 6 -->
-            <a href="{{ url('kategori/6') }}" class="category-card">
-                <img src="{{ asset('images/kategori/bayi.png') }}" alt="Perlengkapan Bayi & Anak">
-                <h3>Perlengkapan Bayi & Anak</h3>
-            </a>
-            <!-- Category 7 -->
-            <a href="{{ url('kategori/7') }}" class="category-card">
-                <img src="{{ asset('images/kategori/roda.png') }}" alt="Otomotif & Aksesori">
-                <h3>Otomotif & Aksesori</h3>
-            </a>
-            <!-- Category 8 -->
-            <a href="{{ url('kategori/8') }}" class="category-card">
-                <img src="{{ asset('images/kategori/tenda.png') }}" alt="Perlengkapan Taman & Outdoor">
-                <h3>Perlengkapan Taman & Outdoor</h3>
-            </a>
-            <!-- Category 9 -->
-            <a href="{{ url('kategori/9') }}" class="category-card">
-                <img src="{{ asset('images/kategori/kantor.png') }}" alt="Peralatan Kantor & Industri">
-                <h3>Peralatan Kantor & Industri</h3>
-            </a>
-            <!-- Category 10 -->
-            <a href="{{ url('kategori/10') }}" class="category-card">
-                <img src="{{ asset('images/kategori/cermin.png') }}" alt="Kosmetik & Perawatan Diri">
-                <h3>Kosmetik & Perawatan Diri</h3>
-            </a>
-        </div>
-
-        <div class="product-container">
-            @foreach($barangs->take(10) as $barang)
-            <a href="{{ url('product/' . $barang->id_barang) }}" class="product-card">
-                <img src="{{ asset('images/barang/' . ($barang->fotoBarang->first()->nama_file ?? 'default.jpg')) }}" alt="Foto Barang" class="img-fluid">
-                <div class="product-info">
-                    <p class="product-category">{{ $barang->kategori->nama_kategori ?? 'Kategori Tidak Ada' }}</p>
-                    <h3 class="product-name">{{ $barang->nama_barang }}</h3>
-                    <!-- <div class="product-rating">
-                        <span>★ ({{ rand(4,5) }}.{{ rand(0,9) }})</span>
-                    </div> -->
-                    <p class="product-status">{{ $barang->status_barang }}</p>
-                </div>
-                <div class="product-price">
-                    <div class="price-container">
-                        <span class="current-price">Rp{{ number_format($barang->harga_jual, 0, ',', '.') }}</span>
-                    </div>
-                    <div class="add-to-cart-container">
-                        <form action="{{ route('keranjang.tambah') }}" method="POST">
-                            @csrf
-                            <input type="hidden" name="id_barang" value="{{ $barang->id_barang }}">
-                            <button type="submit" class="add-to-cart">
-                                <img src="https://img.icons8.com/material/24/007848/shopping-cart.png" alt="Cart">
-                                    Add
+        <div class="container d-flex justify-content-center my-4">
+            <div class="row">
+                <h1>Checkout</h1>
+                {{-- KIRI: Detail Checkout --}}
+                <div class="col-md-8">
+                    {{-- Alamat Pengiriman --}}
+                    <div class="card mb-3">
+                        <div class="card-body">
+                            <h4 class="fw-bold">ALAMAT PENGIRIMAN</h4>
+                            <div id="alamatUtama">
+                                <p>
+                                    {{ $alamatPertama->jalan }}, {{ $alamatPertama->kelurahan }}, {{ $alamatPertama->kecamatan }},
+                                    {{ $alamatPertama->kota }}, {{ $alamatPertama->provinsi }}<br>
+                                    {{ $alamatPertama->kode_pos }}<br>
+                                    {{ $alamatPertama->detail }}
+                                </p>
+                            </div>
+                            <button class="btn btn-outline-primary btn-sm" data-bs-toggle="modal" data-bs-target="#gantiAlamatModal">
+                                Ganti
                             </button>
-                        </form>
+                        </div>
+                    </div>
+
+                    <div class="card mb-3">
+                        <div class="card-body">
+                            <h4 class="fw-bold">JENIS PENGIRIMAN</h4>
+                            <div id="jenisPengirimanTerpilih" class="mb-3">
+                                <p>Kurir</p>
+                            </div>
+                            <input type="hidden" id="inputJenisPengiriman" value="Kurir">
+                            <button class="btn btn-outline-primary btn-sm" data-bs-toggle="modal" data-bs-target="#gantiPengirimanModal">
+                                Ganti
+                            </button>
+                        </div>
+                    </div>
+
+                    {{-- Produk --}}
+                    <div class="card mb-3">
+                        @foreach ($items as $item)
+                        <div class="card-body">
+                            <h5 class="fw-bold mb-3">{{ $item->nama_barang }}</h5>
+                            <div class="d-flex">
+                                <img src="{{ asset('images/barang/' . ($item->fotoBarang->first()->nama_file ?? 'default.jpg')) }}" width="100" alt="Foto Barang" class="img-fluid">
+                                <div class="ms-5 mt-3">
+                                    <p class="mb-3">{{ $item->deskripsi }}</p>
+                                    <p class="fw-bold">Rp{{ number_format($item->harga_jual, 0, ',', '.') }}</p>
+                                </div>
+                            </div>
+                            <hr>
+                        </div>
+                        @endforeach
                     </div>
                 </div>
-            </a>
-            @endforeach
+
+                {{-- KANAN: Informasi Poin dan Pembayaran --}}
+                <div class="col-md-4">
+                    <div class="card mb-3">
+                        <div class="card-body">
+                            <h5 class="fw-bold">Poin Pembeli</h5>
+                            <p>Total Poin: <strong id="totalPoin">{{$poin}}</strong></p>
+
+                            <label for="poinInput" class="form-label">Masukkan Poin yang Ingin Ditukar</label>
+                            <input type="number" class="form-control" id="poinInput" name="poin_tukar" placeholder="Contoh: 100" min="0" max="300">
+                            
+                            <div class="form-text mb-2">100 poin = Rp10.000 potongan</div>
+                            <div id="poinError" class="text-danger mt-1" style="visibility: hidden; height: 18px;">
+                                Jumlah poin melebihi total poin.
+                            </div>
+                        </div>
+                    </div>
+
+                    {{-- Total Pembayaran --}}
+                    <div class="card">
+                        <div class="card-body">
+                            <p class="d-flex justify-content-between">
+                                <span>Subtotal</span>
+                                <span id="subtotalDisplay">Rp{{ number_format($subtotal, 0, ',', '.') }}</span>
+                                <input type="hidden" id="subtotalHidden" value="{{ $subtotal }}">
+                            </p>
+                            <p class="d-flex justify-content-between">
+                                <span>Potongan Poin</span>
+                                <span class="text-danger" id="potonganPoin">-Rp0</span>
+                            </p>
+                            <p class="d-flex justify-content-between">
+                                <span>Ongkir</span>
+                                <span id="ongkirDisplay">Rp0</span>
+                            </p>
+                            <hr>
+                            <h5 class="d-flex justify-content-between">
+                                <span>Total Tagihan</span>
+                                <span class="text-success fw-bold" id="totalBayar">Rp248.734</span>
+                            </h5>
+                            <form method="POST" action="{{ route('checkout.submit') }}">
+                                @csrf
+                                <input type="hidden" name="total_pembayaran" id="totalPembayaranInput" value="0">
+                                <input type="hidden" name="jenis_pengiriman" id="inputJenisPengiriman" value="Kurir">
+                                <input type="hidden" name="poin_tukar" id="inputPoinTukar" value="0">
+                                <input type="hidden" name="id_alamat" id="inputIdAlamat" value="{{ $alamatPertama->id_alamat_pembeli }}">
+                                <button type="submit" class="btn btn-success w-100 mt-3">Bayar Sekarang</button>
+                            </form>
+                            <small class="d-block text-center text-muted mt-2">Dengan melanjutkan, anda menyetujui S&K</small>
+                        </div>
+                    </div>
+                </div>
+            </div>
         </div>
     </main>
 
@@ -729,16 +699,197 @@
         </div>
     </footer>
 
+    <!-- Modal -->
+    <div class="modal fade" id="gantiAlamatModal" tabindex="-1" aria-labelledby="gantiAlamatModalLabel" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">Pilih Alamat Pengiriman</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Tutup"></button>
+                </div>
+                <div class="modal-body">
+                    <div class="row">
+                        @foreach ($alamatList as $alamat)
+                            <div class="col-12 mb-3">
+                                <div class="card border-start border-4 border-success shadow-sm">
+                                    <div class="card-body d-flex justify-content-between align-items-start">
+                                        <div>
+                                            <p class="mb-3 pe-4">
+                                                {{ $alamat->jalan }},
+                                                {{ $alamat->kelurahan }},
+                                                {{ $alamat->kecamatan }},
+                                                {{ $alamat->kota }},
+                                                {{ $alamat->provinsi }} {{ $alamat->kode_pos }}
+                                            </p>
+                                            <p class="mb-1 fw-bold">Detail:</p>
+                                            <p class="mb-0">
+                                                {{ $alamat->detail }}
+                                            </p>
+                                        </div>
+
+                                        {{-- Tombol Pilih --}}
+                                        <button type="button" class="btn btn-success"
+                                            onclick="gunakanAlamatDariCard(this)"
+                                            data-id="{{ $alamat->id_alamat }}"
+                                            data-jalan="{{ $alamat->jalan }}"
+                                            data-kelurahan="{{ $alamat->kelurahan }}"
+                                            data-kecamatan="{{ $alamat->kecamatan }}"
+                                            data-kota="{{ $alamat->kota }}"
+                                            data-provinsi="{{ $alamat->provinsi }}"
+                                            data-kodepos="{{ $alamat->kode_pos }}"
+                                            data-detail="{{ $alamat->detail }}">
+                                            Pilih
+                                        </button>
+                                    </div>
+                                </div>
+                            </div>
+                        @endforeach
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="modal fade" id="gantiPengirimanModal" tabindex="-1" aria-labelledby="gantiPengirimanModalLabel" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">Pilih Jenis Pengiriman</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Tutup"></button>
+                </div>
+                <div class="modal-body">
+                    <div class="row">
+                        {{-- Opsi 1: Kurir --}}
+                        <div class="col-12 mb-3">
+                            <div class="card border-start border-4 border-primary shadow-sm">
+                                <div class="card-body d-flex justify-content-between align-items-start">
+                                    <div>
+                                        <h6 class="fw-bold">Kurir</h6>
+                                        <p class="mb-2">Pengiriman hanya untuk wilayah Yogyakarta dan sekitarnya. Biaya ongkir berlaku sesuai ketentuan.</p>
+                                    </div>
+                                    <button type="button" class="btn btn-primary"
+                                            onclick="pilihPengiriman('kurir')">
+                                        Pilih
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+
+                        {{-- Opsi 2: Ambil Sendiri --}}
+                        <div class="col-12">
+                            <div class="card border-start border-4 border-success shadow-sm">
+                                <div class="card-body d-flex justify-content-between align-items-start">
+                                    <div>
+                                        <h6 class="fw-bold">Ambil Sendiri</h6>
+                                        <p class="mb-2">Silakan ambil barang langsung di gudang ReUseMart dalam waktu 3 hari setelah transaksi.</p>
+                                    </div>
+                                    <button type="button" class="btn btn-success"
+                                            onclick="pilihPengiriman('ambil_sendiri')">
+                                        Pilih
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
     <!-- Bootstrap JS and dependencies (Popper.js and Bootstrap JS) -->
     <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.11.6/dist/umd/popper.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.min.js"></script>
 
     <script>
-        const toastLive = document.getElementById('liveToast');
-            if (toastLive) {
-                const toast = new bootstrap.Toast(toastLive);
-                toast.show();
+        document.addEventListener('DOMContentLoaded', function () {
+            const poinInput = document.getElementById('poinInput');
+            const totalPoin = parseInt(document.getElementById('totalPoin').textContent);
+            const subtotal = parseInt(document.getElementById('subtotalHidden').value);
+            const errorEl = document.getElementById('poinError');
+            const ongkirDisplay = document.getElementById('ongkirDisplay');
+
+            window.hitungTotal = function () {
+                let poin = parseInt(poinInput.value) || 0;
+
+                if (poin > totalPoin) {
+                    errorEl.style.visibility = 'visible';
+                    return;
+                } else {
+                    errorEl.style.visibility = 'hidden';
+                }
+
+                const potongan = Math.floor(poin / 100) * 10000;
+
+                // AMBIL jenis_pengiriman dari input[name]
+                const jenis = document.querySelector('input[name="jenis_pengiriman"]').value;
+                let ongkir = 0;
+
+                if (jenis === 'Kurir') {
+                    ongkir = subtotal < 1500000 ? 100000 : 0;
+                    ongkirDisplay.textContent = `Rp${ongkir.toLocaleString('id-ID')}`;
+                } else {
+                    ongkirDisplay.textContent = 'Rp0';
+                }
+
+                const total = subtotal - potongan + ongkir;
+
+                document.getElementById('potonganPoin').textContent = `-Rp${potongan.toLocaleString('id-ID')}`;
+                document.getElementById('totalBayar').textContent = `Rp${total.toLocaleString('id-ID')}`;
+                document.getElementById('totalPembayaranInput').value = total;
             }
+
+            hitungTotal();
+
+            poinInput.addEventListener('input', function () {
+                document.getElementById('inputPoinTukar').value = poinInput.value;
+                hitungTotal();
+            });
+        });
+    </script>
+
+    <script>
+        function gunakanAlamatDariCard(button) {
+            const data = button.dataset;
+
+            const html = `
+                <p>
+                    ${data.jalan}, ${data.kelurahan}, ${data.kecamatan}, 
+                    ${data.kota}, ${data.provinsi}<br>
+                    ${data.kodepos}<br>
+                    ${data.detail}
+                </p>
+            `;
+
+            document.getElementById('alamatUtama').innerHTML = html;
+            document.getElementById('inputIdAlamat').value = data.id;
+
+            // Tutup modal
+            const modal = bootstrap.Modal.getInstance(document.getElementById('gantiAlamatModal'));
+            modal.hide();
+        }
+    </script>
+
+    <script>
+        function pilihPengiriman(jenis) {
+            // Tampilkan label yang dipilih
+            document.getElementById('jenisPengirimanTerpilih').innerHTML = `<p>${jenis === 'kurir' ? 'Kurir' : 'Ambil Sendiri'}</p>`;
+
+            // Ubah hidden input
+            const input = document.querySelector('input[name="jenis_pengiriman"]');
+            if (input) {
+                input.value = jenis === 'kurir' ? 'Kurir' : 'Ambil Sendiri';
+            }
+
+            // Re-hit total
+            if (typeof hitungTotal === 'function') {
+                hitungTotal();
+            }
+
+            // Tutup modal
+            const modalEl = document.getElementById('gantiPengirimanModal');
+            const modal = bootstrap.Modal.getOrCreateInstance(modalEl);
+            modal.hide();
+        }
     </script>
 </body>
 </html>

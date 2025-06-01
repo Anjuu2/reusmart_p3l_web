@@ -79,4 +79,20 @@ class PembeliController extends Controller
             ->route('login')
             ->with('success', 'Pembeli berhasil dibuat.');
     }
+
+    public function showM(Request $request)
+    {
+        // Ambil pengguna yang sedang login (pastikan sudah login dengan Sanctum)
+        $pembeli = Auth::guard('pembeli')->user();
+
+        if (!$pembeli) {
+            return response()->json(['error' => 'Pembeli tidak ditemukan.'], 404);
+        }
+
+        // Mengembalikan data pembeli sebagai response JSON
+        return response()->json([
+            'success' => true,
+            'pembeli' => $pembeli
+        ]);
+    }
 }

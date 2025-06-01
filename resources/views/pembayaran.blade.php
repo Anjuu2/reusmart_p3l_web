@@ -15,6 +15,7 @@
             box-sizing: border-box;
         }
 
+
         body {
             font-family: Arial, sans-serif;
             color: #333;
@@ -200,6 +201,13 @@
             transform: scale(1.2);
         }
 
+        .container-main{
+            display: flex;
+            flex-direction: column;
+            justify-content: flex-start;
+            align-items: flex-start;
+        }
+
         /* Responsive Design */
         @media (max-width: 768px) {
             .container {
@@ -335,42 +343,100 @@
         </div>
     </header>
 
+    <div class="toast-container position-fixed top-0 end-0 p-3" style="z-index: 1055;">
+        @if (session('success'))
+            <div id="liveToast" class="toast fade" role="alert" aria-live="assertive" aria-atomic="true">
+                <div class="toast-header bg-success text-white">
+                    <strong class="me-auto">Sukses</strong>
+                    <button type="button" class="btn-close btn-close-white" data-bs-dismiss="toast" aria-label="Close"></button>
+                </div>
+                <div class="toast-body">
+                    {{ session('success') }}
+                </div>
+            </div>
+        @endif
+
+        @if (session('error'))
+            <div id="liveToast" class="toast fade" role="alert" aria-live="assertive" aria-atomic="true">
+                <div class="toast-header bg-danger text-white">
+                    <strong class="me-auto">Peringatan</strong>
+                    <button type="button" class="btn-close btn-close-white" data-bs-dismiss="toast" aria-label="Close"></button>
+                </div>
+                <div class="toast-body">
+                    {{ session('error') }}
+                </div>
+            </div>
+        @endif
+    </div>
+
     <!-- <div class="navbar-shadow-separator"></div> -->
     
     <!-- Main Section -->
     <main>
         <div class="cartList mx-auto mt-8">
-            <h2 class="text-2xl font-semibold  text-center">Keranjang Anda</h2>
-
-            @forelse($items as $item)
                 <div class="border rounded-lg p-4 mt-4 mb-4 flex flex-col space-y-2">
-                    <div class="w-3/4">
-                        <a href="{{ url('product/' . $item->id_barang) }}" class="product-title fw-bold text-success fs-3 text-decoration-none">
-                            {{ $item->nama_barang }}
-                        </a>
-                        <p class="text-gray-700 mt-1">{{ $item->deskripsi }}</p>
-                        <p class="text-lg font-semibold mt-3 text-black">Rp{{ number_format($item->harga_jual, 0, ',', '.') }}</p>
+                    <div class="d-flex align-items-center mb-3 justify-content-between w-100">
+                        <!-- kiri: icon + teks -->
+                        <div class="d-flex align-items-center">
+                                <span class="badge bg-warning text-dark me-2" style="font-size:1.5rem">
+                                <i class="bi bi-clock-history"></i>
+                            </span>
+                            <div>
+                                <h4 class="mb-0 fw-bold">Bayar sebelum</h4>
+                                <small class="text-muted">31 Mei 2025, 02:19</small>
+                            </div>
+                        </div>
+
+                        <!-- kanan: countdown menempel di ujung kanan -->
+                        <div class="d-flex gap-2">
+                            <div id="countdown-minutes" class="bg-danger text-white px-3 py-1 rounded text-center" style="min-width:70px">1m</div>
+                            <div id="countdown-seconds" class="bg-danger text-white px-3 py-1 rounded text-center" style="min-width:70px">00s</div>
+                        </div>
                     </div>
-                    <form action="{{ route('keranjang.hapus', $item->id_barang) }}" method="POST">
-                        @csrf
-                        @method('POST')
-                        <button type="submit" class="btn btn-outline-danger">
-                            Remove
-                        </button>
-                    </form>
+
+                    <!-- Pesan Peringatan -->
+                    <div class="alert alert-warning py-2" role="alert" style="font-size: 0.9rem">
+                        <strong>Tinggal selangkah lagi untuk menyelesaikan pesananmu</strong><br />
+                        Segera bayar biar nggak keduluan dengan pembeli lainnya!
+                    </div>
+
+                    <!-- Nomor Transaksi -->
+                    <div class="mb-3">
+                        <label class="form-label fw-bold">Nomor Virtual Account</label>
+                        <div class="d-flex align-items-center gap-3">
+                            <h5 class="mb-0 text-dark">075048615248</h5>
+                        </div>
+                    </div>
+
+                    <!-- Total Tagihan -->
+                    <div class="mb-3">
+                        <label class="form-label fw-bold">Total Tagihan</label>
+                        <div class="d-flex justify-content-between align-items-center">
+                            <h4 class="text-success mb-0">Rp4.339.500</h4>
+                        </div>
+                    </div>
+
+                    <!-- Upload Bukti Pembayaran -->
+                    <div class="mb-3">
+                        <label class="form-label fw-bold">Masukkan Bukti Pembayaran</label>
+                        <form action="{{ route('upload.bukti') }}" method="POST" enctype="multipart/form-data">
+                            @csrf
+                            <input type="hidden" name="id_transaksi" value="{{ request('id_transaksi') }}">
+                                <input type="file" id="buktiPembayaran" name="bukti_pembayaran" accept="image/png, image/jpeg, image/jpg" class="form-control"/>
+                            <div id="fileError" class="text-danger mt-1" style="display:none; font-size:0.875rem;">
+                                Format file tidak valid! Harap pilih file gambar (jpg, jpeg, png).
+                            </div>
+                            <div class="mt-3 mb-3">
+                                <img id="previewImage" src="" alt="Preview Gambar" style="max-width: 80%; max-height: 300px; display: none; border-radius: 8px; border: 1px solid #ddd;" />
+                            </div>
+
+                            <div class="d-flex gap-3 mb-4">
+                                <button type="submit" class="btn btn-success flex-fill">Upload Bukti Pembayaran</button>
+                            </div>
+                        </form>
+                    </div>
                 </div>
-            @empty
-                <p class="text-gray-500">Keranjang kosong.</p>
-            @endforelse
-
-            <div class="d-flex justify-content-end align-items-center mt-4">
-                <a href="{{ route('checkout') }}" class="btn btn-success btn-lg">
-                    Checkout
-                </a>
-            </div>
         </div>
-
-        
     </main>
 
     <!-- Footer Section -->
@@ -394,5 +460,99 @@
     <!-- Bootstrap JS and dependencies (Popper.js and Bootstrap JS) -->
     <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.11.6/dist/umd/popper.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.min.js"></script>
+
+    <script>
+        let countDownDate = new Date().getTime() + 60 * 1000;
+        const idTransaksi = "{{ request('id_transaksi') }}"; // Ambil id_transaksi dari URL
+
+        function updateCountdown() {
+            let now = new Date().getTime();
+            let distance = countDownDate - now;
+
+            if (distance < 0) {
+                document.getElementById("countdown-minutes").textContent = "0m";
+                document.getElementById("countdown-seconds").textContent = "00s";
+                clearInterval(interval);
+
+                // Jalankan fungsi batal transaksi
+                fetch("{{ route('batal.transaksi') }}", {
+                    method: "POST",
+                    headers: {
+                        "X-CSRF-TOKEN": "{{ csrf_token() }}",
+                        "Content-Type": "application/json"
+                    },
+                    body: JSON.stringify({
+                        id_transaksi: idTransaksi
+                    })
+                })
+                .then(response => response.json())
+                .then(data => {
+                    if (data.success) {
+                        alert(data.message);
+                        window.location.href = "{{ route('home') }}"; // Redirect ke home setelah pembatalan
+                    } else {
+                        console.log(data.message);
+                    }
+                })
+                .catch(error => {
+                    console.error("Terjadi kesalahan:", error);
+                });
+
+                return;
+            }
+
+            let minutes = Math.floor(distance / (1000 * 60));
+            let seconds = Math.floor((distance % (1000 * 60)) / 1000);
+
+            document.getElementById("countdown-minutes").textContent = minutes + "m";
+            document.getElementById("countdown-seconds").textContent =
+                (seconds < 10 ? "0" : "") + seconds + "s";
+        }
+
+        let interval = setInterval(updateCountdown, 1000);
+        updateCountdown();
+    </script>
+
+    <script>
+        const inputFile = document.getElementById('buktiPembayaran');
+        const fileError = document.getElementById('fileError');
+        const previewImage = document.getElementById('previewImage');
+
+        inputFile.addEventListener('change', () => {
+            const file = inputFile.files[0];
+            if (!file) {
+                fileError.style.display = 'none';
+                previewImage.style.display = 'none';
+                previewImage.src = '';
+                return;
+            }
+
+            const validTypes = ['image/jpeg', 'image/png', 'image/jpg', 'image/gif'];
+            if (!validTypes.includes(file.type)) {
+                fileError.style.display = 'block';
+                previewImage.style.display = 'none';
+                previewImage.src = '';
+                inputFile.value = ''; // reset input file agar user pilih ulang
+            } else {
+                fileError.style.display = 'none';
+                
+                // Tampilkan preview gambar
+                const reader = new FileReader();
+                reader.onload = function(e) {
+                previewImage.src = e.target.result;
+                previewImage.style.display = 'block';
+                }
+                reader.readAsDataURL(file);
+            }
+        });
+    </script>
+
+    <script>
+        const toastLive = document.getElementById('liveToast');
+            if (toastLive) {
+                const toast = new bootstrap.Toast(toastLive);
+                toast.show();
+            }
+    </script>
 </body>
 </html>
