@@ -267,79 +267,95 @@ class LoginController extends Controller
     // }
 
     public function loginMobile(Request $request)
-{
-    // Validasi input
-    $request->validate([
-        'tipe_user' => 'required|in:pembeli,penitip,kurir,hunter',
-        'email' => 'required|email',
-        'password' => 'required|string',
-    ]);
+    {
+        // Validasi input, semua tipe user lowercase
+        $request->validate([
+            'tipe_user' => 'required|in:pembeli,penitip,kurir,hunter',
+            'email' => 'required|email',
+            'password' => 'required|string',
+        ]);
 
-    $tipe = strtolower($request->tipe_user);
-    $email = trim($request->email);
-    $password = $request->password;
+        $tipe = strtolower($request->tipe_user);
+        $email = $request->email;
+        $password = trim($request->password);
 
-    if ($tipe === 'pembeli') {
-        $user = Pembeli::where('email', $email)->first();
-        if ($user && $password === $user->password) {  // cek password plaintext langsung
-            $token = $user->createToken('ReUseMart')->plainTextToken;
-            return response()->json([
-                'success' => true,
-                'message' => 'Login berhasil!',
-                'token' => $token,
-                'user' => $user,
-                'redirect_page' => 'dashboard.pembeli',
-            ]);
-        }
-    }
+        Log::info('Login attempt', ['tipe_user' => $tipe, 'email' => $email]);
 
-    if ($tipe === 'penitip') {
-        $user = Penitip::where('email', $email)->first();
-        if ($user && $password === $user->password) {
-            $token = $user->createToken('ReUseMart')->plainTextToken;
-            return response()->json([
-                'success' => true,
-                'message' => 'Login berhasil!',
-                'token' => $token,
-                'user' => $user,
-                'redirect_page' => 'dashboard.penitip',
-            ]);
-        }
-    }
+        if ($tipe === 'pembeli') {
+            $user = Pembeli::where('email', $email)->first();
 
-    if ($tipe === 'kurir' || $tipe === 'hunter') {
-        $user = Pegawai::where('email', $email)
-            ->whereIn('id_jabatan', [5, 7])
-            ->first();
-
-        if ($user && $password === $user->password) {
-            $token = $user->createToken('ReUseMart')->plainTextToken;
-            $redirectPage = '';
-            if ($user->id_jabatan == 5) {
-                $redirectPage = 'dashboard.kurir';
-            } elseif ($user->id_jabatan == 7) {
-                $redirectPage = 'dashboard.hunter';
+            if (!$user) {
+                Log::info('User pembeli tidak ditemukan', ['email' => $email]);
+            } elseif ($user->status_aktif != 1) {
+                Log::info('User pembeli tidak aktif', ['email' => $email, 'status_aktif' => $user->status_aktif]);
+            } elseif ($password === $user->password) {
+                $token = $user->createToken('ReUseMart')->plainTextToken;
+                Log::info('Login pembeli sukses', ['email' => $email]);
+                return response()->json([
+                    'success' => true,
+                    'message' => 'Login berhasil!',
+                    'token' => $token,
+                    'user' => $user,
+                    'redirect_page' => 'dashboard.pembeli',
+                ]);
+            } else {
+                Log::info('Password salah pembeli', ['email' => $email]);
             }
-            return response()->json([
-                'success' => true,
-                'message' => 'Login berhasil!',
-                'token' => $token,
-                'user' => $user,
-                'redirect_page' => $redirectPage,
-            ]);
-        } else {
-            return response()->json([
-                'success' => false,
-                'message' => 'Hanya pegawai dengan id_jabatan 5 atau 7 yang bisa login.',
-            ]);
         }
+
+        if ($tipe === 'penitip') {
+            $user = Penitip::where('email', $email)->first();
+
+            if (!$user) {
+                Log::info('User penitip tidak ditemukan', ['email' => $email]);
+            } elseif ($user->status_aktif != 1) {
+                Log::info('User penitip tidak aktif', ['email' => $email, 'status_aktif' => $user->status_aktif]);
+            } elseif ($password === $user->password) {
+                $token = $user->createToken('ReUseMart')->plainTextToken;
+                Log::info('Login penitip sukses', ['email' => $email]);
+                return response()->json([
+                    'success' => true,
+                    'message' => 'Login berhasil!',
+                    'token' => $token,
+                    'user' => $user,
+                    'redirect_page' => 'dashboard.penitip',
+                ]);
+            } else {
+                Log::info('Password salah penitip', ['email' => $email]);
+            }
+        }
+
+        if ($tipe === 'kurir' || $tipe === 'hunter') {
+            $user = Pegawai::where('email', $email)
+                ->whereIn('id_jabatan', [5, 7])
+                ->first();
+
+            if (!$user) {
+                Log::info('User pegawai tidak ditemukan', ['email' => $email]);
+            } elseif ($password === $user->password) {
+                $token = $user->createToken('ReUseMart')->plainTextToken;
+                $redirectPage = $user->id_jabatan == 5 ? 'dashboard.kurir' : 'dashboard.hunter';
+                Log::info('Login pegawai sukses', ['email' => $email, 'id_jabatan' => $user->id_jabatan]);
+                return response()->json([
+                    'success' => true,
+                    'message' => 'Login berhasil!',
+                    'token' => $token,
+                    'user' => $user,
+                    'redirect_page' => $redirectPage,
+                ]);
+            } else {
+                Log::info('Password salah pegawai', ['email' => $email]);
+                return response()->json([
+                    'success' => false,
+                    'message' => 'Hanya pegawai dengan id_jabatan 5 atau 7 yang bisa login.',
+                ]);
+            }
+        }
+
+        throw ValidationException::withMessages([
+            'error' => 'Email atau password salah.',
+        ]);
     }
-
-    throw ValidationException::withMessages([
-        'error' => 'Email atau password salah.',
-    ]);
-}
-
 
     public function logoutMobile(Request $request)
     {
