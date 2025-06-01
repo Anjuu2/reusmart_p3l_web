@@ -30,16 +30,16 @@
                 $statusPengirimanText = 'Belum ada pengiriman';
 
                 if ($transaksi->penjadwalans) {
-                    foreach ($transaksi->penjadwalans as $penjadwalan) {
-                        if ($penjadwalan && $penjadwalan->pengiriman) {
-                            $statusPengirimanText = $penjadwalan->pengiriman->status_pengiriman;
-                            if (strtolower(trim($statusPengirimanText)) === 'diterima') {
-                                $terdapatDiterima = true;
-                                break;
-                            }
-                        }
-                    }
-                }
+                  foreach ($transaksi->penjadwalans as $penjadwalan) {
+                      if ($penjadwalan && $penjadwalan->pengiriman) {
+                          $statusPengirimanText = strtolower(trim($penjadwalan->pengiriman->status_pengiriman));
+                          if (in_array($statusPengirimanText, ['diterima', 'sampai'])) {
+                              $terdapatDiterima = true;
+                              break;
+                          }
+                      }
+                  }
+              }
             @endphp
           <div class="card mb-4">
             <div class="card-header" style="background-color: #e7f0da; color: rgba(111, 143, 70, 1);">

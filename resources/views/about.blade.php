@@ -347,7 +347,7 @@
 
             <!-- Gambar Header -->
             <div class="header-image" style="display: flex; justify-content: center; margin-bottom: 20px;">
-                <img src="{{ asset('images/reusemart.jpg') }}" alt="ReUseMart Banner" style="width: 80%; max-width: 1100px; height: 400px; object-fit: cover; border-radius: 10px;">
+                <img src="{{ asset('images/barang/reusemart.jpg') }}" alt="ReUseMart Banner" style="width: 80%; max-width: 1100px; height: 400px; object-fit: cover; border-radius: 10px;">
             </div>
 
             <!-- Kotak-kotak Penjelasan -->

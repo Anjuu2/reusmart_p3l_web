@@ -114,7 +114,7 @@ class PembeliController extends Controller
 
         $barang = BarangTitipan::where('id_barang', $id_barang)
             ->whereHas('detail_transaksi.transaksi.penjadwalans.pengiriman', function ($query) {
-                $query->whereRaw('LOWER(status_pengiriman) = ?', ['diterima']);
+                $query->whereIn(DB::raw('LOWER(status_pengiriman)'), ['Diterima', 'Sampai']);
             })
             ->whereHas('detail_transaksi.transaksi', function ($query) use ($userId) {
                 $query->where('id_pembeli', $userId);
@@ -122,7 +122,6 @@ class PembeliController extends Controller
             ->with('penitip')
             ->firstOrFail();
 
-        // Cek rating yang sudah ada jika ada
         $existing = Rating::where('id_barang', $id_barang)
             ->where('id_pembeli', $userId)
             ->first();
@@ -141,7 +140,7 @@ class PembeliController extends Controller
 
         $barang = BarangTitipan::where('id_barang', $request->id_barang)
             ->whereHas('detail_transaksi.transaksi.penjadwalans.pengiriman', function ($query) {
-                $query->whereRaw('LOWER(status_pengiriman) = ?', ['diterima']);
+                $query->whereIn(DB::raw('LOWER(status_pengiriman)'), ['Diterima', 'Sampai']);
             })
             ->whereHas('detail_transaksi.transaksi', function ($query) use ($userId) {
                 $query->where('id_pembeli', $userId);
@@ -162,4 +161,5 @@ class PembeliController extends Controller
 
         return redirect()->route('pembeli.riwayatTransaksi')->with('success', 'Rating berhasil disimpan.');
     }
+
 }

@@ -484,7 +484,7 @@
                         <strong>Rp{{ number_format($product->harga_jual, 0, ',', '.') }}</strong>
                     </p>
 
-                    <h5 style="font-size: 14px; color: grey; margin: 0 0 6px;">
+                    <h5 style="font-size: 14px; color: grey; margin: 0 0 6px; display: flex; align-items: center; gap: 6px;">
                        {{ $product->penitip->nama_penitip }} -
                         @if($avgRating > 0)
                             @php
@@ -507,6 +507,10 @@
                             @for($i = 0; $i < $emptyStars; $i++)
                                 <i class="far fa-star text-warning"></i>
                             @endfor
+
+                            {{-- Angka rata-rata --}}
+                            <span style="font-size: 13px; color: #555;">({{ number_format($avgRating, 1) }})</span>
+                        
                         @else
                             {{-- Tampilkan 5 bintang kosong tanpa warna (abu-abu) --}}
                             @for($i = 0; $i < 5; $i++)
