@@ -47,7 +47,6 @@ class Transaksi extends Model
 		'jenis_pengiriman',
 		'nomor_transaksi',
 		'poin_didapat',
-		'bukti_pembayaran',
 		'id_alamat',
 		'poin_digunakan'
 	];

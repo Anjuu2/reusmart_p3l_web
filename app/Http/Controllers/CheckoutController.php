@@ -9,6 +9,7 @@ use App\Models\DetailTransaksi;
 use App\Models\BarangTitipan;
 use App\Models\Pembeli;
 use App\Models\Keranjang;
+use App\Models\Pembayaran;
 use Carbon\Carbon;
 use Exception;
 use Illuminate\Support\Facades\DB;
@@ -51,8 +52,8 @@ class CheckoutController extends Controller
                 'jenis_pengiriman'  => $jenisPengiriman,
                 'nomor_transaksi'   => '',
                 'poin_didapat'      => $poinDidapat,
-                'poin_digunakan'    => $poinDitukar,   // Simpan poin yang digunakan
-                'id_alamat'         => $idAlamat,      // simpan id_alamat ke database
+                'poin_digunakan'    => $poinDitukar,
+                'id_alamat'         => $idAlamat,
             ]);
 
             // 2. Generate No Nota: yy.mm.xxx
@@ -98,8 +99,20 @@ class CheckoutController extends Controller
             // 7. Hapus keranjang
             DB::table('detail_keranjang')->whereIn('id_keranjang', $keranjangIds)->delete();
 
+            // 8. Simpan data pembayaran ke tabel pembayaran
+            // id_pegawai diisi null/0, status_verifikasi 0 (belum diverifikasi)
+            Pembayaran::create([
+                'id_pembeli' => $pembeliId,
+                'id_pegawai' => null, // atau 0 sesuai tipe data
+                'id_transaksi' => $transaksi->id_transaksi,
+                'bukti_transfer' => null, // belum ada bukti transfer saat checkout
+                'status_verifikasi' => 0,
+            ]);
+
             DB::commit();
-            return redirect()->route('pembayaran', ['id_transaksi' => $transaksi->id_transaksi])->with('success', 'Checkout berhasil. Silakan lakukan pembayaran.');
+
+            return redirect()->route('pembayaran', ['id_transaksi' => $transaksi->id_transaksi])
+                            ->with('success', 'Checkout berhasil. Silakan lakukan pembayaran.');
         } catch (Exception $e) {
             DB::rollBack();
             return back()->with('error', 'Checkout gagal: ' . $e->getMessage());
@@ -142,65 +155,5 @@ class CheckoutController extends Controller
             'subtotal' => $subtotal,
         ]);
     }
-
-    public function uploadBukti(Request $request)
-    {
-        // Validasi input
-        $request->validate([
-            'id_transaksi' => 'required|exists:transaksi,id_transaksi',
-            'bukti_pembayaran' => 'required|image|mimes:jpeg,png,jpg|max:2048',
-        ]);
-
-        DB::beginTransaction();
-        try {
-            // Ambil transaksi
-            $transaksi = Transaksi::find($request->id_transaksi);
-
-            // Simpan file ke folder public/images/bukti_pembayaran
-            $file = $request->file('bukti_pembayaran');
-            $extension = $file->getClientOriginalExtension();
-            $namaFile = uniqid() . '.' . $extension;
-            $file->move(public_path('images/bukti_pembayaran'), $namaFile);
-
-            // Update field bukti_pembayaran dan status_transaksi di database
-            $transaksi->bukti_pembayaran = $namaFile;
-            $transaksi->status_transaksi = 'Lunas';  // ubah status menjadi lunas
-            $transaksi->save();
-
-            DB::commit();
-            return redirect()->route('home')->with('success', 'Bukti pembayaran berhasil diunggah dan status transaksi diubah menjadi lunas.');
-        } catch (Exception $e) {
-            DB::rollBack();
-            return back()->with('error', 'Gagal mengunggah bukti pembayaran: ' . $e->getMessage());
-        }
-    }
-
-    public function batalTransaksi(Request $request)
-    {
-        try {
-            $id = $request->input('id_transaksi');
-            $transaksi = Transaksi::find($id);
-            if ($transaksi && $transaksi->status_transaksi === 'Menunggu Pembayaran' && !$transaksi->bukti_pembayaran) {
-                $transaksi->status_transaksi = 'Batal';
-                $transaksi->save();
-
-                // Kembalikan barang jadi Tersedia
-                $details = DetailTransaksi::where('id_transaksi', $id)->get();
-                foreach ($details as $detail) {
-                    BarangTitipan::where('id_barang', $detail->id_barang)->update([
-                        'status_barang' => 'Tersedia'
-                    ]);
-                }
-
-                return response()->json(['success' => true, 'message' => 'Transaksi dibatalkan karena tidak ada bukti pembayaran.']);
-            }
-
-            return response()->json(['success' => false, 'message' => 'Transaksi tidak valid atau sudah dibayar.']);
-        } catch (Exception $e) {
-            Log::error($e->getMessage());
-            return response()->json(['success' => false, 'message' => 'Terjadi kesalahan server.', 'error' => $e->getMessage()], 500);
-        }
-    }
-
 }
 

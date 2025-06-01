@@ -122,4 +122,19 @@ class PenitipController extends Controller
         $penitip->delete();
         return redirect()->route('CS.penitipIndex')->with('success', 'Penitip berhasil dihapus.');
     }
+
+    public function showM(Request $request)
+    {
+        // Ambil pengguna penitip yang sedang login
+        $penitip = Auth::guard('penitip')->user();
+
+        if (!$penitip) {
+            return response()->json(['error' => 'Penitip tidak ditemukan.'], 404);
+        }
+
+        return response()->json([
+            'success' => true,
+            'penitip' => $penitip
+        ]);
+    }
 }

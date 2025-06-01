@@ -90,8 +90,8 @@ Route::middleware('auth:pembeli')->post('/keranjang/tambah', [KeranjangControlle
 Route::middleware('auth:pembeli')->post('/keranjang/{id}', [KeranjangController::class, 'removeFromCart'])->name('keranjang.hapus');
 Route::middleware('auth:pembeli')->get('/checkout', [CheckoutController::class, 'showCheckout'])->name('checkout');
 Route::middleware('auth:pembeli')->post('/checkout/submit', [CheckoutController::class, 'submitCheckout'])->name('checkout.submit');
-Route::middleware('auth:pembeli')->post('/pembayaran/upload-bukti', [CheckoutController::class, 'uploadBukti'])->name('upload.bukti');
-Route::middleware('auth:pembeli')->post('/pembayaran/batal-transaksi', [CheckoutController::class, 'batalTransaksi'])->name('batal.transaksi');
+Route::middleware('auth:pembeli')->post('/pembayaran/upload-bukti', [TransaksiController::class, 'uploadBukti'])->name('upload.bukti');
+Route::middleware('auth:pembeli')->post('/pembayaran/batal-transaksi', [TransaksiController::class, 'batalTransaksi'])->name('batal.transaksi');
 
 Route::middleware(['auth:pegawai'])->prefix('cs')->group(function () {
     Route::get('/dashboard', function () {
@@ -102,9 +102,9 @@ Route::middleware(['auth:pegawai'])->prefix('cs')->group(function () {
     Route::put('/penitip/{id}', [PenitipController::class, 'update'])->name('cs.penitip.update');
     Route::delete('/penitip/{id}', [PenitipController::class, 'destroy'])->name('cs.penitip.destroy');
 
-    Route::get('/transaksi', [TransaksiController::class, 'index'])->name('cs.transaksi.index');
-    Route::post('/transaksi/{id_transaksi}', [TransaksiController::class, 'verifikasiTransaksi'])->name('cs.transaksi.verifikasi');
-    Route::delete('/transaksi/{id_transaksi}/tola', [TransaksiController::class, 'tolakTransaksi'])->name('cs.transaksi.tolak');
+    Route::get('/pembayaran', [TransaksiController::class, 'index'])->name('cs.pembayaran.index');
+    Route::post('/pembayaran/{id_transaksi}', [TransaksiController::class, 'verifikasiPembayaran'])->name('cs.pembayaran.verifikasi');
+    Route::delete('/pembayaran/{id_transaksi}/tolak', [TransaksiController::class, 'tolakPembayaran'])->name('cs.pembayaran.tolak');
 
 });
 

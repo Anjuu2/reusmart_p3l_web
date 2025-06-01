@@ -123,9 +123,9 @@
                     <nav class="mt-2">
                         <ul class="nav nav-pills nav-sidebar flex-column" data-widget="treeview" role="menu" data-acccordion="false">
                             <li class="nav-item">
-                                <a class="nav-link" href="{{ route('cs.transaksi.index') }}">
+                                <a class="nav-link" href="{{ route('cs.pembayaran.index') }}">
                                     <i class="bi bi-file-earmark-check"></i>
-                                    <p>Verifikasi Bukti Pembayaran</p>
+                                    <p>Verifikasi Bukti Transfer</p>
                                 </a>
                             </li>
                         </ul>

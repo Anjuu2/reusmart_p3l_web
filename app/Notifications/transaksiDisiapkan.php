@@ -41,9 +41,8 @@ class transaksiDisiapkan extends Notification implements ShouldQueue
         return (new MailMessage)
                     ->subject('Status Transaksi Anda: Disiapkan')
                     ->greeting('Halo ' . ($this->pembeli->nama_pembeli ?? 'Pelanggan') . ',')
-                    ->line('Bukti aembayaran Anda dengan ID transaksi #' . $this->transaksi->id_transaksi . ' telaj diverifikasi.')
+                    ->line('Bukti aembayaran Anda dengan nomor transaksi' . $this->transaksi->nomor_transaksi . ' telah diverifikasi.')
                     ->line('Terima kasih telah berbelanja di ReUseMart!')
-                    // ->action('Lihat Transaksi', url('/transaksi/' . $this->transaksi->id_transaksi))
                     ->line('Jika ada pertanyaan, jangan ragu menghubungi kami.');
     }
 }
