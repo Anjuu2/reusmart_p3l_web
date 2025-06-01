@@ -3,18 +3,51 @@
 namespace App\Models;
 
 use Illuminate\Foundation\Auth\User as Authenticatable;
-use Illuminate\Notifications\Notifiable;
+use Illuminate\Database\Eloquent\Factories\HasFactory;
+use Illuminate\Database\Eloquent\Collection;
 use Laravel\Sanctum\HasApiTokens;
+use Illuminate\Notifications\Notifiable;
 
+/**
+ * Class Penitip
+ * 
+ * @property int $id_penitip
+ * @property string $no_ktp
+ * @property string $nama_penitip
+ * @property string $username
+ * @property string $password
+ * @property int $poin
+ * @property string $alamat
+ * @property string $email
+ * @property float $saldo_penitip
+ * @property bool $status_aktif
+ * 
+ * @property Collection|Badge[] $badges
+ * @property Collection|BarangTitipan[] $barang_titipans
+ * @property Collection|Komisi[] $komisis
+ * @property Collection|Rating[] $ratings
+ *
+ * @package App\Models
+ */
 class Penitip extends Authenticatable
 {
-    use HasApiTokens, Notifiable;
+	use HasApiTokens, HasFactory, Notifiable;
 
-    protected $table = 'penitip';              
-    protected $primaryKey = 'id_penitip';      
-    public $timestamps = false;                
+	protected $table = 'penitip';
+	protected $primaryKey = 'id_penitip';
+	public $timestamps = false;
 
-    protected $fillable = [
+	protected $casts = [
+		'poin' => 'int',
+		'saldo_penitip' => 'float',
+		'status_aktif' => 'bool'
+	];
+
+	protected $hidden = [
+		'password'
+	];
+
+	protected $fillable = [
         'no_ktp',
         'foto_ktp', 
         'nama_penitip',
@@ -27,7 +60,27 @@ class Penitip extends Authenticatable
         'status_aktif'
     ];
 
-    public function getAuthPassword()
+	public function badges()
+	{
+		return $this->hasMany(Badge::class, 'id_penitip');
+	}
+
+	public function barang_titipans()
+	{
+		return $this->hasMany(BarangTitipan::class, 'id_penitip');
+	}
+
+	public function komisis()
+	{
+		return $this->hasMany(Komisi::class, 'id_penitip');
+	}
+
+	public function ratings()
+	{
+		return $this->hasMany(Rating::class, 'id_penitip');
+	}
+
+	public function getAuthPassword()
     {
         return $this->password;
     }

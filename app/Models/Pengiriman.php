@@ -28,12 +28,12 @@ class Pengiriman extends Model
 	public $timestamps = false;
 
 	protected $casts = [
-		'Id_pegawai' => 'int',
+		'id_pegawai' => 'int',
 		'id_jadwal' => 'int'
 	];
 
 	protected $fillable = [
-		'Id_pegawai',
+		'id_pegawai',
 		'id_jadwal',
 		'status_pengiriman'
 	];
@@ -45,6 +45,6 @@ class Pengiriman extends Model
 
 	public function pegawai()
 	{
-		return $this->belongsTo(Pegawai::class, 'Id_pegawai');
+		return $this->belongsTo(Pegawai::class, 'id_pegawai');
 	}
 }

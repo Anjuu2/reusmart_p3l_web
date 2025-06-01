@@ -73,6 +73,8 @@
 <section class="background-animation">
     <video class="video-background" autoplay loop muted>
         <source src="{{ asset('images/video.mp4') }}" type="video/mp4">
+        <!-- <source src="{{asset("images/test.mp4")}}" type="video/mp4"> -->
+        Your browser does not support the video tag.
     </video>
 
     <div class="bg-overlay"></div>
@@ -134,6 +136,9 @@
                         @endif
 
                         <button type="submit" style="width:100%;" class="btn btn-dark btn-block mb-2 mt-3">Login</button>
+                        <div class="d-flex justify-content-center mt-2">
+                            <a href="{{ url('linkForm') }}" class="link-dark" style="font-size: 17px;">Lupa Password?</a>
+                        </div>
                         <div class="d-flex justify-content-center mt-2">
                             <a href="{{ url('register') }}" class="link-dark" style="font-size: 22px;">Buat Akun ReUseMart</a>
                         </div>

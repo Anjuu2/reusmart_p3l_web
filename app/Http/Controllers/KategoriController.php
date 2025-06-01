@@ -19,10 +19,68 @@ class KategoriController extends Controller
         return view('kategori');
     }
 
-    // public function show($id)
+    // public function showProducts()
+    // {
+    //     // Mengambil semua produk barang titipan
+    //     $barangTitipan = BarangTitipan::all();
+
+    //     // Mengirim data produk ke view
+    //     return view('kategori', compact('barangTitipan'));
+    // }
+
+    public function showAvailableProducts()
+    {
+        $produk = BarangTitipan::with(['kategori', 'fotoBarang'])->where('status_barang', 'Tersedia')->get();
+        $kategori = null;
+        return view('kategori', compact('produk', 'kategori'));
+    }
+
+    // public function showProductsByCategory($id)
     // {
     //     $kategori = Kategori::findOrFail($id);
-    //     $barang = BarangTitipan::where('id_kategori', $id)->get();
-    //     return view('kategori.show', compact('kategori', 'barang'));
+    //     $produk = BarangTitipan::with('kategori')
+    //         ->where('id_kategori', $id)
+    //         ->where('status_barang', 'Tersedia')
+    //         ->get();
+
+    //     return view('kategori', compact('kategori', 'produk'));
     // }
+
+    public function showProductsByCategory($id)
+    {
+        // Ambil kategori berdasarkan ID
+        $kategori = Kategori::findOrFail($id);
+        
+        // Ambil produk berdasarkan kategori
+        $produk = BarangTitipan::with(['kategori', 'fotoBarang'])
+            ->where('id_kategori', $id)
+            ->where('status_barang', 'Tersedia')
+            ->get();
+
+        // Kirim data ke view
+        return view('kategori', compact('kategori', 'produk'));
+    }
+
+    public function search(Request $request)
+    {
+        $query = $request->get('query');
+
+        if ($query) {
+            $products = BarangTitipan::with(['kategori', 'fotoBarang']) // ← ini penting
+                ->where('nama_barang', 'like', '%' . $query . '%')
+                ->get();
+        } else {
+            $products = BarangTitipan::with(['kategori', 'fotoBarang'])->get(); // ← juga di sini
+        }
+
+        return response()->json($products);
+    }
+
+    public function show($id)
+    {
+        $kategori = Kategori::findOrFail($id);
+        $barang = BarangTitipan::with('fotoBarang')->where('id_kategori', $id)->get();
+
+        return view('kategori', compact('kategori', 'barang'));
+    }
 }

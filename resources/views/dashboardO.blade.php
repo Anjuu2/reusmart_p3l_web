@@ -112,7 +112,7 @@
                             <span class="badge 
                                 {{ 
                                     $requestDonasi->status_request == 'Diterima' ? 'bg-success' : 
-                                    ($requestDonasi->status_request == 'Diproses' ? 'bg-warning' : 
+                                    ($requestDonasi->status_request == 'Menunggu' ? 'bg-warning' : 
                                     'bg-danger') 
                                 }}">
                                 {{ $requestDonasi->status_request }}

@@ -3,11 +3,26 @@
 namespace App\Http\Controllers;
 
 use App\Models\Penitip;
+use App\Models\BarangTitipan;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Storage;
+use Illuminate\Support\Facades\Auth;
 
 class PenitipController extends Controller
 {
+    public function profilePenitip()
+    {
+        $penitip = auth()->guard('penitip')->user(); // pastikan guard 'penitip'
+
+        $transaksiList = BarangTitipan::with('penitip')
+            ->where('id_penitip', $penitip->id_penitip)
+            ->where('status_barang', 'terjual')
+            ->orderByDesc('tanggal_keluar')
+            ->get();
+
+        return view('Penitip.profilePenitip', compact('penitip', 'transaksiList'));
+    }
+
     public function index(Request $request)
     {
         $search = $request->input('q');
@@ -106,6 +121,21 @@ class PenitipController extends Controller
         }
         $penitip->delete();
         return redirect()->route('cs.penitip.index')->with('success', 'Penitip berhasil dihapus.');
+    }
+
+    public function dashboard(Request $request)
+    {
+        $penitip = auth()->guard('penitip')->user();
+
+        $query = BarangTitipan::where('id_penitip', $penitip->id_penitip);
+
+        if ($request->filled('search')) {
+            $query->where('nama_barang', 'like', '%' . $request->search . '%');
+        }
+
+        $barangs = $query->orderByDesc('tanggal_masuk')->paginate(10);
+
+        return view('penitip.dashboard', compact('barangs'));
     }
 
 }

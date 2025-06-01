@@ -236,6 +236,9 @@
                 <button type="button" class="btn btn-custom" data-bs-toggle="modal" data-bs-target="#editProfileModal">
                     Edit Profil
                 </button>
+                <a href="{{ route('alamatPembeli.index') }}">
+                    <button type="button" class="btn btn-primary">Daftar Alamat</button>
+                </a>
                 <form action="{{ route('pembeli.toggleStatus', $pembeli->id_pembeli) }}" method="POST" onsubmit="return confirm('Yakin ingin mengubah status akun?')">
                     @csrf
                     @method('PUT')

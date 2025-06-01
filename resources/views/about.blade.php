@@ -17,8 +17,10 @@
 
         body {
             font-family: Arial, sans-serif;
-            background-color: #f4f4f4;
             color: #333;
+            background-color: rgba(255, 255, 255, 0.8) !important;
+            backdrop-filter: saturate(150%) blur(30px);
+            z-index: 3;
         }
 
         .container {
@@ -31,9 +33,13 @@
 
         .logo {
             margin-left: -40px;
+            background-color: rgba(111, 143, 70, 1); /* semi-transparan */
+            padding: 8px 12px;
+            border-radius: 50%;
         }
+
         header {
-            background-color: #ffffff;
+            background-color: rgba(111, 143, 70, 1);
             padding: 10px 0;
             display: flex;
             justify-content: space-between;
@@ -47,6 +53,15 @@
 
         header .logo img {
             height: 60px;
+            filter: drop-shadow(2px 2px 4px rgba(0, 0, 0, 0.2)); /* efek bayangan */
+            transition: transform 0.3s ease;
+            border-radius: 50%;
+        }
+
+        header .logo img:hover {
+            transform: scale(1.1); /* sedikit membesar saat di-hover */
+            filter: drop-shadow(6px 6px 12px rgba(0, 0, 0, 0.3));
+            cursor: pointer;
         }
 
         nav ul {
@@ -62,7 +77,7 @@
 
         nav ul li a {
             text-decoration: none;
-            color: #333;
+            color: white;
             font-size: 15px;
             font-weight: 600;
         }
@@ -112,7 +127,7 @@
         .carousel-divider {
             width: 80%;
             height: 1px; /* tebal garis */
-            background-color: #333; /* warna garis */
+            background-color: rgba(111, 143, 70, 1);; /* warna garis */
             margin: 20px auto; /* jarak dari carousel */
             box-shadow: 0px 2px 4px rgba(0, 0, 0, 0.1); /* bayangan untuk garis */
         }
@@ -120,7 +135,7 @@
         footer {
             background-color: #f4f4f4;
             padding: 10px 50px;  
-            border-top: 1px solid #333;
+            border-top: 1px solid rgba(111, 143, 70, 1);;
             font-size: 14px;
         }
 
@@ -314,12 +329,11 @@
             <!-- Cart, Search, and Location -->
             <div class="cart-search">
                 <!-- Search Input -->
-                <input type="search" placeholder="Search for items...">
+                <!-- <input type="search" placeholder="Search for items..."> -->
 
-                <!-- Icons -->
                 <div class="icons">
-                    <a href="#"><img src="https://img.icons8.com/material/24/000000/shopping-cart.png" alt="Cart"></a>
-                    <a href="#"><img src="https://img.icons8.com/material/24/000000/user.png" alt="Account"></a>
+                    <a href="#"><img src="https://img.icons8.com/material/24/ffffff/shopping-cart.png" alt="Cart"></a>
+                    <a href="login"><img src="https://img.icons8.com/material/24/ffffff/user.png" alt="Account"></a>
                 </div>
             </div>
         </div>
@@ -412,10 +426,10 @@
             </div>
         </div>
 
-        <div style="background: #333; height: 200px; padding: 40px 50px; border-radius: 0; box-shadow: 0 2px 6px rgba(0,0,0,0.2); width: 100%; margin-bottom: 0px;">
-            <h2 style="color: white; margin-bottom: 10px;">
+        <div style="background: rgba(111, 143, 70, 1); height: 200px; padding: 40px 50px; border-radius: 0; box-shadow: 0 2px 6px rgba(0,0,0,0.2); width: 100%; margin-bottom: 0px;">
+            <h2 style="color: white; margin-bottom: 10px;"><strong>
                 <span style="border-bottom: 2px solid white; padding-bottom: 5px; display: inline-block; width: 150px;">Our Contact</span>
-            </h2>
+            </h2></strong>
             <p style="margin-bottom: 0px; color: white;">Jika Anda memiliki pertanyaan atau ingin tahu lebih banyak tentang ReUseMart, silakan hubungi kami:</p>
             <p style="margin-bottom: 0px; color: white;">Email:</> support@reusemart.com</p>
             <p style="margin-bottom: 0px; color: white;">Telepon:+1 (123) 456-7890</p>

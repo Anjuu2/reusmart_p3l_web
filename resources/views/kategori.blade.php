@@ -7,7 +7,8 @@
 
     <!-- Bootstrap CSS -->
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/css/bootstrap.min.css" rel="stylesheet">
-
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.5/font/bootstrap-icons.css">
+    
     <style>
         * {
             margin: 0;
@@ -17,8 +18,10 @@
 
         body {
             font-family: Arial, sans-serif;
-            background-color: #f4f4f4;
             color: #333;
+            background-color: rgba(255, 255, 255, 0.8) !important;
+            backdrop-filter: saturate(150%) blur(30px);
+            z-index: 3;
         }
 
         .container {
@@ -31,9 +34,13 @@
 
         .logo {
             margin-left: -40px;
+            background-color: rgba(111, 143, 70, 1); /* semi-transparan */
+            padding: 8px 12px;
+            border-radius: 50%;
         }
+
         header {
-            background-color: #ffffff;
+            background-color: rgba(111, 143, 70, 1);
             padding: 10px 0;
             display: flex;
             justify-content: space-between;
@@ -47,6 +54,15 @@
 
         header .logo img {
             height: 60px;
+            filter: drop-shadow(2px 2px 4px rgba(0, 0, 0, 0.2)); /* efek bayangan */
+            transition: transform 0.3s ease;
+            border-radius: 50%;
+        }
+
+        header .logo img:hover {
+            transform: scale(1.1); 
+            filter: drop-shadow(6px 6px 12px rgba(0, 0, 0, 0.3));
+            cursor: pointer;
         }
 
         nav ul {
@@ -62,7 +78,7 @@
 
         nav ul li a {
             text-decoration: none;
-            color: #333;
+            color: white
             font-size: 15px;
             font-weight: 600;
         }
@@ -137,7 +153,7 @@
         .category-card h3 {
             margin-top: 5px;
             margin: 2px 0 0 0;
-            font-size: 8px;
+            font-size: 10px;
             color: #333;
             text-decoration: none;
         }
@@ -153,7 +169,7 @@
         footer {
             background-color: #f4f4f4;
             padding: 10px 50px;  
-            border-top: 1px solid #333;
+            border-top: 1px solid rgba(111, 143, 70, 1);;
             font-size: 14px;
         }
 
@@ -196,14 +212,10 @@
         }
 
         .product-container {
-            display: flex;  
-            justify-content: flex-start; 
-            align-items: flex-start;
-            gap: 10px;  
-            margin-top: 5px;
-            flex-wrap: wrap;  
-            margin-left: 125px;
-            margin-right: 125px;
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
+            gap: 20px;
+            padding: 20px 40px;
         }
 
         /* Kartu Produk */
@@ -211,16 +223,15 @@
             background-color: #fff;
             border-radius: 10px;
             box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.1);
-            width: 200px;
             text-align: center;
-            margin: 10px auto;
-            padding: 10px;
-            display: block;
             text-decoration: none;
             color: inherit;
-            border: 2px solid #f1f1f1;
-            width: calc(20% - 10px);
-            margin-bottom: 10px; 
+            border: 1px solid #e0e0e0;
+            overflow: hidden;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+            padding: 10px;
             height: 400px;
         }
 
@@ -229,17 +240,30 @@
         }
 
         /* Gambar Produk */
-        .product-image {
-            width: 100%;
-            height: 190px;
-            border-radius: 10px;
-            margin-top: 10px;
+       .product-card img {
+            /* width: 100%; */
+            height: 150px;
             object-fit: cover;
+            margin-bottom: 10px;
+        }
+
+        .product-card h4 {
+            font-size: 16px;
+            margin: 5px 0;
+        }
+
+        .product-card p {
+            font-size: 14px;
+            margin: 2px 0;
         }
 
         /* Informasi Produk */
         .product-info {
             margin-top: 15px;
+            flex-grow: 1;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
         }
 
         /* Nama Kategori Produk */
@@ -251,7 +275,7 @@
 
         /* Nama Produk */
         .product-name {
-            font-size: 14px;
+            font-size: 20px;
             font-weight: 600;
             color: #333;
             margin: 10px 0;
@@ -274,7 +298,7 @@
             display: flex;
             justify-content: space-between;
             align-items: center;
-            margin-top: 10px;
+            margin-top: auto;
         }
 
         /* Harga Produk (Di kiri) */
@@ -284,10 +308,11 @@
         }
 
         .current-price {
-            font-size: 13px;
+            font-size: 14px;
             font-weight: bold;
             color: #333;
             flex-direction: column;
+            margin-left: 10px;
         }
 
         .add-to-cart-container {
@@ -309,12 +334,24 @@
         }
 
         .add-to-cart img {
-            margin-right: 10px; /* Jarak antara ikon cart dan teks Add */
+            margin-right: 10px;
+             width: 16px;  /* Menyesuaikan lebar gambar */
+            height: 16px; /* Menyesuaikan tinggi gambar */
+            object-fit: contain; /* Memastikan gambar tidak terdistorsi */
         }
 
         .add-to-cart:hover {
             background-color: #ACE1AF;
         }
+
+        .product-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+            gap: 20px;
+            padding: 20px 0;
+            width: 100%;
+        }
+
 
         /* Responsive Design */
         @media (max-width: 768px) {
@@ -371,7 +408,6 @@
                 margin-left: 60px;
                 margin-right: 60px;
                 gap: 1px;
-                
             }
 
             .product-card {
@@ -456,19 +492,16 @@
             </div>
             <nav>
                 <ul>
-                    <li><a href="/kategori">Collection</a></li>
-                    <li><a href="/about">About Us</a></li>
+                    <li><a href="{{ url('/kategori') }}" style="color: white;">Collection</a></li>
+                    <li><a href="/about" style="color: white;">About Us</a></li>
                 </ul>
             </nav>
             <!-- Cart, Search, and Location -->
             <div class="cart-search">
-                <!-- Search Input -->
-                <input type="search" placeholder="Search for items...">
-
                 <!-- Icons -->
                 <div class="icons">
-                    <a href="#"><img src="https://img.icons8.com/material/24/000000/shopping-cart.png" alt="Cart"></a>
-                    <a href="#"><img src="https://img.icons8.com/material/24/000000/user.png" alt="Account"></a>
+                    <a href="{{ route('keranjang') }}"><img src="https://img.icons8.com/material/24/ffffff/shopping-cart.png" alt="Cart"></a>
+                    <a href="login"><img src="https://img.icons8.com/material/24/ffffff/user.png" alt="Account"></a>
                 </div>
             </div>
         </div>
@@ -481,290 +514,100 @@
         <!-- Featured Categories -->
         <div class="category-container">
             <!-- Category 1 -->
-            <a href="{{ url('kategori') }}" class="category-card">
+            <a href="{{ url('kategori/1') }}" class="category-card">
                 <h3>Elektronik & Gadget</h3>
             </a>
             <!-- Category 2 -->
-            <a href="{{ url('kategori') }}" class="category-card">
+            <a href="{{ url('kategori/2') }}" class="category-card">
                 <h3>Pakaian & Aksesori</h3>
             </a>
             <!-- Category 3 -->
-            <a href="{{ url('kategori') }}" class="category-card">
+            <a href="{{ url('kategori/3') }}" class="category-card">
                 <h3>Perabotan Rumah Tangga</h3>
             </a>
             <!-- Category 4 -->
-            <a href="{{ url('kategori') }}" class="category-card">
+            <a href="{{ url('kategori/4') }}" class="category-card">
                 <h3>Buku, Alat Tulis, Peralatan Sekolah</h3>
             </a>
             <!-- Category 5 -->
-            <a href="{{ url('kategori') }}" class="category-card">
+            <a href="{{ url('kategori/5') }}" class="category-card">
                 <h3>Hobi, Mainan, Koleksi</h3>
             </a>
             <!-- Category 6 -->
-            <a href="{{ url('kategori') }}" class="category-card">
+            <a href="{{ url('kategori/6') }}" class="category-card">
                 <h3>Perlengkapan Bayi & Anak</h3>
             </a>
             <!-- Category 7 -->
-            <a href="{{ url('kategori') }}" class="category-card">
+            <a href="{{ url('kategori/7') }}" class="category-card">
                 <h3>Otomotif & Aksesori</h3>
             </a>
             <!-- Category 8 -->
-            <a href="{{ url('kategori') }}" class="category-card">
+            <a href="{{ url('kategori/8') }}" class="category-card">
                 <h3>Perlengkapan Taman & Outdoor</h3>
             </a>
             <!-- Category 9 -->
-            <a href="{{ url('kategori') }}" class="category-card">
+            <a href="{{ url('kategori/9') }}" class="category-card">
                 <h3>Peralatan Kantor & Industri</h3>
             </a>
             <!-- Category 10 -->
-            <a href="{{ url('kategori') }}" class="category-card">
+            <a href="{{ url('kategori/10') }}" class="category-card">
                 <h3>Kosmetik & Perawatan Diri</h3>
             </a>
         </div>
 
         <div class="carousel-divider"></div>
 
-        <div class="product-container">
-            <a href="{{ url('product-detail-page') }}" class="product-card">
-                <img src="{{ asset('images/stroller.png') }}" alt="Chicco Trolleyme Stroller" class="product-image">
-                <div class="product-info">
-                    <p class="product-category">Perlengkapan Bayi & Anak</p>
-                    <h3 class="product-name">JOIE Muze Travel System Stroller</h3>
-                    <div class="product-rating">
-                        <span>★ (4.0)</span>
-                    </div>
-                    <p class="product-brand">By StevenAndre</p>
-                </div>
-                <!-- Harga dan Tombol Add -->
-                <div class="product-price">
-                    <div class="price-container">
-                        <span class="current-price">Rp2.896.000,00</span>
-                    </div>
-                    <div class="add-to-cart-container">
-                        <button class="add-to-cart">
-                            <img src="https://img.icons8.com/material/24/007848/shopping-cart.png" alt="Cart">
-                                Add
-                        </button>
-                    </div>
-                </div>
-            </a>
+        <div class="product-section">
+            <!-- <h2 style="text-align: center;">
+                {{ isset($kategori) ? 'Kategori Barang ' . $kategori->nama_kategori : 'Seluruh Produk' }}
+            </h2> -->
+            <div class="cart-search" style="margin-bottom: 0px;">
+                <form class="d-flex mb-2" action="{{ route('barang.cari') }}" method="GET">
+                    <input class="form-control form-control-sm me-2" 
+                        type="search" 
+                        name="search" 
+                        placeholder="Cari barang titipan..." 
+                        value="{{ request('search') }}" 
+                        aria-label="Search" 
+                        style="width: 230px; margin-left: 35px;">
+                    <button class="btn btn-sm" type="submit">
+                        <i class="bi bi-search"></i>
+                    </button>
+                </form>
+            </div>
+            <div class="product-container" id="product-container">
+                @if($produk->isEmpty())
+                    <p>Tidak ada produk yang ditemukan dengan kata kunci tersebut.</p>
+                @else
+                    @forelse($produk as $item)
+                        <a href="{{ url('product/' . $item->id_barang) }}" class="product-card">
+                            <img src="{{ asset('images/barang/' . ($item->fotoBarang->first()->nama_file ?? 'default.jpg')) }}" class="img-fluid">
+                            <div class="product-info">
+                            <p class="product-category">{{ $item->kategori->nama_kategori ?? 'Kategori Tidak Ada' }}</p>
+                            <h3 class="product-name">{{ $item->nama_barang }}</h3>
+                            <!-- <div class="product-rating">
+                                <span>★ ({{ rand(4,5) }}.{{ rand(0,9) }})</span>
+                            </div> -->
+                            <p class="product-status">{{ $item->status_barang }}</p>
+                        </div>
 
-            <a href="{{ url('product-detail-page') }}" class="product-card">
-                <img src="{{ asset('images/sofa.png') }}" alt="sofa" class="product-image">
-                <div class="product-info">
-                    <p class="product-category">Perabotan Rumah Tangga</p>
-                    <h3 class="product-name">Ashley Brise Sofa L Sectional Fabric</h3>
-                    <div class="product-rating">
-                        <span>★ (4.5)</span>
-                    </div>
-                    <p class="product-brand">By DionXius</p>
-                </div>
-                <!-- Harga dan Tombol Add -->
-                <div class="product-price">
-                    <div class="price-container">
-                        <span class="current-price">Rp1.276.000,00</span>
-                    </div>
-                    <div class="add-to-cart-container">
-                        <button class="add-to-cart">
-                            <img src="https://img.icons8.com/material/24/007848/shopping-cart.png" alt="Cart">
-                                Add
-                        </button>
-                    </div>
-                </div>
-            </a>
-
-            <a href="{{ url('product-detail-page') }}" class="product-card">
-                <img src="{{ asset('images/sepatu.png') }}" alt="sepatu" class="product-image">
-                <div class="product-info">
-                    <p class="product-category">Pakaian & Aksesori</p>
-                    <h3 class="product-name">New Balance 327 Women's Sneakers</h3>
-                    <div class="product-rating">
-                        <span>★ (4.7)</span>
-                    </div>
-                    <p class="product-brand">By XaveriusJohn</p>
-                </div>
-                <!-- Harga dan Tombol Add -->
-                <div class="product-price">
-                    <div class="price-container">
-                        <span class="current-price">Rp3.024.000,00</span>
-                    </div>
-                    <div class="add-to-cart-container">
-                        <button class="add-to-cart">
-                            <img src="https://img.icons8.com/material/24/007848/shopping-cart.png" alt="Cart">
-                                Add
-                        </button>
-                    </div>
-                </div>
-            </a>
-
-            <a href="{{ url('product-detail-page') }}" class="product-card">
-                <img src="{{ asset('images/kamera.png') }}" alt="kamera" class="product-image">
-                <div class="product-info">
-                    <p class="product-category">Elektronik & Gadget </p>
-                    <h3 class="product-name">Canon EOS 3000D Kit EF-S 18-55mm f/3.5-5.6 III</h3>
-                    <div class="product-rating">
-                        <span>★ (4.3)</span>
-                    </div>
-                    <p class="product-brand">By MarcelaCan</p>
-                </div>
-                <!-- Harga dan Tombol Add -->
-                <div class="product-price">
-                    <div class="price-container">
-                        <span class="current-price">Rp5.985.000,00</span>
-                    </div>
-                    <div class="add-to-cart-container">
-                        <button class="add-to-cart">
-                            <img src="https://img.icons8.com/material/24/007848/shopping-cart.png" alt="Cart">
-                                Add
-                        </button>
-                    </div>
-                </div>
-            </a>
-
-            <a href="{{ url('product-detail-page') }}" class="product-card">
-                <img src="{{ asset('images/kalkulator.png') }}" alt="kalkulator" class="product-image">
-                <div class="product-info">
-                    <p class="product-category"> Buku, Alat Tulis, & Peralatan Sekolah</p>
-                    <h3 class="product-name">Casio Kalkulator Saintifik FX-991</h3>
-                    <div class="product-rating">
-                        <span>★ (4.5)</span>
-                    </div>
-                    <p class="product-brand">By AntonTung</p>
-                </div>
-                <!-- Harga dan Tombol Add -->
-                <div class="product-price">
-                    <div class="price-container">
-                        <span class="current-price">Rp210.000,00</span>
-                    </div>
-                    <div class="add-to-cart-container">
-                        <button class="add-to-cart">
-                            <img src="https://img.icons8.com/material/24/007848/shopping-cart.png" alt="Cart">
-                                Add
-                        </button>
-                    </div>
-                </div>
-            </a>
-
-            <a href="{{ url('product-detail-page') }}" class="product-card">
-                <img src="{{ asset('images/kalkulator.png') }}" alt="kalkulator" class="product-image">
-                <div class="product-info">
-                    <p class="product-category"> Buku, Alat Tulis, & Peralatan Sekolah</p>
-                    <h3 class="product-name">Casio Kalkulator Saintifik FX-991</h3>
-                    <div class="product-rating">
-                        <span>★ (4.5)</span>
-                    </div>
-                    <p class="product-brand">By AntonTung</p>
-                </div>
-                <!-- Harga dan Tombol Add -->
-                <div class="product-price">
-                    <div class="price-container">
-                        <span class="current-price">Rp210.000,00</span>
-                    </div>
-                    <div class="add-to-cart-container">
-                        <button class="add-to-cart">
-                            <img src="https://img.icons8.com/material/24/007848/shopping-cart.png" alt="Cart">
-                                Add
-                        </button>
-                    </div>
-                </div>
-            </a>
-
-            <a href="{{ url('product-detail-page') }}" class="product-card">
-                <img src="{{ asset('images/kalkulator.png') }}" alt="kalkulator" class="product-image">
-                <div class="product-info">
-                    <p class="product-category"> Buku, Alat Tulis, & Peralatan Sekolah</p>
-                    <h3 class="product-name">Casio Kalkulator Saintifik FX-991</h3>
-                    <div class="product-rating">
-                        <span>★ (4.5)</span>
-                    </div>
-                    <p class="product-brand">By AntonTung</p>
-                </div>
-                <!-- Harga dan Tombol Add -->
-                <div class="product-price">
-                    <div class="price-container">
-                        <span class="current-price">Rp210.000,00</span>
-                    </div>
-                    <div class="add-to-cart-container">
-                        <button class="add-to-cart">
-                            <img src="https://img.icons8.com/material/24/007848/shopping-cart.png" alt="Cart">
-                                Add
-                        </button>
-                    </div>
-                </div>
-            </a>
-
-            <a href="{{ url('product-detail-page') }}" class="product-card">
-                <img src="{{ asset('images/kalkulator.png') }}" alt="kalkulator" class="product-image">
-                <div class="product-info">
-                    <p class="product-category"> Buku, Alat Tulis, & Peralatan Sekolah</p>
-                    <h3 class="product-name">Casio Kalkulator Saintifik FX-991</h3>
-                    <div class="product-rating">
-                        <span>★ (4.5)</span>
-                    </div>
-                    <p class="product-brand">By AntonTung</p>
-                </div>
-                <!-- Harga dan Tombol Add -->
-                <div class="product-price">
-                    <div class="price-container">
-                        <span class="current-price">Rp210.000,00</span>
-                    </div>
-                    <div class="add-to-cart-container">
-                        <button class="add-to-cart">
-                            <img src="https://img.icons8.com/material/24/007848/shopping-cart.png" alt="Cart">
-                                Add
-                        </button>
-                    </div>
-                </div>
-            </a>
-            <a href="{{ url('product-detail-page') }}" class="product-card">
-                <img src="{{ asset('images/kalkulator.png') }}" alt="kalkulator" class="product-image">
-                <div class="product-info">
-                    <p class="product-category"> Buku, Alat Tulis, & Peralatan Sekolah</p>
-                    <h3 class="product-name">Casio Kalkulator Saintifik FX-991</h3>
-                    <div class="product-rating">
-                        <span>★ (4.5)</span>
-                    </div>
-                    <p class="product-brand">By AntonTung</p>
-                </div>
-                <!-- Harga dan Tombol Add -->
-                <div class="product-price">
-                    <div class="price-container">
-                        <span class="current-price">Rp210.000,00</span>
-                    </div>
-                    <div class="add-to-cart-container">
-                        <button class="add-to-cart">
-                            <img src="https://img.icons8.com/material/24/007848/shopping-cart.png" alt="Cart">
-                                Add
-                        </button>
-                    </div>
-                </div>
-            </a>
-
-            <a href="{{ url('product-detail-page') }}" class="product-card">
-                <img src="{{ asset('images/kalkulator.png') }}" alt="kalkulator" class="product-image">
-                <div class="product-info">
-                    <p class="product-category"> Buku, Alat Tulis, & Peralatan Sekolah</p>
-                    <h3 class="product-name">Casio Kalkulator Saintifik FX-991</h3>
-                    <div class="product-rating">
-                        <span>★ (4.5)</span>
-                    </div>
-                    <p class="product-brand">By AntonTung</p>
-                </div>
-                <!-- Harga dan Tombol Add -->
-                <div class="product-price">
-                    <div class="price-container">
-                        <span class="current-price">Rp210.000,00</span>
-                    </div>
-                    <div class="add-to-cart-container">
-                        <button class="add-to-cart">
-                            <img src="https://img.icons8.com/material/24/007848/shopping-cart.png" alt="Cart">
-                                Add
-                        </button>
-                    </div>
-                </div>
-            </a>
-        </div>
-
+                        <div class="product-price">
+                            <div class="price-container">
+                                <span class="current-price">Rp{{ number_format($item->harga_jual, 0, ',', '.') }}</span>
+                            </div>
+                            <div class="add-to-cart-container">
+                                <button class="add-to-cart">
+                                    <img src="https://img.icons8.com/material/24/007848/shopping-cart.png" alt="Cart">
+                                    Add
+                                </button>
+                            </div>
+                        </div>
+                    </a>
+                @empty
+                    <p>Tidak ada produk tersedia saat ini.</p>
+                @endforelse
+            @endif
+        </div>  
     </main>
 
     <!-- Footer Section -->
