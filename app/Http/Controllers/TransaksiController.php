@@ -12,7 +12,6 @@ use Illuminate\Support\Facades\DB;
 
 use Illuminate\Http\Request;
 use Barryvdh\DomPDF\Facade\Pdf;
-use App\Models\Transaksi;
 
 class TransaksiController extends Controller
 {
