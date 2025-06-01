@@ -7,6 +7,7 @@ use App\Models\BarangTitipan;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Facades\Auth;
+use App\Models\Rating;
 
 class PenitipController extends Controller
 {
@@ -19,8 +20,16 @@ class PenitipController extends Controller
             ->where('status_barang', 'terjual')
             ->orderByDesc('tanggal_keluar')
             ->get();
+            
+        $avgRating = Rating::where('id_penitip', $penitip->id_penitip)->avg('rating');
 
-        return view('Penitip.profilePenitip', compact('penitip', 'transaksiList'));
+        if (is_null($avgRating)) {
+            $avgRating = 0;
+        }
+
+        $countRating = Rating::where('id_penitip', $penitip->id_penitip)->count();
+
+        return view('Penitip.profilePenitip', compact('penitip', 'transaksiList', 'avgRating', 'countRating'));
     }
 
     public function index(Request $request)
@@ -121,5 +130,17 @@ class PenitipController extends Controller
         }
         $penitip->delete();
         return redirect()->route('cs.penitip.index')->with('success', 'Penitip berhasil dihapus.');
+    }
+
+    public function showRating($id_penitip)
+    {
+        $avgRating = Rating::where('id_penitip', $id_penitip)
+            ->avg('rating');
+
+        if (is_null($avgRating)) {
+            $avgRating = 0;
+        }
+
+        return view('penitip.rating', compact('id_penitip', 'avgRating'));
     }
 }

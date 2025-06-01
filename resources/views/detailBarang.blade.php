@@ -7,6 +7,7 @@
 
     <!-- Bootstrap CSS -->
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
 
     <style>
         * {
@@ -482,6 +483,39 @@
                     <p class="product-price" style="font-size: 25px; margin: 4px 0 12px;">
                         <strong>Rp{{ number_format($product->harga_jual, 0, ',', '.') }}</strong>
                     </p>
+
+                    <h5 style="font-size: 14px; color: grey; margin: 0 0 6px;">
+                       {{ $product->penitip->nama_penitip }} -
+                        @if($avgRating > 0)
+                            @php
+                                $rounded = round($avgRating * 2) / 2; 
+                                $fullStars = floor($rounded);
+                                $halfStar  = ($rounded - $fullStars) == 0.5 ? 1 : 0;
+                                $emptyStars = 5 - $fullStars - $halfStar;
+                            @endphp
+                            {{-- Tampilkan bintang penuh --}}
+                            @for($i = 0; $i < $fullStars; $i++)
+                                <i class="fas fa-star text-warning"></i>
+                            @endfor
+
+                            {{-- Tampilkan setengah bintang --}}
+                            @if($halfStar)
+                                <i class="fas fa-star-half-alt text-warning"></i>
+                            @endif
+
+                            {{-- Tampilkan bintang kosong --}}
+                            @for($i = 0; $i < $emptyStars; $i++)
+                                <i class="far fa-star text-warning"></i>
+                            @endfor
+                        @else
+                            {{-- Tampilkan 5 bintang kosong tanpa warna (abu-abu) --}}
+                            @for($i = 0; $i < 5; $i++)
+                                <span class="text-muted">&#9734;</span> {{-- ☆ --}}
+                            @endfor
+                            <small class="text-muted">(Belum ada rating)</small>
+                        @endif
+                    </h5>
+
                     <!-- Kontainer untuk Tombol -->
                     <div class="button-container" style="margin-top: 35px;">
                         <!-- Tombol Add to Cart -->
