@@ -5,7 +5,7 @@ use App\Models\Transaksi;
 use App\Models\Pembeli;
 use App\Models\Pembayaran;
 use App\Models\BarangTitipan;
-use App\Models\Pegawai;
+use App\Models\Penitip;
 
 use App\Notifications\transaksiDisiapkan;
 use Illuminate\Support\Facades\DB;
@@ -88,38 +88,47 @@ class TransaksiController extends Controller
 
     public function verifikasiPembayaran($id_transaksi)
     {
-        // Cari pembayaran berdasarkan id_transaksi
         $pembayaran = Pembayaran::where('id_transaksi', $id_transaksi)->first();
 
         if (!$pembayaran) {
             return redirect()->back()->with('error', 'Data pembayaran tidak ditemukan.');
         }
 
-        // Update status_verifikasi jadi 1 (disetujui)
         $pembayaran->status_verifikasi = 1;
-
-        // Isi id_pegawai dengan id pegawai yang sedang login
         $pembayaran->id_pegawai = auth()->guard('pegawai')->id(); 
-        // sesuaikan 'pegawai' dengan guard yang kamu gunakan jika beda
-
         $pembayaran->save();
 
-        // Update status transaksi jadi 'Disiapkan'
-        $transaksi = Transaksi::find($id_transaksi);
+        $transaksi = Transaksi::with('detailTransaksi.barang.penitip')->find($id_transaksi);
         if ($transaksi) {
             $transaksi->status_transaksi = 'Disiapkan';
             $transaksi->save();
 
-            // Tidak menambah poin ke pembeli
+            // Kumpulkan nama barang per penitip dalam transaksi ini
+            $penitipBarangMap = [];
 
-            // Kirim notifikasi email jika email ada
-            $pembeli = Pembeli::find($transaksi->id_pembeli);
-            if ($pembeli && $pembeli->email) {
-                $pembeli->notify(new transaksiDisiapkan($transaksi, $pembeli));
+            foreach ($transaksi->detailTransaksi as $detail) {
+                $penitip = $detail->barang->penitip ?? null;
+                if ($penitip) {
+                    $idPenitip = $penitip->id_penitip;
+                    $namaBarang = $detail->barang->nama_barang ?? 'Barang';
+
+                    $penitipBarangMap[$idPenitip]['penitip'] = $penitip;
+                    $penitipBarangMap[$idPenitip]['barang'][] = $namaBarang;
+                }
+            }
+
+            // Kirim notifikasi ke masing-masing penitip dengan daftar nama barangnya
+            foreach ($penitipBarangMap as $data) {
+                $penitip = $data['penitip'];
+                $barangList = collect($data['barang']);
+
+                if ($penitip->email) {
+                    $penitip->notify(new transaksiDisiapkan($transaksi, $penitip, $barangList));
+                }
             }
         }
 
-        return redirect()->back()->with('success', 'Pembayaran diverifikasi, status transaksi diubah, dan email notifikasi dikirim.');
+        return redirect()->back()->with('success', 'Pembayaran diverifikasi, status transaksi diubah, dan email notifikasi dikirim ke semua penitip terkait.');
     }
   
   public function indexNota()

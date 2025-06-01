@@ -4,45 +4,48 @@ namespace App\Notifications;
 
 use Illuminate\Bus\Queueable;
 use Illuminate\Notifications\Notification;
-use Illuminate\Contracts\Queue\ShouldQueue; // optional untuk queue
+use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Notifications\Messages\MailMessage;
 use App\Models\Transaksi;
-use App\Models\Pembeli;
+use App\Models\Penitip;
+use Illuminate\Support\Collection;
 
 class transaksiDisiapkan extends Notification implements ShouldQueue
 {
     use Queueable;
 
     protected $transaksi;
-    protected $pembeli;
+    protected $penitip;
+    protected $barangList; // Koleksi nama barang
 
     /**
-     * Create a new notification instance.
+     * @param Transaksi $transaksi
+     * @param Penitip $penitip
+     * @param Collection|string[] $barangList List nama barang penitip
      */
-    public function __construct(Transaksi $transaksi, Pembeli $pembeli)
+    public function __construct(Transaksi $transaksi, Penitip $penitip, Collection $barangList)
     {
         $this->transaksi = $transaksi;
-        $this->pembeli = $pembeli;
+        $this->penitip = $penitip;
+        $this->barangList = $barangList;
     }
 
-    /**
-     * Get the notification's delivery channels.
-     */
     public function via($notifiable)
     {
-        return ['mail']; // Kirim via email
+        return ['mail'];
     }
 
-    /**
-     * Get the mail representation of the notification.
-     */
     public function toMail($notifiable)
     {
+        // Buat string daftar nama barang, dipisah koma
+        $daftarBarang = $this->barangList->implode(', ');
+
         return (new MailMessage)
-                    ->subject('Status Transaksi Anda: Disiapkan')
-                    ->greeting('Halo ' . ($this->pembeli->nama_pembeli ?? 'Pelanggan') . ',')
-                    ->line('Bukti aembayaran Anda dengan nomor transaksi' . $this->transaksi->nomor_transaksi . ' telah diverifikasi.')
-                    ->line('Terima kasih telah berbelanja di ReUseMart!')
-                    ->line('Jika ada pertanyaan, jangan ragu menghubungi kami.');
+            ->subject('Barang Anda telah terjual')
+            ->greeting('Halo ' . ($this->penitip->nama_penitip ?? 'Penitip') . ',')
+            ->line('Barang Anda berikut telah terjual dan telah dibayar:')
+            ->line($daftarBarang)
+            ->line('Terima kasih telah mempercayakan barang Anda di ReUseMart!')
+            ->line('Jika ada pertanyaan, jangan ragu menghubungi kami.');
     }
 }

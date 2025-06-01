@@ -111,7 +111,7 @@ class CheckoutController extends Controller
 
             DB::commit();
 
-            return redirect()->route('pembayaran', ['id_transaksi' => $transaksi->id_transaksi])
+            return redirect()->route('pembayaran.show', ['id_transaksi' => $transaksi->id_transaksi])
                             ->with('success', 'Checkout berhasil. Silakan lakukan pembayaran.');
         } catch (Exception $e) {
             DB::rollBack();
