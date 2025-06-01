@@ -383,7 +383,7 @@
                             </span>
                             <div>
                                 <h4 class="mb-0 fw-bold">Bayar sebelum</h4>
-                                <small class="text-muted">31 Mei 2025, 02:19</small>
+                                <small class="text-muted">{{ $tanggalTransaksiPlus1Menit->format('d M Y, H:i') }}</small>
                             </div>
                         </div>
 
@@ -412,7 +412,7 @@
                     <div class="mb-3">
                         <label class="form-label fw-bold">Total Tagihan</label>
                         <div class="d-flex justify-content-between align-items-center">
-                            <h4 class="text-success mb-0">Rp4.339.500</h4>
+                            <h4 class="text-success mb-0">Rp{{ number_format($totalHarga, 0, ',', '.') }}</h4>
                         </div>
                     </div>
 
