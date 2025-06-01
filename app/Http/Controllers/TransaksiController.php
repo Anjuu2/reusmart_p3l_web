@@ -6,6 +6,8 @@ use App\Models\Pembeli;
 use App\Models\Pembayaran;
 use App\Models\BarangTitipan;
 use App\Models\Penitip;
+use App\Models\Pegawai;
+use App\Models\Penjadwalan;
 
 use App\Notifications\transaksiDisiapkan;
 use Illuminate\Support\Facades\DB;
@@ -102,9 +104,24 @@ class TransaksiController extends Controller
         if ($transaksi) {
             $transaksi->status_transaksi = 'Disiapkan';
             $transaksi->save();
-
             // Kumpulkan nama barang per penitip dalam transaksi ini
             $penitipBarangMap = [];
+            // Buat data baru di tabel penjadwalan
+            $jenis_jadwal = null;
+            if ($transaksi->jenis_pengiriman == 'Kurir') {
+                $jenis_jadwal = 'Pengiriman';
+            } elseif ($transaksi->jenis_pengiriman == 'Ambil Sendiri') {
+                $jenis_jadwal = 'Diambil';
+            }
+
+            if ($jenis_jadwal) {
+                Penjadwalan::create([
+                    'id_transaksi' => $id_transaksi,
+                    'jenis_jadwal' => $jenis_jadwal,
+                    'tanggal_jadwal' => null,
+                    'status_jadwal' => 'Diproses',
+                ]);
+            }
 
             foreach ($transaksi->detailTransaksi as $detail) {
                 $penitip = $detail->barang->penitip ?? null;
