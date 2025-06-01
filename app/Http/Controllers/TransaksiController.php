@@ -6,13 +6,13 @@ use App\Models\Pembeli;
 use App\Models\Pembayaran;
 use App\Models\BarangTitipan;
 use App\Models\Pegawai;
+use App\Models\Penjadwalan;
 
 use App\Notifications\transaksiDisiapkan;
 use Illuminate\Support\Facades\DB;
 
 use Illuminate\Http\Request;
 use Barryvdh\DomPDF\Facade\Pdf;
-use App\Models\Transaksi;
 
 class TransaksiController extends Controller
 {
@@ -86,7 +86,22 @@ class TransaksiController extends Controller
             $transaksi->status_transaksi = 'Disiapkan';
             $transaksi->save();
 
-            // Tidak menambah poin ke pembeli
+            // Buat data baru di tabel penjadwalan
+            $jenis_jadwal = null;
+            if ($transaksi->jenis_pengiriman == 'Kurir') {
+                $jenis_jadwal = 'Pengiriman';
+            } elseif ($transaksi->jenis_pengiriman == 'Ambil Sendiri') {
+                $jenis_jadwal = 'Diambil';
+            }
+
+            if ($jenis_jadwal) {
+                Penjadwalan::create([
+                    'id_transaksi' => $id_transaksi,
+                    'jenis_jadwal' => $jenis_jadwal,
+                    'tanggal_jadwal' => null,
+                    'status_jadwal' => 'Diproses',
+                ]);
+            }
 
             // Kirim notifikasi email jika email ada
             $pembeli = Pembeli::find($transaksi->id_pembeli);
@@ -95,7 +110,7 @@ class TransaksiController extends Controller
             }
         }
 
-        return redirect()->back()->with('success', 'Pembayaran diverifikasi, status transaksi diubah, dan email notifikasi dikirim.');
+        return redirect()->back()->with('success', 'Pembayaran diverifikasi, status transaksi diubah, data penjadwalan dibuat, dan email notifikasi dikirim.');
     }
   
   public function indexNota()
