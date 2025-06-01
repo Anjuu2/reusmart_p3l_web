@@ -7,7 +7,9 @@ $baseDir = dirname($vendorDir);
 
 return array(
     'App\\Console\\Commands\\AutoPembatalanTransaksi' => $baseDir . '/app/Console/Commands/AutoPembatalanTransaksi.php',
+    'App\\Console\\Commands\\TestScheduleCommand' => $baseDir . '/app/Console/Commands/TestScheduleCommand.php',
     'App\\Console\\Kernel' => $baseDir . '/app/Console/Kernel.php',
+    'App\\Http\\Controllers\\AboutController' => $baseDir . '/app/Http/Controllers/AboutController.php',
     'App\\Http\\Controllers\\AlamatController' => $baseDir . '/app/Http/Controllers/AlamatController.php',
     'App\\Http\\Controllers\\BarangTitipanController' => $baseDir . '/app/Http/Controllers/BarangTitipanController.php',
     'App\\Http\\Controllers\\CheckoutController' => $baseDir . '/app/Http/Controllers/CheckoutController.php',

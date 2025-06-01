@@ -83,7 +83,8 @@ class PenitipController extends Controller
 
         Penitip::create($data);
 
-        return redirect()->route('CS.penitipIndex')->with('success', 'Penitip berhasil ditambahkan.');
+        // return redirect()->route('CS.penitipIndex')->with('success', 'Penitip berhasil ditambahkan.');
+        return redirect()->route('cs.penitip.store')->with('success', 'Penitip berhasil ditambahkan.');
     }
 
     public function edit($id)

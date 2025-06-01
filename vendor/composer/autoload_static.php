@@ -572,7 +572,9 @@ class ComposerStaticInit88970a0117c062eed55fa8728fc43833
 
     public static $classMap = array (
         'App\\Console\\Commands\\AutoPembatalanTransaksi' => __DIR__ . '/../..' . '/app/Console/Commands/AutoPembatalanTransaksi.php',
+        'App\\Console\\Commands\\TestScheduleCommand' => __DIR__ . '/../..' . '/app/Console/Commands/TestScheduleCommand.php',
         'App\\Console\\Kernel' => __DIR__ . '/../..' . '/app/Console/Kernel.php',
+        'App\\Http\\Controllers\\AboutController' => __DIR__ . '/../..' . '/app/Http/Controllers/AboutController.php',
         'App\\Http\\Controllers\\AlamatController' => __DIR__ . '/../..' . '/app/Http/Controllers/AlamatController.php',
         'App\\Http\\Controllers\\BarangTitipanController' => __DIR__ . '/../..' . '/app/Http/Controllers/BarangTitipanController.php',
         'App\\Http\\Controllers\\CheckoutController' => __DIR__ . '/../..' . '/app/Http/Controllers/CheckoutController.php',
