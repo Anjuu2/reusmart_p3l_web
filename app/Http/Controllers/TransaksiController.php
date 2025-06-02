@@ -5,10 +5,13 @@ use App\Models\Transaksi;
 use App\Models\Pembeli;
 use App\Models\Pembayaran;
 use App\Models\BarangTitipan;
+use App\Models\Penitip;
 use App\Models\Pegawai;
+use App\Models\Penjadwalan;
 
 use App\Notifications\transaksiDisiapkan;
 use Illuminate\Support\Facades\DB;
+use Carbon\Carbon;
 
 use Illuminate\Http\Request;
 use Barryvdh\DomPDF\Facade\Pdf;
@@ -22,7 +25,31 @@ class TransaksiController extends Controller
 
         // Kirim data pembayaran ke view dengan variabel 'pembayarans'
         return view('CS.pembayaranIndex', compact('pembayarans'));
-}
+    }
+
+    public function showPembayaran(Request $request)
+    {
+        $idTransaksi = $request->query('id_transaksi');
+        if (!$idTransaksi) {
+            abort(404, 'ID transaksi tidak ditemukan.');
+        }
+
+        $transaksi = Transaksi::with('detailTransaksi')->find($idTransaksi);
+        if (!$transaksi) {
+            abort(404, 'Transaksi tidak ditemukan.');
+        }
+
+        // Hitung total harga dari detail transaksi
+        $totalHarga = $transaksi->detailTransaksi->sum('sub_total');
+
+        $tanggalTransaksiPlus1Menit = \Carbon\Carbon::parse($transaksi->tanggal_transaksi)->copy()->addMinute();
+
+        return view('pembayaran', [
+            'transaksi' => $transaksi,
+            'totalHarga' => $totalHarga,
+            'tanggalTransaksiPlus1Menit' => $tanggalTransaksiPlus1Menit,
+        ]);
+    }
 
     public function uploadBukti(Request $request)
     {
@@ -63,38 +90,62 @@ class TransaksiController extends Controller
 
     public function verifikasiPembayaran($id_transaksi)
     {
-        // Cari pembayaran berdasarkan id_transaksi
         $pembayaran = Pembayaran::where('id_transaksi', $id_transaksi)->first();
 
         if (!$pembayaran) {
             return redirect()->back()->with('error', 'Data pembayaran tidak ditemukan.');
         }
 
-        // Update status_verifikasi jadi 1 (disetujui)
         $pembayaran->status_verifikasi = 1;
-
-        // Isi id_pegawai dengan id pegawai yang sedang login
         $pembayaran->id_pegawai = auth()->guard('pegawai')->id(); 
-        // sesuaikan 'pegawai' dengan guard yang kamu gunakan jika beda
-
         $pembayaran->save();
 
-        // Update status transaksi jadi 'Disiapkan'
-        $transaksi = Transaksi::find($id_transaksi);
+        $transaksi = Transaksi::with('detailTransaksi.barang.penitip')->find($id_transaksi);
         if ($transaksi) {
             $transaksi->status_transaksi = 'Disiapkan';
             $transaksi->save();
+            // Kumpulkan nama barang per penitip dalam transaksi ini
+            $penitipBarangMap = [];
+            // Buat data baru di tabel penjadwalan
+            $jenis_jadwal = null;
+            if ($transaksi->jenis_pengiriman == 'Kurir') {
+                $jenis_jadwal = 'Pengiriman';
+            } elseif ($transaksi->jenis_pengiriman == 'Ambil Sendiri') {
+                $jenis_jadwal = 'Diambil';
+            }
 
-            // Tidak menambah poin ke pembeli
+            if ($jenis_jadwal) {
+                Penjadwalan::create([
+                    'id_transaksi' => $id_transaksi,
+                    'jenis_jadwal' => $jenis_jadwal,
+                    'tanggal_jadwal' => null,
+                    'status_jadwal' => 'Diproses',
+                ]);
+            }
 
-            // Kirim notifikasi email jika email ada
-            $pembeli = Pembeli::find($transaksi->id_pembeli);
-            if ($pembeli && $pembeli->email) {
-                $pembeli->notify(new transaksiDisiapkan($transaksi, $pembeli));
+            foreach ($transaksi->detailTransaksi as $detail) {
+                $penitip = $detail->barang->penitip ?? null;
+                if ($penitip) {
+                    $idPenitip = $penitip->id_penitip;
+                    $namaBarang = $detail->barang->nama_barang ?? 'Barang';
+
+                    $penitipBarangMap[$idPenitip]['penitip'] = $penitip;
+                    $penitipBarangMap[$idPenitip]['barang'][] = $namaBarang;
+                }
+            }
+
+            // Kirim notifikasi ke masing-masing penitip dengan daftar nama barangnya
+            foreach ($penitipBarangMap as $data) {
+                $penitip = $data['penitip'];
+                $barangList = collect($data['barang']);
+
+                if ($penitip->email) {
+                    $penitip->notify(new transaksiDisiapkan($transaksi, $penitip, $barangList));
+                }
             }
         }
 
-        return redirect()->back()->with('success', 'Pembayaran diverifikasi, status transaksi diubah, dan email notifikasi dikirim.');
+        return redirect()->back()->with('success', 'Pembayaran diverifikasi, status transaksi diubah, dan email notifikasi dikirim ke semua penitip terkait.');
     }
   
   public function indexNota()
@@ -138,34 +189,43 @@ class TransaksiController extends Controller
     {
         try {
             $id = $request->input('id_transaksi');
-            $transaksi = Transaksi::find($id);
+            \Log::info('batalTransaksi dipanggil', ['id_transaksi' => $id]);
 
-            if ($transaksi && $transaksi->status_transaksi === 'Menunggu Pembayaran' && !$transaksi->bukti_pembayaran) {
+            $transaksi = Transaksi::find($id);
+            if (!$transaksi) {
+                return response()->json(['success' => false, 'message' => 'Transaksi tidak ditemukan']);
+            }
+
+            // Tambahkan log nilai status transaksi dan bukti pembayaran
+            \Log::info('Detail transaksi', [
+                'status_transaksi' => $transaksi->status_transaksi,
+                'bukti_pembayaran' => $transaksi->bukti_pembayaran,
+            ]);
+
+            // Logika pembatalan
+            if ($transaksi->status_transaksi === 'Menunggu Pembayaran' && !$transaksi->bukti_pembayaran) {
                 $transaksi->status_transaksi = 'Batal';
                 $transaksi->save();
 
-                // Kembalikan barang jadi Tersedia
-                $details = DetailTransaksi::where('id_transaksi', $id)->get();
-                foreach ($details as $detail) {
-                    BarangTitipan::where('id_barang', $detail->id_barang)->update([
-                        'status_barang' => 'Tersedia'
-                    ]);
+                // Ambil detail transaksi (relasi detailTransaksi)
+                $detailBarang = $transaksi->detailTransaksi; // pastikan relasi sudah didefinisikan di model Transaksi
+
+                // Ubah status barang menjadi 'Tersedia'
+                foreach ($detailBarang as $detail) {
+                    if ($detail->barang) { // pastikan relasi barang ada
+                        $detail->barang->status_barang = 'Tersedia';
+                        $detail->barang->save();
+                    }
                 }
 
-                // Kembalikan poin yang digunakan ke pembeli
-                $pembeli = Pembeli::find($transaksi->id_pembeli);
-                if ($pembeli) {
-                    $poinDigunakan = $transaksi->poin_digunakan ?? 0;
-                    $pembeli->poin += $poinDigunakan;
-                    $pembeli->save();
-                }
+                // Update poin jika perlu (sesuai logika kamu sebelumnya)
 
-                return response()->json(['success' => true, 'message' => 'Transaksi dibatalkan karena tidak ada bukti pembayaran dan poin dikembalikan.']);
+                return response()->json(['success' => true, 'message' => 'Transaksi dibatalkan dan status barang dikembalikan tersedia.']);
+            } else {
+                return response()->json(['success' => false, 'message' => 'Transaksi tidak valid atau sudah dibayar.']);
             }
-
-            return response()->json(['success' => false, 'message' => 'Transaksi tidak valid atau sudah dibayar.']);
-        } catch (Exception $e) {
-            Log::error($e->getMessage());
+        } catch (\Exception $e) {
+            \Log::error('Error batalTransaksi: ' . $e->getMessage());
             return response()->json(['success' => false, 'message' => 'Terjadi kesalahan server.', 'error' => $e->getMessage()], 500);
         }
     }

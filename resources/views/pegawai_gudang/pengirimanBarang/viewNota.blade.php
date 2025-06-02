@@ -148,10 +148,6 @@
 
     <table class="no-border">
         <tr>
-            <td><strong>Total</strong></td>
-            <td>: Rp{{ number_format($total, 0, ',', '.') }}</td>
-        </tr>
-        <tr>
             <td><strong>Ongkos Kirim</strong></td>
             <td>: Rp{{ number_format($ongkosKirim, 0, ',', '.') }}</td>
         </tr>
@@ -161,7 +157,7 @@
         </tr>
         <tr>
             <td><strong>Total Bayar</strong></td>
-            <td>: Rp{{ number_format($totalBayar, 0, ',', '.') }}</td>
+            <td>: Rp{{ number_format($transaksi->total_pembayaran, 0, ',', '.') }}</td>
         </tr>
     </table>
 

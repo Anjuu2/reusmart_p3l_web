@@ -114,6 +114,7 @@ Route::middleware('auth:pembeli')->post('/keranjang/tambah', [KeranjangControlle
 Route::middleware('auth:pembeli')->post('/keranjang/{id}', [KeranjangController::class, 'removeFromCart'])->name('keranjang.hapus');
 Route::middleware('auth:pembeli')->get('/checkout', [CheckoutController::class, 'showCheckout'])->name('checkout');
 Route::middleware('auth:pembeli')->post('/checkout/submit', [CheckoutController::class, 'submitCheckout'])->name('checkout.submit');
+Route::middleware('auth:pembeli')->get('/pembayaran', [TransaksiController::class, 'showPembayaran'])->name('pembayaran.show');
 Route::middleware('auth:pembeli')->post('/pembayaran/upload-bukti', [TransaksiController::class, 'uploadBukti'])->name('upload.bukti');
 Route::middleware('auth:pembeli')->post('/pembayaran/batal-transaksi', [TransaksiController::class, 'batalTransaksi'])->name('batal.transaksi');
 

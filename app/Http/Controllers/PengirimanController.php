@@ -96,10 +96,15 @@ class PengirimanController extends Controller
             'status_jadwal' => 'Dijadwalkan',
         ]);
 
+        $statusPengiriman = 'Disiapkan';
+        if ($jadwal->jenis_jadwal === 'Pengiriman') {
+            $statusPengiriman = 'Diantar';
+        }
+
         Pengiriman::create([
             'id_pegawai' => $request->input('id_kurir'), // bisa NULL jika Diambil
             'id_jadwal' => $jadwal->id_jadwal,
-            'status_pengiriman' => 'Disiapkan',
+            'status_pengiriman' => $statusPengiriman,
         ]);
 
         // Siapkan daftar penerima email
@@ -158,6 +163,13 @@ class PengirimanController extends Controller
         if ($jadwal->jenis_jadwal === 'Diambil') {
             $this->konfirmasiPengambilan($jadwal->id_jadwal);
         }
+
+        $transaksi = $jadwal->transaksi;
+        if ($transaksi && $transaksi->status_transaksi === 'Disiapkan' && $jadwal->jenis_jadwal === 'Diambil') {
+            $transaksi->status_transaksi = 'Transaksi Selesai';
+            $transaksi->save();
+        }
+        
         // Email notifikasi ke Pembeli
         $recipients = [];
         if ($jadwal->transaksi->pembeli && $jadwal->transaksi->pembeli->email) {

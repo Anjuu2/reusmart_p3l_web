@@ -235,7 +235,7 @@
                                         <span class="badge bg-info">Transaksi Diproses</span>
                                     @endif
                                 @else
-                                    <span class="badge bg-secondary">Transaksi Selesai</span>
+                                    <span class="badge bg-secondary">Transaksi Diproses</span>
                                 @endif
                             @else
                                 <em style="color: #888;">Belum Disiapkan</em>
