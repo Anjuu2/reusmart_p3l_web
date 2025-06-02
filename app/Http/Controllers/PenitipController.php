@@ -83,7 +83,7 @@ class PenitipController extends Controller
 
         Penitip::create($data);
 
-        return redirect()->route('CS.penitipIndex')->with('success', 'Penitip berhasil ditambahkan.');
+        return redirect()->route('cs.penitip.index')->with('success', 'Penitip berhasil ditambahkan.');
     }
 
     public function edit($id)
@@ -119,7 +119,7 @@ class PenitipController extends Controller
 
         $penitip->update($data);
 
-        return redirect()->route('CS.penitipIndex')->with('success', 'Penitip berhasil diperbarui.');
+        return redirect()->route('cs.penitip.index')->with('success', 'Penitip berhasil diperbarui.');
     }
 
     public function destroy($id)
@@ -129,7 +129,7 @@ class PenitipController extends Controller
             Storage::disk('public')->delete($penitip->foto_ktp);
         }
         $penitip->delete();
-        return redirect()->route('CS.penitipIndex')->with('success', 'Penitip berhasil dihapus.');
+        return redirect()->route('cs.penitip.index')->with('success', 'Penitip berhasil dihapus.');
     }
 
     public function showRating($id_penitip)
