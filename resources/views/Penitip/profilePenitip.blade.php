@@ -98,7 +98,7 @@
                     <small>{{ $penitip->email }}</small>
                 </div>
             </div>
-            <a href="{{ route('home') }}" class="back-btn">← Kembali ke Beranda</a>
+            <a href="{{ route('dashboard.penitip') }}" class="back-btn">← Kembali ke Beranda</a>
         </div>
 
         <div class="profile-info">
@@ -131,6 +131,10 @@
                 <div class="col-md-6">
                     <label>Saldo Akun</label>
                     <input type="text" class="form-control" value="{{ $penitip->saldo_penitip }}" disabled>
+                </div>
+                <div class="col-md-6">
+                    <label>Rata-rata Rating</label>
+                    <input type="text" class="form-control" value="{{ number_format($avgRating, 2) }}" disabled>
                 </div>
             </div>
         </div>

@@ -122,24 +122,6 @@
                                     <p>Pegawai</p>
                                 </a>
                             </li>
-                            <li class="nav-item">
-                                <a href="{{url('bank/profile')}}" class="nav-link">
-                                    <i class="bi bi-person-fill"></i>
-                                    <p>Profile</p>
-                                </a>
-                            </li>
-                            <li class="nav-item">
-                                <a href="{{url('bank/pengajuanPinjaman')}}" class="nav-link">
-                                    <i class="bi bi-cash-coin"></i>
-                                    <p>Pengajuan Pinjaman</p>
-                                </a>
-                            </li>
-                            <li class="nav-item">
-                                <a href="{{url('bank/pembayaranAngsuran')}}" class="nav-link">
-                                    <i class="bi bi-wallet2"></i>
-                                    <p>Pembayaran Angsuran</p>
-                                </a>
-                            </li>
                         </ul>
                     </nav>
                 </div>

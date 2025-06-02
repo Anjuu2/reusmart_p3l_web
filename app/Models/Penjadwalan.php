@@ -42,13 +42,37 @@ class Penjadwalan extends Model
 		'status_jadwal'
 	];
 
+	// public function transaksi()
+	// {
+	// 	return $this->belongsTo(Transaksi::class, 'id_transaksi');
+	// }
+
+	// public function pengirimen()
+	// {
+	// 	return $this->hasMany(Pengiriman::class, 'id_jadwal');
+	// }
+
 	public function transaksi()
 	{
-		return $this->belongsTo(Transaksi::class, 'id_transaksi');
+		return $this->belongsTo(Transaksi::class, 'id_transaksi', 'id_transaksi');
 	}
 
-	public function pengirimen()
+	public function pengiriman()
 	{
-		return $this->hasMany(Pengiriman::class, 'id_jadwal');
+		return $this->hasOne(Pengiriman::class, 'id_jadwal', 'id_jadwal');
 	}
+
+	public function kurir()
+	{
+		// Relasi melalui Pengiriman, hanya jika id_pegawai ada
+		return $this->hasOneThrough(
+			Pegawai::class,  // Model tujuan
+			Pengiriman::class, // Model perantara
+			'id_jadwal',     // Foreign key di pengiriman
+			'id_pegawai',    // Foreign key di pegawai
+			'id_jadwal',     // Local key di penjadwalan
+			'id_pegawai'     // Local key di pengiriman
+		);
+	}
+
 }

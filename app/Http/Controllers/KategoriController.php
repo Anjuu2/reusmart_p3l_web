@@ -30,7 +30,7 @@ class KategoriController extends Controller
 
     public function showAvailableProducts()
     {
-        $produk = BarangTitipan::with('kategori')->where('status_barang', 'Tersedia')->get();
+        $produk = BarangTitipan::with(['kategori', 'fotoBarang'])->where('status_barang', 'Tersedia')->get();
         $kategori = null;
         return view('kategori', compact('produk', 'kategori'));
     }
@@ -52,7 +52,7 @@ class KategoriController extends Controller
         $kategori = Kategori::findOrFail($id);
         
         // Ambil produk berdasarkan kategori
-        $produk = BarangTitipan::with('kategori')
+        $produk = BarangTitipan::with(['kategori', 'fotoBarang'])
             ->where('id_kategori', $id)
             ->where('status_barang', 'Tersedia')
             ->get();
@@ -66,11 +66,11 @@ class KategoriController extends Controller
         $query = $request->get('query');
 
         if ($query) {
-            $products = BarangTitipan::with('kategori') // ← ini penting
+            $products = BarangTitipan::with(['kategori', 'fotoBarang']) // ← ini penting
                 ->where('nama_barang', 'like', '%' . $query . '%')
                 ->get();
         } else {
-            $products = BarangTitipan::with('kategori')->get(); // ← juga di sini
+            $products = BarangTitipan::with(['kategori', 'fotoBarang'])->get(); // ← juga di sini
         }
 
         return response()->json($products);
@@ -79,7 +79,7 @@ class KategoriController extends Controller
     public function show($id)
     {
         $kategori = Kategori::findOrFail($id);
-        $barang = BarangTitipan::where('id_kategori', $id)->get();
+        $barang = BarangTitipan::with('fotoBarang')->where('id_kategori', $id)->get();
 
         return view('kategori', compact('kategori', 'barang'));
     }

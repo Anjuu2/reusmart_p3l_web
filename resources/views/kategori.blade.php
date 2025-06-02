@@ -500,7 +500,7 @@
             <div class="cart-search">
                 <!-- Icons -->
                 <div class="icons">
-                    <a href="#"><img src="https://img.icons8.com/material/24/ffffff/shopping-cart.png" alt="Cart"></a>
+                    <a href="{{ route('keranjang') }}"><img src="https://img.icons8.com/material/24/ffffff/shopping-cart.png" alt="Cart"></a>
                     <a href="login"><img src="https://img.icons8.com/material/24/ffffff/user.png" alt="Account"></a>
                 </div>
             </div>
@@ -581,7 +581,7 @@
                 @else
                     @forelse($produk as $item)
                         <a href="{{ url('product/' . $item->id_barang) }}" class="product-card">
-                            <img src="{{ asset('images/' . $item->foto_barang) }}" alt="{{ $item->nama_barang }}">
+                            <img src="{{ asset('images/barang/' . ($item->fotoBarang->first()->nama_file ?? 'default.jpg')) }}" class="img-fluid">
                             <div class="product-info">
                             <p class="product-category">{{ $item->kategori->nama_kategori ?? 'Kategori Tidak Ada' }}</p>
                             <h3 class="product-name">{{ $item->nama_barang }}</h3>

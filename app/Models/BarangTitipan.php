@@ -51,24 +51,29 @@ class BarangTitipan extends Model
 	protected $casts = [
 		'id_penitip' => 'int',
 		'id_pegawai' => 'int',
+		'id_qc_pegawai' => 'int',
 		'id_hunter' => 'int',
 		'id_kategori' => 'int',
 		'tanggal_masuk' => 'datetime',
+		'tanggal_akhir' => 'datetime',
 		'tanggal_keluar' => 'datetime',
 		'status_perpanjangan' => 'bool',
 		'harga_jual' => 'float',
 		'garansi' => 'bool',
 		'tanggal_garansi' => 'datetime',
 		'barang_hunter' => 'bool',
-		'berat' => 'float'
+		'berat' => 'float',
+		'id_nota' => 'int'
 	];
 
 	protected $fillable = [
 		'id_penitip',
 		'id_pegawai',
+		'id_qc_pegawai',
 		'id_hunter',
 		'id_kategori',
 		'tanggal_masuk',
+		'tanggal_akhir',
 		'tanggal_keluar',
 		'status_perpanjangan',
 		'nama_barang',
@@ -79,12 +84,21 @@ class BarangTitipan extends Model
 		'garansi',
 		'tanggal_garansi',
 		'barang_hunter',
-		'berat'
+		'berat',
+		'id_nota'
 	];
 
 	public function pegawai()
 	{
 		return $this->belongsTo(Pegawai::class, 'id_pegawai');
+	}
+
+	public function pegawaiQc() {
+		return $this->belongsTo(Pegawai::class, 'id_qc_pegawai');
+	}
+
+	public function hunter() {
+		return $this->belongsTo(Pegawai::class, 'id_hunter');
 	}
 
 	public function kategori()
@@ -120,5 +134,20 @@ class BarangTitipan extends Model
 	public function ratings()
 	{
 		return $this->hasMany(Rating::class, 'id_barang');
+	}
+
+	public function ratingDetail()
+    {
+        return $this->hasOne(Rating::class, 'id_barang', 'id_barang')->where('id_pembeli', auth()->guard('pembeli')->id());
+    }
+
+	public function fotoBarang()
+	{
+    	return $this->hasMany(FotoBarang::class, 'id_barang', 'id_barang');
+	}
+
+	public function nota()
+	{
+		return $this->belongsTo(NotaPenitipan::class, 'id_nota');
 	}
 }

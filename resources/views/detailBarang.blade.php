@@ -7,6 +7,7 @@
 
     <!-- Bootstrap CSS -->
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
 
     <style>
         * {
@@ -285,7 +286,26 @@
             background-color: #218838;
         }
 
-        
+        .related-image {
+            width: 100%;
+            height: 160px;
+            object-fit: contain;
+            border-radius: 6px;
+            background-color: #f9f9f9;
+        }
+
+        .related-product-card {
+            border: 1px solid #eee;
+            border-radius: 10px;
+            overflow: hidden;
+            transition: transform 0.2s;
+            background-color: #fff;
+            margin-bottom: 10px;
+        }
+
+        .related-product-card:hover {
+            transform: scale(1.03);
+        }
 
         /* Responsive Design */
         @media (max-width: 768px) {
@@ -351,6 +371,34 @@
     </style>
 </head>
 <body>
+
+{{-- Toast tetap menempel di layar --}}
+    <div class="toast-container position-fixed top-0 end-0 p-3" style="z-index: 1055;">
+        @if (session('success'))
+            <div id="liveToast" class="toast fade" role="alert" aria-live="assertive" aria-atomic="true">
+                <div class="toast-header bg-success text-white">
+                    <strong class="me-auto">Sukses</strong>
+                    <button type="button" class="btn-close btn-close-white" data-bs-dismiss="toast" aria-label="Close"></button>
+                </div>
+                <div class="toast-body">
+                    {{ session('success') }}
+                </div>
+            </div>
+        @endif
+
+        @if (session('warning'))
+            <div id="liveToast" class="toast fade" role="alert" aria-live="assertive" aria-atomic="true">
+                <div class="toast-header bg-danger text-white">
+                    <strong class="me-auto">Peringatan</strong>
+                    <button type="button" class="btn-close btn-close-white" data-bs-dismiss="toast" aria-label="Close"></button>
+                </div>
+                <div class="toast-body">
+                    {{ session('warning') }}
+                </div>
+            </div>
+        @endif
+    </div>
+    
     <!-- Header Section -->
     <header>
         <div class="container">
@@ -373,7 +421,7 @@
                 <div id="search-results"></div>
                 <!-- Icons -->
                 <div class="icons">
-                    <a href="#"><img src="https://img.icons8.com/material/24/ffffff/shopping-cart.png" alt="Cart"></a>
+                    <a href="{{ route('keranjang') }}"><img src="https://img.icons8.com/material/24/ffffff/shopping-cart.png" alt="Cart"></a>
                     <a href="{{ route('checkout') }}"><img src="https://img.icons8.com/material/24/ffffff/user.png" alt="Account"></a>
                 </div>
             </div>
@@ -390,21 +438,28 @@
                 <div id="productCarousel" class="carousel slide" data-bs-ride="carousel">
                     <!-- Carousel Indicators -->
                     <div class="carousel-indicators">
-                        <button type="button" data-bs-target="#productCarousel" data-bs-slide-to="0" class="active" aria-current="true" aria-label="Slide 1"></button>
-                        <button type="button" data-bs-target="#productCarousel" data-bs-slide-to="1" aria-label="Slide 2"></button>
+                        @foreach ($product->fotoBarang as $index => $foto)
+                            <button type="button"
+                                    data-bs-target="#productCarousel"
+                                    data-bs-slide-to="{{ $index }}"
+                                    class="{{ $index == 0 ? 'active' : '' }}"
+                                    aria-current="{{ $index == 0 ? 'true' : 'false' }}"
+                                    aria-label="Slide {{ $index + 1 }}"></button>
+                        @endforeach
                     </div>
 
                     <!-- Carousel Inner -->
                     <div class="carousel-inner">
-                        <div class="carousel-item active">
-                            <img src="{{ asset('images/' . $product->foto_barang) }}" alt="{{ $product->nama_barang }}" class="product-image">
-                        </div>
-                        <div class="carousel-item">
-                            <img src="{{ asset('images/' . $product->foto_barang_2) }}" alt="{{ $product->nama_barang }} (2)" class="product-image">
-                        </div>
+                        @foreach ($product->fotoBarang as $index => $foto)
+                            <div class="carousel-item {{ $index == 0 ? 'active' : '' }}">
+                                <img src="{{ asset('images/barang/' . $foto->nama_file) }}"
+                                    class="d-block w-100 img-fluid"
+                                    alt="Foto {{ $index + 1 }}">
+                            </div>
+                        @endforeach
                     </div>
 
-                    <!-- Carousel Controls (Next and Previous Buttons) -->
+                    <!-- Carousel Controls -->
                     <button class="carousel-control-prev" type="button" data-bs-target="#productCarousel" data-bs-slide="prev">
                         <span class="carousel-control-prev-icon" aria-hidden="true"></span>
                         <span class="visually-hidden">Previous</span>
@@ -443,11 +498,51 @@
                     <p class="product-price" style="font-size: 25px; margin: 4px 0 12px;">
                         <strong>Rp{{ number_format($product->harga_jual, 0, ',', '.') }}</strong>
                     </p>
+
+                    <h5 style="font-size: 14px; color: grey; margin: 0 0 6px; display: flex; align-items: center; gap: 6px;">
+                       {{ $product->penitip->nama_penitip }} -
+                        @if($avgRating > 0)
+                            @php
+                                $rounded = round($avgRating * 2) / 2; 
+                                $fullStars = floor($rounded);
+                                $halfStar  = ($rounded - $fullStars) == 0.5 ? 1 : 0;
+                                $emptyStars = 5 - $fullStars - $halfStar;
+                            @endphp
+                            {{-- Tampilkan bintang penuh --}}
+                            @for($i = 0; $i < $fullStars; $i++)
+                                <i class="fas fa-star text-warning"></i>
+                            @endfor
+
+                            {{-- Tampilkan setengah bintang --}}
+                            @if($halfStar)
+                                <i class="fas fa-star-half-alt text-warning"></i>
+                            @endif
+
+                            {{-- Tampilkan bintang kosong --}}
+                            @for($i = 0; $i < $emptyStars; $i++)
+                                <i class="far fa-star text-warning"></i>
+                            @endfor
+
+                            {{-- Angka rata-rata --}}
+                            <span style="font-size: 13px; color: #555;">({{ number_format($avgRating, 1) }})</span>
+                        
+                        @else
+                            {{-- Tampilkan 5 bintang kosong tanpa warna (abu-abu) --}}
+                            @for($i = 0; $i < 5; $i++)
+                                <span class="text-muted">&#9734;</span> {{-- ☆ --}}
+                            @endfor
+                            <small class="text-muted">(Belum ada rating)</small>
+                        @endif
+                    </h5>
+
                     <!-- Kontainer untuk Tombol -->
                     <div class="button-container" style="margin-top: 35px;">
                         <!-- Tombol Add to Cart -->
-                        <button class="add-to-cart-btn">Add to Cart</button>
-
+                        <form action="{{ route('keranjang.tambah') }}" method="POST">
+                            @csrf
+                            <input type="hidden" name="id_barang" value="{{ $product->id_barang }}">
+                            <button type="submit" class="add-to-cart-btn w-100">Add to Cart</button>
+                        </form>
                         <!-- Tombol Beli Barang -->
                         <a href="{{ route('checkout') }}">
                             <button class="buy-now-btn">Beli Barang</button>
@@ -462,7 +557,7 @@
                 <div class="related-products-grid" style="display: flex; flex-wrap: wrap; gap: 20px;">
                     @forelse($produk_serupa as $item)
                         <a href="{{ url('product/' . $item->id_barang) }}" class="related-product-card" style="width: 200px; text-decoration: none; color: inherit;">
-                            <img src="{{ asset('images/' . $item->foto_barang) }}" alt="{{ $item->nama_barang }}" style="width: 100%; height: 150px; object-fit: cover;">
+                           <img src="{{ asset('images/barang/' . ($item->fotoBarang->first()->nama_file ?? 'default.jpg')) }}" alt="..." class="img-fluid related-image">
                             <div style="padding: 8px;">
                                 <p style="font-size: 13px; color: grey; margin: 4px 0;">{{ $item->kategori->nama_kategori ?? 'Kategori' }}</p>
                                 <h4 style="font-size: 16px; margin: 0 0 4px;">{{ $item->nama_barang }}</h4>
@@ -498,5 +593,13 @@
     <!-- Bootstrap JS and dependencies (Popper.js and Bootstrap JS) -->
     <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.11.6/dist/umd/popper.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.min.js"></script>
+
+    <script>
+    const toastLive = document.getElementById('liveToast');
+        if (toastLive) {
+            const toast = new bootstrap.Toast(toastLive);
+            toast.show();
+        }
+    </script>
 </body>
 </html>

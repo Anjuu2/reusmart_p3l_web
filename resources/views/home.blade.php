@@ -267,9 +267,20 @@
             object-fit: cover;
         }
 
+        .product-card img {
+            height: 170px;
+            width: 100%;
+            object-fit: contain;
+            margin-bottom: 10px;
+        }
+
         /* Informasi Produk */
         .product-info {
             margin-top: 15px;
+            flex-grow: 1;
+            display: flex;
+            flex-direction: column;
+            align-items: flex-start;
         }
 
         /* Nama Kategori Produk */
@@ -311,6 +322,7 @@
             justify-content: space-between;
             align-items: center;
             margin-top: 10px;
+            width: 100%;
         }
 
         /* Harga Produk (Di kiri) */
@@ -328,7 +340,8 @@
 
         .add-to-cart-container {
             display: flex;
-            justify-content: flex-end;
+            justify-content: center;
+            align-items: center;
         }
 
         /* Tombol Add to Cart */
@@ -345,7 +358,8 @@
         }
 
         .add-to-cart img {
-            margin-right: 10px; /* Jarak antara ikon cart dan teks Add */
+            margin-right: 5px; /* Jarak antara ikon cart dan teks Add */
+            height: 18px;
         }
 
         .add-to-cart:hover {
@@ -535,13 +549,42 @@
             <div class="cart-search">
                 <!-- Icons -->
                 <div class="icons">
-                    <a href="#"><img src="https://img.icons8.com/material/24/ffffff/shopping-cart.png" alt="Cart"></a>
+                    <a href="{{ route('keranjang') }}"><img src="https://img.icons8.com/material/24/ffffff/shopping-cart.png" alt="Cart"></a>
                     <a href="{{ route('diskusi.index') }}"><img src="https://img.icons8.com/?size=100&id=123773&format=png&color=ffffff" alt="Diskusi"></a>
-                    <a href="{{ route('pembeli.profil') }}"><img src="https://img.icons8.com/material/24/ffffff/user.png" alt="Account"></a>
+                    <a href="{{ route(Auth::guard('penitip')->check() ? 'penitip.profil' : 'pembeli.profil') }}">
+                        <img src="https://img.icons8.com/material/24/ffffff/user.png" alt="Account">
+                    </a>
                 </div>
             </div>
         </div>
     </header>
+
+    {{-- Toast tetap menempel di layar --}}
+    <div class="toast-container position-fixed top-0 end-0 p-3" style="z-index: 1055;">
+        @if (session('success'))
+            <div id="liveToast" class="toast fade" role="alert" aria-live="assertive" aria-atomic="true">
+                <div class="toast-header bg-success text-white">
+                    <strong class="me-auto">Sukses</strong>
+                    <button type="button" class="btn-close btn-close-white" data-bs-dismiss="toast" aria-label="Close"></button>
+                </div>
+                <div class="toast-body">
+                    {{ session('success') }}
+                </div>
+            </div>
+        @endif
+
+        @if (session('warning'))
+            <div id="liveToast" class="toast fade" role="alert" aria-live="assertive" aria-atomic="true">
+                <div class="toast-header bg-danger text-white">
+                    <strong class="me-auto">Peringatan</strong>
+                    <button type="button" class="btn-close btn-close-white" data-bs-dismiss="toast" aria-label="Close"></button>
+                </div>
+                <div class="toast-body">
+                    {{ session('warning') }}
+                </div>
+            </div>
+        @endif
+    </div>
 
     <!-- <div class="navbar-shadow-separator"></div> -->
     
@@ -557,7 +600,7 @@
                 @foreach($barangs->take(3) as $index => $barang)
                 <div class="carousel-item {{ $index === 0 ? 'active' : '' }}">
                     <a href="{{ url('product/' . $barang->id_barang) }}">
-                        <img src="{{ asset('images/' . $barang->foto_barang) }}" class="d-block w-100" alt="{{ $barang->nama_barang }}">
+                        <img src="{{ asset('images/barang/' . ($barang->fotoBarang->first()->nama_file ?? 'default.jpg')) }}" alt="Foto Barang" class="img-fluid">
                     </a>
                     <div class="carousel-caption d-none d-md-block">
                         <h5>{{ $barang->nama_barang }}</h5>
@@ -639,7 +682,7 @@
         <div class="product-container">
             @foreach($barangs->take(10) as $barang)
             <a href="{{ url('product/' . $barang->id_barang) }}" class="product-card">
-                <img src="{{ asset('images/' . $barang->foto_barang) }}" alt="{{ $barang->nama_barang }}" class="product-image">
+                <img src="{{ asset('images/barang/' . ($barang->fotoBarang->first()->nama_file ?? 'default.jpg')) }}" alt="Foto Barang" class="img-fluid">
                 <div class="product-info">
                     <p class="product-category">{{ $barang->kategori->nama_kategori ?? 'Kategori Tidak Ada' }}</p>
                     <h3 class="product-name">{{ $barang->nama_barang }}</h3>
@@ -653,10 +696,14 @@
                         <span class="current-price">Rp{{ number_format($barang->harga_jual, 0, ',', '.') }}</span>
                     </div>
                     <div class="add-to-cart-container">
-                        <button class="add-to-cart">
-                            <img src="https://img.icons8.com/material/24/007848/shopping-cart.png" alt="Cart">
-                                Add
-                        </button>
+                        <form action="{{ route('keranjang.tambah') }}" method="POST">
+                            @csrf
+                            <input type="hidden" name="id_barang" value="{{ $barang->id_barang }}">
+                            <button type="submit" class="add-to-cart">
+                                <img src="https://img.icons8.com/material/24/007848/shopping-cart.png" alt="Cart">
+                                    Add
+                            </button>
+                        </form>
                     </div>
                 </div>
             </a>
@@ -685,5 +732,13 @@
     <!-- Bootstrap JS and dependencies (Popper.js and Bootstrap JS) -->
     <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.11.6/dist/umd/popper.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.min.js"></script>
+
+    <script>
+        const toastLive = document.getElementById('liveToast');
+            if (toastLive) {
+                const toast = new bootstrap.Toast(toastLive);
+                toast.show();
+            }
+    </script>
 </body>
 </html>
