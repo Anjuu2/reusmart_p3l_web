@@ -174,4 +174,21 @@ class PenitipController extends Controller
         return view('penitip.dashboard', compact('barangs'));
     }
 
+    public function saveFcmToken(Request $request)
+    {
+        $request->validate([
+            'fcm_token' => 'required|string',
+        ]);
+
+        $user = $request->user();
+
+        // Simpan token FCM ke user (misal kolom 'fcm_token' di tabel users)
+        // Jika kamu pakai tabel lain, sesuaikan
+
+        $user->fcm_token = $request->fcm_token;
+        $user->save();
+
+        return response()->json(['success' => true, 'message' => 'FCM token saved']);
+    }
+
 }

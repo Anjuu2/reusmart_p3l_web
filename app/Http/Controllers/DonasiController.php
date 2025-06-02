@@ -10,6 +10,7 @@ use App\Models\Penitip;
 use App\Models\Organisasi;
 use Illuminate\Support\Facades\DB;
 use App\Notifications\BarangDidonasikan;
+use App\Services\FirebaseService;
 
 class DonasiController extends Controller
 {
@@ -79,6 +80,18 @@ class DonasiController extends Controller
         Penitip::where('id_penitip', $barang->id_penitip)
             ->increment('poin', $poin);
     });
+
+        $firebase = new FirebaseService();
+
+        $penitip = Penitip::find($barang->id_penitip);
+        $penitipFcmToken = $penitip ? $penitip->fcm_token : null;
+
+        $title = "Barang Didonasikan ID #{$barang->id_barang}";
+        $body = "Barang dengan nama '{$barang->nama_barang}' dengan ID #{$barang->id_barang} berhasil didonasikan.";
+
+        if ($penitipFcmToken) {
+            $firebase->sendMessage($penitipFcmToken, $title, $body);
+        }
         return redirect()->route('owner.donasi.index')->with('success', 'Donasi berhasil dialokasikan.');
     }
 
