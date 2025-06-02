@@ -31,7 +31,14 @@ class DetailBarangController extends Controller
 
     public function show($id)
     {
-        $product = BarangTitipan::with(['kategori', 'fotoBarang'])->find($id);
+        $product = BarangTitipan::with(['kategori', 'fotoBarang','penitip'])->findOrFail($id);
+
+        $idPenitip = $product->id_penitip;
+        $avgRating = \App\Models\Rating::where('id_penitip', $idPenitip)->avg('rating');
+
+        if (is_null($avgRating)) {
+            $avgRating = 0;
+        }
         
         if (!$product) {
             abort(404, "Produk tidak ditemukan.");
@@ -46,7 +53,7 @@ class DetailBarangController extends Controller
             ->take(4)
             ->get();
 
-        return view('detailBarang', compact('product', 'garansi_status', 'produk_serupa'));
+        return view('detailBarang', compact('product', 'garansi_status', 'produk_serupa', 'avgRating', 'idPenitip'));
     }
 
     private function checkWarrantyStatus($tanggal_garansi)
