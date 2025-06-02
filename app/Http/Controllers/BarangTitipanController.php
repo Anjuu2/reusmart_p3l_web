@@ -253,15 +253,17 @@ class BarangTitipanController extends Controller
 
         foreach ($barangs as $barang) {
             $tanggalAkhir = Carbon::parse($barang->tanggal_akhir);
-            
+
+            // Jika perpanjangan aktif dan tanggal perpanjangan tersedia, pakai tanggal_akhir_perpanjangan
             if ($barang->status_perpanjangan == 1 && $barang->tanggal_akhir_perpanjangan) {
                 $tanggalAkhir = Carbon::parse($barang->tanggal_akhir_perpanjangan);
             }
 
-            // Hitung selisih hari sekarang dengan tanggal akhir
-            $selisihHari = $hariSekarang->diffInDays($tanggalAkhir, false);
+            // Hitung selisih hari dari tanggal akhir ke hari ini
+            $selisihHari = $tanggalAkhir->diffInDays($hariSekarang, false);
 
-            if ($selisihHari < -$batasAmbil) {
+            // Jika sudah lewat lebih dari 7 hari, ubah status ke donasi
+            if ($selisihHari > $batasAmbil) {
                 $barang->status_barang = 'barang untuk donasi';
                 $barang->save();
             }
