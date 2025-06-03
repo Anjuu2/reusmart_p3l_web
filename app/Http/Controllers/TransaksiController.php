@@ -10,6 +10,7 @@ use App\Models\Pegawai;
 use App\Models\Penjadwalan;
 
 use App\Notifications\transaksiDisiapkan;
+use App\Notifications\transaksiDisiapkanNotif;
 use Illuminate\Support\Facades\DB;
 use Carbon\Carbon;
 
@@ -142,6 +143,15 @@ class TransaksiController extends Controller
                 if ($penitip->email) {
                     $penitip->notify(new transaksiDisiapkan($transaksi, $penitip, $barangList));
                 }
+            }
+
+            // Tambah notifikasi khusus mobile
+            foreach ($penitipBarangMap as $data) {
+                $penitip = $data['penitip'];
+                $barangList = collect($data['barang']);
+
+                // Kirim notifikasi mobile (database channel) dengan kelas TransaksiDisiapkanNotif
+                $penitip->notify(new TransaksiDisiapkanNotif($transaksi, $barangList));
             }
         }
 
