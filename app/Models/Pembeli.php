@@ -54,7 +54,8 @@ class Pembeli extends Authenticatable
 		'email',
 		'notelp',
 		'nama_pembeli',
-		'status_aktif'
+		'status_aktif',
+		'fcm_token'
 	];
 
 	public function alamat_pembelis()

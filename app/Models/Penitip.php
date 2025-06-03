@@ -57,7 +57,8 @@ class Penitip extends Authenticatable
         'alamat',
         'email',
         'saldo_penitip',
-        'status_aktif'
+        'status_aktif',
+		'fcm_token'
     ];
 
 	public function badges()

@@ -17,3 +17,10 @@ Route::middleware('auth:sanctum')->group(function () {
     Route::get('show', [PenitipController::class, 'showM'])->name('penitip.show');
     Route::get('show', [PegawaiController::class, 'showM'])->name('pegawai.show');
 });
+
+Route::middleware('auth:sanctum')->post('/save-fcm-token-pembeli', [PembeliController::class, 'saveFcmToken']);
+Route::middleware('auth:sanctum')->post('/save-fcm-token-penitip', [PenitipController::class, 'saveFcmToken']);
+
+use App\Http\Controllers\TestNotificationController;
+
+Route::get('/test-fcm-notification', [TestNotificationController::class, 'sendTestNotification']);

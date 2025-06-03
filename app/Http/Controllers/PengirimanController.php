@@ -12,6 +12,7 @@ use App\Models\Penitip;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Mail;
+use App\Services\FirebaseService;
 
 class PengirimanController extends Controller
 {
@@ -288,6 +289,28 @@ class PengirimanController extends Controller
             }
 
             DB::commit();
+
+            $firebase = new FirebaseService();
+
+            $pembeliFcmToken = $jadwal->transaksi->pembeli->fcm_token;
+            $penitipFcmTokens = [];
+            foreach ($jadwal->transaksi->detailTransaksi as $detail) {
+                $barang = $detail->barang;
+                $penitip = $barang->penitip;
+                if ($penitip && $penitip->fcm_token) {
+                    $penitipFcmTokens[] = $penitip->fcm_token;
+                }
+            }
+
+            $title = "Konfirmasi Pengambilan Transaksi #{$jadwal->transaksi->nomor_transaksi}";
+            $body = "Barang telah berhasil diambil.";
+
+            if ($pembeliFcmToken) {
+                $firebase->sendMessage($pembeliFcmToken, $title, $body);
+            }
+            foreach ($penitipFcmTokens as $token) {
+                $firebase->sendMessage($token, $title, $body);
+            }
             return back()->with('success', 'Pengambilan berhasil dikonfirmasi dan komisi serta poin telah dihitung.');
         } catch (\Exception $e) {
             DB::rollBack();
