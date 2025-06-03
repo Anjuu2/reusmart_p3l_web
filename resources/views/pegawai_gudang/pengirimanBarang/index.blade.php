@@ -73,6 +73,7 @@
                 <option value="Sampai">Sampai</option>
                 <option value="Disiapkan">Disiapkan</option>
                 <option value="Diantar">Diantar</option>
+                <option value="Belum Disiapkan">Belum Disiapkan</option>
             </select>
 
             <button class="btn btn-outline-dark" type="submit">
@@ -97,7 +98,7 @@
         <tbody>
             @forelse ($transaksi as $item)
                 <tr>
-                    <td class="text-center">{{ $item->id_transaksi }}</td>
+                    <td class="text-center">{{ $item->nomor_transaksi }}</td>
                     <td>{{ $item->pembeli->nama_pembeli ?? '-' }}</td>
                     <td>
                         @if ($item->tanggal_transaksi)

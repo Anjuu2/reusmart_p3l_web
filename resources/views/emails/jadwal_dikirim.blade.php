@@ -65,7 +65,7 @@
          <img src="https://ik.imagekit.io/jh93hgpo3/logo2.png?updatedAt=1748623080633" alt="ReUseMart Logo" class="logo">
 
         <h3>Halo,</h3>
-        <p>Berikut adalah detail jadwal pengiriman/pengambilan untuk transaksi nomor: <span class="highlight">#{{ $transaksi->id_transaksi }}</span></p>
+        <p>Berikut adalah detail jadwal pengiriman/pengambilan untuk transaksi nomor: <span class="highlight">#{{ $transaksi->nomor_transaksi }}</span></p>
 
         <ul>
             <li><strong>Jenis Jadwal:</strong> {{ $jadwal->jenis_jadwal }}</li>
