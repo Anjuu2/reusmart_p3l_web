@@ -39,6 +39,33 @@
     h5 {
         margin-top: 20px;
     }
+
+    .status-btn {
+        border: none;
+        border-radius: 20px;
+        padding: 5px 12px;
+        font-size: 0.875rem;
+    }
+    .status-tersedia {
+        background-color: #d4edda;
+        color: #155724;
+    }
+    .status-terjual {
+        background-color: #f8d7da;
+        color: #721c24;
+    }
+    .status-didonasikan {
+        background-color: #fff3cd;
+        color: #856404;
+    }
+    .status-donasi {
+        background-color: #dee2e6;
+        color: #495057;
+    }
+    .status-diambil {
+        background-color: #dee2e6;
+        color:rgb(14, 180, 209);
+    }
 </style>
 
 <div class="container-fluid mt-2">
@@ -77,12 +104,31 @@
                 </table>
             </div>
             <div class="col-md-3">
-                <table class="table table-bordered table-striped table-hover">
+               <table class="table table-bordered table-striped table-hover">
                     <tr>
                         <th class="text-center">Status Barang</th>
                     </tr>
                     <tr>
-                        <td class="text-center">{{ $barang->status_barang }}</td>
+                        @php
+                            $status = strtolower($barang->status_barang);
+                            $classStatus = '';
+                            if ($status === 'tersedia') {
+                                $classStatus = 'status-tersedia';
+                            } elseif (in_array($status, ['terjual', 'diambil kembali', 'pengambilan diproses'])) {
+                                $classStatus = 'status-terjual';
+                            } elseif ($status === 'didonasikan') {
+                                $classStatus = 'status-didonasikan';
+                            } elseif ($status === 'barang untuk donasi') {
+                                $classStatus = 'status-donasi';
+                            } elseif ($status === 'diambil kembali') {
+                                $classStatus = 'status-diambil';
+                            }
+                        @endphp
+                        <td class="text-center">
+                            <span class="status-btn {{ $classStatus }}">
+                                {{ $status === 'barang untuk donasi' ? 'barang untuk donasi' : $barang->status_barang }}
+                            </span>
+                        </td>
                     </tr>
                 </table>
             </div>
@@ -203,11 +249,20 @@
                 <i class="bi bi-clipboard"></i> Detail Nota
             </a>
             {{-- Tombol Edit --}}
-            <a href="{{ route('pegawai_gudang.barangTitipan.edit', [
+            @php
+                $isAvailable = strtolower($barang->status_barang) === 'tersedia';
+            @endphp
+
+            <a href="{{ $isAvailable ? route('pegawai_gudang.barangTitipan.edit', ['id' => $barang->id_barang, 'context' => 'detail']) : '#' }}"
+            class="btn btn-warning {{ $isAvailable ? '' : 'disabled' }}"
+            {{ $isAvailable ? '' : 'aria-disabled=true tabindex=-1' }}>
+            <i class="fas fa-edit"></i> Edit Barang
+            </a>
+            <!-- <a href="{{ route('pegawai_gudang.barangTitipan.edit', [
                     'id'        => $barang->id_barang,
                     'context'   => 'detail'
                 ]) }}" class="btn btn-warning"><i class="fas fa-edit"></i> Edit Barang
-            </a>
+            </a> -->
         </div>
     </div>
 </div>

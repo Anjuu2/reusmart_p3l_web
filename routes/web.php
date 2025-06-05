@@ -26,6 +26,10 @@ use App\Http\Controllers\NotaPenitipanController;
 use App\Http\Controllers\CheckoutController;
 use App\Http\Controllers\PengirimanController;
 
+Route::middleware(['auth'])->group(function () {
+    Route::get('/kirim-notifikasi-penitipan', [BarangTitipanController::class, 'kirimNotifikasiMasaPenitipan']);
+});
+
 Route::get('/', [HomeController::class, 'index']);
 Route::get('/kategori', [KategoriController::class, 'showAvailableProducts']);
 Route::get('/kategori/{id}', [KategoriController::class, 'showProductsByCategory']);
