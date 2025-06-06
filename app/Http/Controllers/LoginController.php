@@ -359,22 +359,23 @@ class LoginController extends Controller
 
     public function logoutMobile(Request $request)
     {
-        $user = $request->user();
+        // Ambil user yang sedang login menggunakan Sanctum
+        $user = Auth::guard('sanctum')->user();
 
+        // Cek jika ada user yang sedang login
         if ($user) {
-            $user->fcm_token = null;
-            $user->save();
-
+            // Menghapus token yang sedang digunakan
             $user->tokens->each(function ($token) {
                 $token->delete();
             });
 
             return response()->json([
                 'success' => true,
-                'message' => 'Logout berhasil, semua token dan FCM token dihapus.',
+                'message' => 'Logout berhasil.',
             ]);
         }
 
+        // Jika user tidak ditemukan atau sudah logout
         return response()->json([
             'success' => false,
             'message' => 'User tidak ditemukan atau sudah logout.',
