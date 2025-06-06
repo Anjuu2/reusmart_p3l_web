@@ -26,6 +26,7 @@ use App\Http\Controllers\NotaPenitipanController;
 use App\Http\Controllers\CheckoutController;
 use App\Http\Controllers\PengirimanController;
 use App\Http\Controllers\OwnerLaporanController;
+use App\Http\Controllers\RewardController;
 
 Route::get('/', [HomeController::class, 'index']);
 Route::get('/kategori', [KategoriController::class, 'showAvailableProducts']);
@@ -142,6 +143,8 @@ Route::middleware(['auth:pegawai'])->prefix('cs')->group(function () {
     Route::post('/pembayaran/{id_transaksi}', [TransaksiController::class, 'verifikasiPembayaran'])->name('cs.pembayaran.verifikasi');
     Route::delete('/pembayaran/{id_transaksi}/tolak', [TransaksiController::class, 'tolakPembayaran'])->name('cs.pembayaran.tolak');
 
+    Route::get('/cs/merchandise-claims', [RewardController::class, 'index'])->name('cs.reward.index');
+    Route::post('/cs/merchandise-claims/{id}/take', [RewardController::class, 'ambilMerch'])->name('cs.reward.ambilMerch');
 });
 
 Route::middleware(['auth:organisasi'])->prefix('organisasi')->group(function () {
