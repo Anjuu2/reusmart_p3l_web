@@ -25,12 +25,8 @@ use App\Http\Controllers\KeranjangController;
 use App\Http\Controllers\NotaPenitipanController;
 use App\Http\Controllers\CheckoutController;
 use App\Http\Controllers\PengirimanController;
+use App\Http\Controllers\OwnerLaporanController;
 use App\Http\Controllers\RewardController;
-
-
-Route::middleware(['auth'])->group(function () {
-    Route::get('/kirim-notifikasi-penitipan', [BarangTitipanController::class, 'kirimNotifikasiMasaPenitipan']);
-});
 
 Route::get('/', [HomeController::class, 'index']);
 Route::get('/kategori', [KategoriController::class, 'showAvailableProducts']);
@@ -61,12 +57,19 @@ Route::middleware('auth:pegawai')->get('/dashboard/admin', fn() => view('dashboa
 Route::middleware('auth:pegawai')->get('/dashboard/kurir', fn() => view('dashboard-kurir'))->name('dashboard.kurir');
 // Route::middleware('auth:pegawai')->get('/dashboard/owner', fn() => view('dashboard-owner'))->name('dashboard.owner');
 Route::middleware('auth:pegawai')->group(function () {
-    Route::get('/dashboard/owner', fn() => redirect()->route('owner.donasi.index'))->name('dashboard.owner');
+    // Route::get('/dashboard/owner', fn() => redirect()->route('owner.donasi.index'))->name('dashboard.owner');
+    Route::get('/dashboard/owner', function () {
+        return view('owner.dashboard');
+    })->name('dashboard.owner');
     Route::get('/owner/donasi', [DonasiController::class, 'index'])->name('owner.donasi.index');
     Route::post('/owner/donasi/allocate', [DonasiController::class, 'allocate'])->name('owner.donasi.allocate');
     Route::post('/owner/donasi/update', [DonasiController::class, 'update'])->name('owner.donasi.update');
     Route::post('/owner/donasi/reject', [DonasiController::class, 'reject'])->name('owner.donasi.reject');
     Route::get('/owner/donasi/history-organisasi/{id}', [DonasiController::class, 'historyByOrganisasi'])->name('owner.donasi.history.organisasi');
+
+    Route::get('/owner/laporan/penjualan', [OwnerLaporanController::class, 'index'])->name('owner.laporan.penjualan');
+    Route::get('/owner/laporan/penjualan/download', [OwnerLaporanController::class, 'downloadPDF'])->name('owner.laporan.penjualan.download');
+
 
     Route::get('/dashboard/pegawai_gudang', function () {
         return view('pegawai_gudang.dashboard');
@@ -142,7 +145,6 @@ Route::middleware(['auth:pegawai'])->prefix('cs')->group(function () {
 
     Route::get('/cs/merchandise-claims', [RewardController::class, 'index'])->name('cs.reward.index');
     Route::post('/cs/merchandise-claims/{id}/take', [RewardController::class, 'ambilMerch'])->name('cs.reward.ambilMerch');
-
 });
 
 Route::middleware(['auth:organisasi'])->prefix('organisasi')->group(function () {

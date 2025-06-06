@@ -26,6 +26,6 @@ Route::middleware(['auth:sanctum'])->group(function () {
 Route::middleware('auth:sanctum')->post('/save-fcm-token-pembeli', [PembeliController::class, 'saveFcmToken']);
 Route::middleware('auth:sanctum')->post('/save-fcm-token-penitip', [PenitipController::class, 'saveFcmToken']);
 
-use App\Http\Controllers\TestNotificationController;
+// use App\Http\Controllers\TestNotificationController;
 
-Route::get('/test-fcm-notification', [TestNotificationController::class, 'sendTestNotification']);
+// Route::get('/test-fcm-notification', [TestNotificationController::class, 'sendTestNotification']);
