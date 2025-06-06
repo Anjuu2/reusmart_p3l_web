@@ -130,6 +130,17 @@
                             </li>
                         </ul>
                     </nav>
+
+                    <nav class="mt-2">
+                        <ul class="nav nav-pills nav-sidebar flex-column" data-widget="treeview" role="menu" data-acccordion="false">
+                            <li class="nav-item">
+                                <a class="nav-link" href="{{ route('cs.reward.index') }}">
+                                    <i class="bi bi-stars"></i>
+                                    <p>Merchandise</p>
+                                </a>
+                            </li>
+                        </ul>
+                    </nav>
                 </div>
             </aside>
 
