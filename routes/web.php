@@ -27,6 +27,9 @@ use App\Http\Controllers\CheckoutController;
 use App\Http\Controllers\PengirimanController;
 use App\Http\Controllers\OwnerLaporanController;
 use App\Http\Controllers\RewardController;
+use App\Http\Controllers\OwnerLaporanDonasiController;
+use App\Http\Controllers\OwnerLaporanRequestDonasiController;
+use App\Http\Controllers\OwnerLaporanTransaksiPenitipController;
 
 Route::get('/', [HomeController::class, 'index']);
 Route::get('/kategori', [KategoriController::class, 'showAvailableProducts']);
@@ -76,6 +79,14 @@ Route::middleware('auth:pegawai')->group(function () {
     Route::get('/owner/laporan/komisi', [OwnerLaporanController::class, 'komisiIndex'])->name('owner.laporan.komisi');
     Route::get('/owner/laporan/komisi/download', [OwnerLaporanController::class, 'komisiDownload'])->name('owner.laporan.komisi.download');
 
+    Route::get('/owner/laporan/donasi',  [OwnerLaporanDonasiController::class, 'index'])->name('owner.laporan.donasi');
+    Route::get('/owner/laporan/donasi/download',  [OwnerLaporanDonasiController::class, 'downloadPdf'])->name('owner.laporan.donasi.download');
+
+    Route::get('/owner/laporan/requestdonasi',  [OwnerLaporanRequestDonasiController::class, 'index'])->name('owner.laporan.requestdonasi');
+    Route::get('/owner/laporan/requestdonasi/download',  [OwnerLaporanRequestDonasiController::class, 'downloadPdf'])->name('owner.laporan.requestdonasi.download');
+
+    Route::get('/owner/laporan/transaksipenitip',  [OwnerLaporanTransaksiPenitipController::class, 'index'])->name('owner.laporan.transaksipenitip');
+    Route::get('/owner/laporan/transaksipenitip/download',  [OwnerLaporanTransaksiPenitipController::class, 'downloadPdf'])->name('owner.laporan.transaksipenitip.download');
 
     Route::get('/dashboard/pegawai_gudang', function () {
         return view('pegawai_gudang.dashboard');
