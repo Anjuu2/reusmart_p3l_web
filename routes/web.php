@@ -70,6 +70,9 @@ Route::middleware('auth:pegawai')->group(function () {
     Route::get('/owner/laporan/penjualan', [OwnerLaporanController::class, 'index'])->name('owner.laporan.penjualan');
     Route::get('/owner/laporan/penjualan/download', [OwnerLaporanController::class, 'downloadPDF'])->name('owner.laporan.penjualan.download');
 
+    Route::get('/owner/laporan/stok', [OwnerLaporanController::class, 'stokIndex'])->name('owner.laporan.stok');
+    Route::get('/owner/laporan/stok/download', [OwnerLaporanController::class, 'stokDownload'])->name('owner.laporan.stok.download');
+
 
     Route::get('/dashboard/pegawai_gudang', function () {
         return view('pegawai_gudang.dashboard');
