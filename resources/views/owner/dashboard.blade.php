@@ -151,6 +151,13 @@
                                 <div class="collapse" id="collapseLaporan">
                                     <ul class="btn-toggle-nav list-unstyled fw-normal pb-1 small ps-3">
                                         <li>
+                                            <a class="nav-link fs-6" href="{{ route('owner.laporan.komisi') }}">Komisi Bulanan (per produk)</a>
+                                        </li>
+                                    </ul>
+                                </div>
+                                <div class="collapse" id="collapseLaporan">
+                                    <ul class="btn-toggle-nav list-unstyled fw-normal pb-1 small ps-3">
+                                        <li>
                                             <a class="nav-link fs-6" href="{{ route('owner.laporan.stok') }}">Stok Gudang</a>
                                         </li>
                                     </ul>

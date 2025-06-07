@@ -43,7 +43,7 @@
             <p>Jl. Green Eco Park No. 456 Yogyakarta</p>
         </div>
 
-        <h3><strong>LAPORAN PENJUALAN BULANAN</strong></h3>
+        <h3><strong>LAPORAN Stok Gudang</strong></h3>
 
         <div class="info">
             <p>Tanggal Cetak: {{ ucfirst(now()->locale('id')->isoFormat('DD MMMM YYYY')) }}</p>
