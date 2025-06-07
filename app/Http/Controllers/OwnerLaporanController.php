@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 // use App\Models\DetailTransaksi;
 // use App\Models\Transaksi;
 use App\Models\BarangTitipan;
+use App\Models\Kategori;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Http\Request;
 use Carbon\Carbon;
@@ -322,6 +323,89 @@ class OwnerLaporanController extends Controller
         ])->setPaper('a4', 'portrait');
 
         return $pdf->download("Komisi_{$bulan}_{$year}.pdf");
+    }
+
+    public function laporanPerKategori(Request $request)
+    {
+        // Tangkap tahun dari request jika ada, default ke tahun sekarang
+        $tahun = $request->input('tahun', date('Y'));
+
+        $laporan = Kategori::select('kategori.nama_kategori')
+            ->leftJoin('barang_titipan', 'kategori.id_kategori', '=', 'barang_titipan.id_kategori')
+            ->selectRaw("
+                kategori.nama_kategori,
+                SUM(CASE WHEN barang_titipan.status_barang = 'Terjual' AND YEAR(barang_titipan.tanggal_keluar) = {$tahun} THEN 1 ELSE 0 END) as jumlah_terjual,
+                SUM(CASE WHEN barang_titipan.status_barang = 'Didonasikan' AND YEAR(barang_titipan.tanggal_keluar) = {$tahun} THEN 1 ELSE 0 END) as jumlah_donasi,
+                SUM(CASE WHEN barang_titipan.status_barang = 'Diambil Kembali' AND YEAR(barang_titipan.tanggal_keluar) = {$tahun} THEN 1 ELSE 0 END) as jumlah_gagal
+            ")
+            ->groupBy('kategori.nama_kategori')
+            ->orderBy('kategori.nama_kategori')
+            ->get();
+
+        return view('owner.laporan.penjualanPerKategori', [
+            'laporan' => $laporan,
+            'tahun' => $tahun
+        ]);
+    }
+
+    public function downloadLaporanPerKategori(Request $request)
+    {
+        $tahun = $request->input('tahun', date('Y'));
+
+        $laporan = Kategori::select('kategori.nama_kategori')
+            ->leftJoin('barang_titipan', 'kategori.id_kategori', '=', 'barang_titipan.id_kategori')
+            ->selectRaw("
+                kategori.nama_kategori,
+                SUM(CASE WHEN barang_titipan.status_barang = 'Terjual' AND YEAR(barang_titipan.tanggal_keluar) = {$tahun} THEN 1 ELSE 0 END) as jumlah_terjual,
+                SUM(CASE WHEN barang_titipan.status_barang = 'Didonasikan' AND YEAR(barang_titipan.tanggal_keluar) = {$tahun} THEN 1 ELSE 0 END) as jumlah_donasi,
+                SUM(CASE WHEN barang_titipan.status_barang = 'Diambil Kembali' AND YEAR(barang_titipan.tanggal_keluar) = {$tahun} THEN 1 ELSE 0 END) as jumlah_gagal
+            ")
+            ->groupBy('kategori.nama_kategori')
+            ->orderBy('kategori.nama_kategori')
+            ->get();
+
+        $pdf = PDF::loadView('owner.laporan.penjualanPerKategori-pdf', [
+            'laporan' => $laporan,
+            'tahun' => $tahun
+        ]);
+
+        return $pdf->download('Laporan_Penjualan_Per_Kategori_' . $tahun . '.pdf');
+    }
+
+    public function laporanBarangHabis(Request $request)
+    {
+        $tahun = $request->input('tahun', date('Y'));
+
+        // Ambil barang yang masa penitipannya habis
+        $laporan = BarangTitipan::with('penitip')
+            ->whereYear('tanggal_akhir', '=', $tahun)
+            ->whereDate('tanggal_akhir', '<', now())
+            ->orderBy('tanggal_akhir')
+            ->paginate(10)
+            ->appends(['tahun' => $tahun]);
+
+        return view('owner.laporan.barangHabis', [
+            'laporan' => $laporan,
+            'tahun' => $tahun
+        ]);
+    }
+
+    public function downloadLaporanBarangHabis(Request $request)
+    {
+        $tahun = $request->input('tahun', date('Y'));
+
+        $laporan = BarangTitipan::with('penitip')
+            ->whereYear('tanggal_akhir', '=', $tahun)
+            ->whereDate('tanggal_akhir', '<', now())
+            ->orderBy('tanggal_akhir')
+            ->get();
+
+        $pdf = PDF::loadView('owner.laporan.barangHabisPdf', [
+            'laporan' => $laporan,
+            'tahun' => $tahun
+        ]);
+
+        return $pdf->download('Laporan-Barang-Habis-' . $tahun . '.pdf');
     }
 
 }
