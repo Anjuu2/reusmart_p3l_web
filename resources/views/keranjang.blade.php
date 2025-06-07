@@ -77,7 +77,7 @@
 
         nav ul li a {
             text-decoration: none;
-            color: white
+            color: white;
             font-size: 15px;
             font-weight: 600;
         }

@@ -35,7 +35,8 @@ class Reward extends Model
 		'id_merchandise' => 'int',
 		'id_pembeli' => 'int',
 		'jumlah_tukar_poin' => 'int',
-		'tanggal_penukaran' => 'datetime',
+		'tanggal_klaim' => 'date',
+		'tanggal_ambil' => 'date',
 		'status_penukaran' => 'bool'
 	];
 
@@ -44,7 +45,8 @@ class Reward extends Model
 		'id_pembeli',
 		'jenis_reward',
 		'jumlah_tukar_poin',
-		'tanggal_penukaran',
+		'tanggal_klaim',
+		'tanggal_ambil',
 		'status_penukaran'
 	];
 

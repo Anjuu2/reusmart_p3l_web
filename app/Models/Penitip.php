@@ -7,7 +7,8 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Collection;
 use Laravel\Sanctum\HasApiTokens;
 use Illuminate\Notifications\Notifiable;
-
+use Illuminate\Database\Eloquent\Model;
+use App\Services\FirebaseService;
 /**
  * Class Penitip
  * 
@@ -85,4 +86,37 @@ class Penitip extends Authenticatable
     {
         return $this->password;
     }
+
+	public function kirimNotifikasiMasaPenitipan($jenisNotifikasi, $namaBarang, $kodeBarang, $sudahPerpanjang = false)
+    {
+        $fcmToken = $this->fcm_token;
+        if (!$fcmToken) {
+            \Log::info("Tidak ada FCM token untuk user {$this->nama_penitip}");
+            return;
+        }
+
+        $firebase = new FirebaseService();
+
+        if ($jenisNotifikasi === 'h-3') {
+            $title = "Pengingat: Masa Penitipan Barang Segera Berakhir (H-3)";
+            $body = !$sudahPerpanjang
+                ? "3 Hari lagi. masa penitipan barang '{$namaBarang}' dengan kode {$kodeBarang} akan segera berakhir. Anda masih mempunyai kesempatan untuk memperpanjang masa penitipan, segera konfirmasi di web Kami ReUseMart."
+                : "3 hari lagi, masa penitipan barang '{$namaBarang}' dengan kode {$kodeBarang} akan segera berakhir. Kesempatan Anda sudah habis (perpanjangan sudah pernah dipakai), segera ambil barang Anda.";
+        } elseif ($jenisNotifikasi === 'hari-h') {
+            $title = !$sudahPerpanjang
+                ? "Hari Ini Masa Penitipan Berakhir"
+                : "Hari Ini Masa Perpanjangan Penitipan Berakhir";
+            $body = !$sudahPerpanjang
+                ? "Hari ini, masa penitipan barang '{$namaBarang}' dengan kode {$kodeBarang} akan segera berakhir. Anda masih memiliki waktu 7 hari untuk mengambilnya."
+                : "Hari ini, masa perpanjangan barang '{$namaBarang}' dengan kode {$kodeBarang} akan segera berakhir. Anda masih memiliki waktu 7 hari untuk mengambilnya.";
+        } else {
+            \Log::info("Jenis notifikasi tidak dikenal: $jenisNotifikasi");
+            return;
+        }
+
+        $firebase->sendMessage($fcmToken, $title, $body);
+        
+        \Log::info("Notifikasi dikirim ke {$this->nama_penitip} dengan judul: $title");
+    }
+
 }

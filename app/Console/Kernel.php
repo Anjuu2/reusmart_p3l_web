@@ -16,6 +16,8 @@ class Kernel extends ConsoleKernel
         $schedule->command('transaksi:auto-pembatalan')
                 ->everyMinute()
                 ->appendOutputTo(storage_path('logs/schedule.log'));
+
+        $schedule->command('notifikasi:masa-penitipan')->dailyAt('08:00');
     }
 
     protected function commands()

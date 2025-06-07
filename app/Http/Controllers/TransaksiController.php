@@ -8,10 +8,12 @@ use App\Models\BarangTitipan;
 use App\Models\Penitip;
 use App\Models\Pegawai;
 use App\Models\Penjadwalan;
+use App\Models\DetailTransaksi;
 
 use App\Notifications\transaksiDisiapkan;
 use Illuminate\Support\Facades\DB;
 use Carbon\Carbon;
+use App\Services\FirebaseService;
 
 use Illuminate\Http\Request;
 use Barryvdh\DomPDF\Facade\Pdf;
@@ -143,6 +145,25 @@ class TransaksiController extends Controller
                     $penitip->notify(new transaksiDisiapkan($transaksi, $penitip, $barangList));
                 }
             }
+
+            // Tambah notifikasi khusus mobile
+            $firebase = new FirebaseService();
+            
+            foreach ($penitipBarangMap as $data) {
+                $penitip = $data['penitip'];
+                $barangList = collect($data['barang']);
+
+                // Kirim notifikasi push via Firebase Cloud Messaging (FCM)
+                $penitipFcmToken = $penitip->fcm_token ?? null;
+
+                // Buat judul dan isi notifikasi, bisa sesuaikan sesuai kebutuhan
+                $title = "Transaksi Disiapkan";
+                $body = "Barang: " . $barangList->implode(', ') . " sudah disiapkan untuk transaksi ID #" . $transaksi->id_transaksi;
+
+                if ($penitipFcmToken) {
+                    $firebase->sendMessage($penitipFcmToken, $title, $body);
+                }
+            }
         }
 
         return redirect()->back()->with('success', 'Pembayaran diverifikasi, status transaksi diubah, dan email notifikasi dikirim ke semua penitip terkait.');
@@ -209,36 +230,39 @@ class TransaksiController extends Controller
             $id = $request->input('id_transaksi');
             \Log::info('batalTransaksi dipanggil', ['id_transaksi' => $id]);
 
-            $transaksi = Transaksi::find($id);
+            $transaksi = Transaksi::with('detailTransaksi.barang')->find($id);
             if (!$transaksi) {
                 return response()->json(['success' => false, 'message' => 'Transaksi tidak ditemukan']);
             }
 
-            // Tambahkan log nilai status transaksi dan bukti pembayaran
+            // Log nilai status transaksi dan bukti pembayaran
             \Log::info('Detail transaksi', [
                 'status_transaksi' => $transaksi->status_transaksi,
                 'bukti_pembayaran' => $transaksi->bukti_pembayaran,
             ]);
 
-            // Logika pembatalan
+            // Cek kondisi pembatalan
             if ($transaksi->status_transaksi === 'Menunggu Pembayaran' && !$transaksi->bukti_pembayaran) {
+                // Update status transaksi jadi Batal
                 $transaksi->status_transaksi = 'Batal';
                 $transaksi->save();
 
-                // Ambil detail transaksi (relasi detailTransaksi)
-                $detailBarang = $transaksi->detailTransaksi; // pastikan relasi sudah didefinisikan di model Transaksi
-
-                // Ubah status barang menjadi 'Tersedia'
-                foreach ($detailBarang as $detail) {
-                    if ($detail->barang) { // pastikan relasi barang ada
+                // Kembalikan status barang menjadi 'Tersedia'
+                foreach ($transaksi->detailTransaksi as $detail) {
+                    if ($detail->barang) {
                         $detail->barang->status_barang = 'Tersedia';
                         $detail->barang->save();
                     }
                 }
 
-                // Update poin jika perlu (sesuai logika kamu sebelumnya)
+                // Kembalikan poin yang digunakan ke pembeli
+                $pembeli = $transaksi->pembeli; // Pastikan relasi 'pembeli' ada di model Transaksi
+                if ($pembeli && $transaksi->poin_digunakan > 0) {
+                    $pembeli->poin += $transaksi->poin_digunakan;
+                    $pembeli->save();
+                }
 
-                return response()->json(['success' => true, 'message' => 'Transaksi dibatalkan dan status barang dikembalikan tersedia.']);
+                return response()->json(['success' => true, 'message' => 'Transaksi dibatalkan, status barang dikembalikan tersedia, dan poin dikembalikan.']);
             } else {
                 return response()->json(['success' => false, 'message' => 'Transaksi tidak valid atau sudah dibayar.']);
             }

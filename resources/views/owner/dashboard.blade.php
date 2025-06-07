@@ -115,23 +115,71 @@
                                 <div class="collapse" id="collapseDonasi">
                                     <ul class="btn-toggle-nav list-unstyled fw-normal pb-1 small ps-3">
                                         <li>
-                                            <a class="nav-link" href="{{ route('dashboard.owner') }}">Kelola Donasi</a>
+                                            <a class="nav-link fs-6" href="{{ route('owner.donasi.index') }}">Kelola Donasi</a>
                                         </li>
                                         <li>
-                                            <a class="nav-link collapsed" data-bs-toggle="collapse" href="#collapseHistori" role="button" aria-expanded="false" aria-controls="collapseHistori">
+                                            <a class="nav-link collapsed fs-6" data-bs-toggle="collapse" href="#collapseHistori" role="button" aria-expanded="false" aria-controls="collapseHistori">
                                                 Histori Organisasi
                                             </a>
                                             <div class="collapse" id="collapseHistori">
                                                 <ul class="btn-toggle-nav list-unstyled fw-normal pb-1 small ps-3">
                                                     @foreach($daftarOrganisasi as $org)
                                                         <li>
-                                                            <a class="nav-link" href="{{ route('owner.donasi.history.organisasi', ['id' => $org->id_organisasi]) }}">
+                                                            <a class="nav-link fs-6" href="{{ route('owner.donasi.history.organisasi', ['id' => $org->id_organisasi]) }}">
                                                                 {{ $org->nama_organisasi }}
                                                             </a>
                                                         </li>
                                                     @endforeach
                                                 </ul>
                                             </div>
+                                        </li>
+                                    </ul>
+                                </div>
+                            </li>
+                            <li class="nav-item">
+                                <a class="nav-link collapsed" data-bs-toggle="collapse" href="#collapseLaporan" role="button" aria-expanded="false" aria-controls="collapseLaporan">
+                                    <i class="nav-icon bi bi-file-earmark-bar-graph"></i>
+                                    <p>Laporan</p>
+                                </a>
+                                <div class="collapse" id="collapseLaporan">
+                                    <ul class="btn-toggle-nav list-unstyled fw-normal pb-1 small ps-3">
+                                        <li>
+                                            <a class="nav-link fs-6" href="{{ route('owner.laporan.penjualan') }}">Penjualan Bulanan</a>
+                                        </li>
+                                    </ul>
+                                </div>
+                                <div class="collapse" id="collapseLaporan">
+                                    <ul class="btn-toggle-nav list-unstyled fw-normal pb-1 small ps-3">
+                                        <li>
+                                            <a class="nav-link fs-6" href="{{ route('owner.laporan.komisi') }}">Komisi Bulanan (per produk)</a>
+                                        </li>
+                                    </ul>
+                                </div>
+                                <div class="collapse" id="collapseLaporan">
+                                    <ul class="btn-toggle-nav list-unstyled fw-normal pb-1 small ps-3">
+                                        <li>
+                                            <a class="nav-link fs-6" href="{{ route('owner.laporan.stok') }}">Stok Gudang</a>
+                                        </li>
+                                    </ul>
+                                </div>
+                                <div class="collapse" id="collapseLaporan">
+                                    <ul class="btn-toggle-nav list-unstyled fw-normal pb-1 small ps-3">
+                                        <li>
+                                            <a class="nav-link fs-6" href="{{ route('owner.laporan.donasi') }}">Donasi Barang</a>
+                                        </li>
+                                    </ul>
+                                </div>
+                                <div class="collapse" id="collapseLaporan">
+                                    <ul class="btn-toggle-nav list-unstyled fw-normal pb-1 small ps-3">
+                                        <li>
+                                            <a class="nav-link fs-6" href="{{ route('owner.laporan.requestdonasi') }}">Request Donasi</a>
+                                        </li>
+                                    </ul>
+                                </div>
+                                <div class="collapse" id="collapseLaporan">
+                                    <ul class="btn-toggle-nav list-unstyled fw-normal pb-1 small ps-3">
+                                        <li>
+                                            <a class="nav-link fs-6" href="{{ route('owner.laporan.transaksipenitip') }}">Transaksi Penitip</a>
                                         </li>
                                     </ul>
                                 </div>

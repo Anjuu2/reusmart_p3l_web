@@ -51,6 +51,7 @@ class KeranjangController extends Controller
             ->select('barang_titipan.id_barang', 'barang_titipan.nama_barang', 'barang_titipan.deskripsi', 'barang_titipan.harga_jual')
             ->get();
 
+
         return view('keranjang', ['items' => $barang]);
     }
 
