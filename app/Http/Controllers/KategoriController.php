@@ -31,6 +31,12 @@ class KategoriController extends Controller
     public function showAvailableProducts()
     {
         $produk = BarangTitipan::with(['kategori', 'fotoBarang'])->where('status_barang', 'Tersedia')->get();
+        // if ($request->wantsJson()) {
+        //     // untuk mobile/API
+        //     return response()->json([
+        //         'data' => $produk
+        //     ]);
+        // }
         $kategori = null;
         return view('kategori', compact('produk', 'kategori'));
     }
@@ -57,6 +63,12 @@ class KategoriController extends Controller
             ->where('status_barang', 'Tersedia')
             ->get();
 
+        // if ($request->wantsJson()) {
+        //     // untuk mobile/API
+        //     return response()->json([
+        //         'data' => $produk
+        //     ]);
+        // }
         // Kirim data ke view
         return view('kategori', compact('kategori', 'produk'));
     }

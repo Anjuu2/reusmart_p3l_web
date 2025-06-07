@@ -8,7 +8,9 @@ use App\Http\Controllers\PenitipController;
 use App\Http\Controllers\OrganisasiController;
 use App\Http\Controllers\AlamatController;
 use App\Http\Controllers\PembeliController;
-use App\Http\Controllers\BarangTitipanController;
+use App\Http\Controllers\HomeController;
+use App\Http\Controllers\Api\KategoriApiController;
+use App\Http\Controllers\Api\BarangTitipanController;
 
 Route::post('/login', [LoginController::class, 'loginMobile'])->name('login');
 
@@ -26,6 +28,9 @@ Route::middleware(['auth:sanctum'])->group(function () {
 Route::middleware('auth:sanctum')->post('/save-fcm-token-pembeli', [PembeliController::class, 'saveFcmToken']);
 Route::middleware('auth:sanctum')->post('/save-fcm-token-penitip', [PenitipController::class, 'saveFcmToken']);
 
-// use App\Http\Controllers\TestNotificationController;
 
-// Route::get('/test-fcm-notification', [TestNotificationController::class, 'sendTestNotification']);
+Route::get('/', [HomeController::class, 'index']);
+Route::get('/kategori', [KategoriController::class, 'showAvailableProducts']);
+Route::get('/kategori/{id}', [KategoriController::class, 'showProductsByCategory']);
+Route::get('/barang-titipan', [BarangTitipanApiController::class, 'index']);
+
