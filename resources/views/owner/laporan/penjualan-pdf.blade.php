@@ -55,8 +55,8 @@
             <thead>
                 <tr>
                     <th>Bulan</th>
-                    <th>Jumlah Terjual</th>
-                    <th>Penjualan Kotor (Rp)</th>
+                    <th>Jumlah Barang Terjual</th>
+                    <th>Penjualan Penjualan Kotor</th>
                 </tr>
             </thead>
             <tbody>
