@@ -77,7 +77,7 @@
 
         nav ul li a {
             text-decoration: none;
-            color: white
+            color: white;
             font-size: 15px;
             font-weight: 600;
         }
@@ -349,6 +349,8 @@
                             {{ $item->nama_barang }}
                         </a>
                         <p class="text-gray-700 mt-1">{{ $item->deskripsi }}</p>
+                        <p id="status" class="text-gray-700 mt-1" style="visibility: hidden">{{ $item->status_barang }}</p>
+                        <p id="barangsold" class="text-red-700 mt-1" style="visibility: hidden">Barang sudah sold out dan tidak bisa dibeli!</p>
                         <p class="text-lg font-semibold mt-3 text-black">Rp{{ number_format($item->harga_jual, 0, ',', '.') }}</p>
                     </div>
                     <form action="{{ route('keranjang.hapus', $item->id_barang) }}" method="POST">
@@ -394,5 +396,25 @@
     <!-- Bootstrap JS and dependencies (Popper.js and Bootstrap JS) -->
     <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.11.6/dist/umd/popper.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.min.js"></script>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function () {
+
+            const status = document.getElementById('status');
+            const peringatan = document.getElementById('barangsold');
+
+            window.beriPeringatan = function () {
+
+                if (status == 'Terjual') {
+                    peringatan.style.visibility = 'visible';
+                    return;
+                } else {
+                    peringatan.style.visibility = 'hidden';
+                }
+            }
+
+            beriPeringatan();
+        });
+    </script>
 </body>
 </html>

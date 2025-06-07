@@ -13,6 +13,7 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Mail;
 use App\Services\FirebaseService;
+use Illuminate\Support\Facades\Notification;
 
 class PengirimanController extends Controller
 {
@@ -116,6 +117,34 @@ class PengirimanController extends Controller
             'status_pengiriman' => $statusPengiriman,
         ]);
 
+        if ($statusPengiriman === 'Diantar') {
+            $kurir = null;
+            if ($jadwal->jenis_jadwal === 'Pengiriman' && $request->filled('id_kurir')) {
+                $kurir = \App\Models\Pegawai::find($validated['id_kurir']);
+            }
+
+            // Notifikasi ke Pembeli
+            if ($transaksi->pembeli) {
+                $transaksi->pembeli->notify(new \App\Notifications\DikirimKurir($jadwal, $transaksi, $kurir));
+            }
+
+            // Notifikasi ke Penitip
+            $penitips = collect();
+            foreach ($transaksi->detailTransaksi as $detail) {
+                $barang = \App\Models\BarangTitipan::find($detail->id_barang);
+                if ($barang) {
+                    $penitip = \App\Models\Penitip::find($barang->id_penitip);
+                    if ($penitip) {
+                        $penitips->push($penitip);
+                    }
+                }
+            }
+            $penitips = $penitips->unique('id_penitip');
+            foreach ($penitips as $penitip) {
+                $penitip->notify(new \App\Notifications\DikirimKurir($jadwal, $transaksi, $kurir));
+            }
+        }
+
         // Siapkan daftar penerima email
         $recipients = [];
 
@@ -145,6 +174,18 @@ class PengirimanController extends Controller
             $kurir = Pegawai::find($validated['id_kurir']);
             if ($kurir && $kurir->email) {
                 $recipients[] = $kurir->email;
+            }
+        }
+
+        // Notifikasi ke Penitip (unique collection)
+        $penitips = collect();
+        foreach ($transaksi->detailTransaksi as $detail) {
+            $barang = \App\Models\BarangTitipan::find($detail->id_barang);
+            if ($barang) {
+                $penitip = \App\Models\Penitip::find($barang->id_penitip);
+                if ($penitip) {
+                    $penitips->push($penitip);
+                }
             }
         }
 

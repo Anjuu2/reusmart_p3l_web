@@ -101,8 +101,7 @@
                                     <div class="d-flex">
                                         <form action="{{ route('cs.pembayaran.verifikasi', $pembayaran->id_transaksi) }}" method="POST" onsubmit="return confirm('Terima bukti pembayaran?')">
                                             @csrf
-                                            <button type="submit" class="btn btn-success" 
-                                                @if($pembayaran->status_verifikasi == 1) disabled title="Sudah diverifikasi" @endif>
+                                            <button type="submit" class="btn btn-success">
                                                 Terima
                                             </button>
                                         </form>

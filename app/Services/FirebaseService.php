@@ -12,7 +12,7 @@ class FirebaseService
     public function __construct()
     {
         $this->client = new Google_Client();
-        $this->client->setAuthConfig(storage_path('app\reusemart-firebase-bc368-firebase-adminsdk-fbsvc-0a930bda68.json'));
+        $this->client->setAuthConfig(storage_path('app\reusemart-firebase-bc368-firebase-adminsdk-fbsvc-a9b92367eb.json'));
         $this->client->addScope('https://www.googleapis.com/auth/firebase.messaging');
         // $this->client->setSubject('your-service-account-email@your-project.iam.gserviceaccount.com'); // Optional: kalau mau impersonate user
         $this->client->refreshTokenWithAssertion();
