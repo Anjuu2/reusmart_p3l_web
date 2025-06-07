@@ -18,18 +18,18 @@ class OwnerLaporanTransaksiPenitipController extends Controller
         $month = $request->query('month', Carbon::now()->month);
         $year = $request->query('year', Carbon::now()->year);
 
-        $penitips = Penitip::with(['barangTitipan' => function ($query) use ($month, $year) {
+        $penitips = Penitip::with(['barang_titipans' => function ($query) use ($month, $year) {
             $query->where('status_barang', 'Terjual')
-                  ->whereYear('tanggal_keluar', $year)
-                  ->whereMonth('tanggal_keluar', $month);
-        }])->get();
+                ->whereYear('tanggal_keluar', $year)
+                ->whereMonth('tanggal_keluar', $month);
+        }])->paginate(10);
 
         $rekap = $penitips->map(function ($penitip) {
             $totalHargaJualBersih = 0;
             $totalBonus = 0;
             $totalPendapatan = 0;
 
-            foreach ($penitip->barangTitipan as $item) {
+            foreach ($penitip->barang_titipans as $item) {
                 $komisiRate = $item->status_perpanjangan ? 0.30 : 0.20;
                 $hargaJualBersih = $item->harga_jual * (1 - $komisiRate);
                 $bonus = (!$item->status_perpanjangan && $item->tanggal_masuk->diffInDays($item->tanggal_keluar) < 7)
@@ -55,6 +55,7 @@ class OwnerLaporanTransaksiPenitipController extends Controller
 
         return view('owner.laporan.transaksiPenitipIndex', [
             'rekap' => $rekap,
+            'penitips' => $penitips,
             'bulan' => ucfirst($bulanNama),
             'year' => $year,
             'tanggalCetak' => Carbon::today()->locale('id')->isoFormat('DD MMMM YYYY'),

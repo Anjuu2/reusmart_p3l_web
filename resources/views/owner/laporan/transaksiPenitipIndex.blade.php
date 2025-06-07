@@ -4,9 +4,27 @@
     <h3 class="text-center"><strong>Laporan Transaksi Semua Penitip</strong></h3>
 
     <div class="mb-3">
-        <p class="mb-1"><strong>Bulan:</strong> {{ $bulan }}</p>
-        <p class="mb-1"><strong>Tahun:</strong> {{ $year }}</p>
-        <p class="mb-1"><strong>Tanggal Cetak:</strong> {{ $tanggalCetak }}</p>
+        <form class="row g-2 mb-3" method="GET" action="{{ route('owner.laporan.transaksipenitip') }}">
+            <div class="col-auto">
+                <select name="month" class="form-select form-select-sm">
+                    @foreach(range(1,12) as $m)
+                        @php
+                            $monthName = \Carbon\Carbon::create()->month($m)->locale('id')->isoFormat('MMMM');
+                        @endphp
+                        <option value="{{ $m }}" {{ request('month', date('n')) == $m ? 'selected' : '' }}>
+                            {{ ucfirst($monthName) }}
+                        </option>
+                    @endforeach
+                </select>
+            </div>
+            <div class="col-auto">
+                <input type="number" name="year" class="form-control form-control-sm" 
+                    value="{{ request('year', date('Y')) }}" min="2000" max="2099">
+            </div>
+            <div class="col-auto">
+                <button class="btn btn-sm btn-success">Tampilkan</button>
+            </div>
+        </form>
     </div>
 
     <div class="table-responsive">
@@ -46,6 +64,11 @@
                 @endforelse
             </tbody>
         </table>
+    </div>
+
+    {{-- Navigasi Halaman --}}
+    <div class="d-flex justify-content-center mt-4">
+        {{ $penitips->appends(request()->query())->links() }}
     </div>
 </div>
 @endsection

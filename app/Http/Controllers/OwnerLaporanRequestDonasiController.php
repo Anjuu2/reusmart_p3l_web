@@ -19,7 +19,7 @@ class OwnerLaporanRequestDonasiController extends Controller
         $requests = RequestDonasi::with('organisasi')
             ->where('status_request', 'Menunggu')
             ->orderBy('id_request', 'desc')
-            ->get();
+            ->paginate(10);
 
         return view('owner.laporan.requestDonasiIndex', [
             'requests'     => $requests,
