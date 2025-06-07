@@ -63,7 +63,7 @@
       </tr>
       @empty
       <tr>
-        <td colspan="5" class="text-center">Belum ada nota penitipan.</td>
+        <td colspan="5" class="text-center">Transaksi Tidak Ditemukan.</td>
       </tr>
       @endforelse
     </tbody>

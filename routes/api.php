@@ -9,6 +9,7 @@ use App\Http\Controllers\PenitipController;
 use App\Http\Controllers\OrganisasiController;
 use App\Http\Controllers\AlamatController;
 use App\Http\Controllers\PembeliController;
+use App\Http\Controllers\BarangTitipanController;
 
 Route::post('/login', [LoginController::class, 'loginMobile'])->name('login');
 
@@ -20,9 +21,13 @@ Route::middleware('auth:sanctum')->group(function () {
     Route::get('index',[KurirController::class, 'index'])->name('kurir.index');
 });
 
+Route::middleware(['auth:sanctum'])->group(function () {
+    Route::get('/kirim-notifikasi-penitipan', [BarangTitipanController::class, 'kirimNotifikasiMasaPenitipan']);
+});
+
 Route::middleware('auth:sanctum')->post('/save-fcm-token-pembeli', [PembeliController::class, 'saveFcmToken']);
 Route::middleware('auth:sanctum')->post('/save-fcm-token-penitip', [PenitipController::class, 'saveFcmToken']);
 
-use App\Http\Controllers\TestNotificationController;
+// use App\Http\Controllers\TestNotificationController;
 
-Route::get('/test-fcm-notification', [TestNotificationController::class, 'sendTestNotification']);
+// Route::get('/test-fcm-notification', [TestNotificationController::class, 'sendTestNotification']);

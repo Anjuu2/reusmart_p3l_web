@@ -40,6 +40,23 @@
 
 <div class="container-fluid mt-2">
     <h3 class="mb-4 text-center"><strong>Daftar Nota Transaksi</strong></h3>
+    <div class="container d-flex justify-content-between align-items-center">
+        <form class="d-flex mb-3" action="{{ route('pegawai_gudang.cetakNotaIndex') }}" method="GET">
+            <input class="form-control me-2" 
+                type="search" 
+                name="search" 
+                placeholder="Cari transaksi..." 
+                value="{{ request('search') }}"
+                aria-label="Search" 
+                style="width: 250px;">
+
+            <input class="form-control me-2" type="date" name="date" value="{{ request('date') }}">
+
+            <button class="btn btn-outline-dark" type="submit">
+                <i class="bi bi-search"></i>
+            </button>
+        </form>
+    </div>
 
     <table class="table table-bordered table-striped table-sm align-middle">
         <thead class="table-dark text-center">

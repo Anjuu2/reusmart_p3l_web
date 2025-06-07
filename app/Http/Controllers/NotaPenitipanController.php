@@ -71,7 +71,7 @@ class NotaPenitipanController extends Controller
 
             return redirect()
                 ->route('pegawai_gudang.barangTitipan.create', ['id_nota' => $nota->id_nota])
-                ->with('success', 'Nota penitipan berhasil dibuat. Silakan tambahkan barang.');
+                ->with('success', 'Nomor Transaksi berhasil dibuat. Silakan tambahkan barang.');
 
         } catch (\Exception $e) {
             DB::rollBack();

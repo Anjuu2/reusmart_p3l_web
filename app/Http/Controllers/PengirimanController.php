@@ -33,6 +33,7 @@ class PengirimanController extends Controller
         if ($search) {
             $transaksi = $transaksi->where(function($q) use ($search) {
                 $q->where('id_transaksi', 'like', "%{$search}%")
+                ->orWhere('nomor_transaksi', 'like', "%{$search}%")
                 ->orWhereHas('pembeli', function($q2) use ($search) {
                     $q2->where('nama_pembeli', 'like', "%{$search}%");
                 })
@@ -49,16 +50,23 @@ class PengirimanController extends Controller
 
          // Filter berdasarkan status pengiriman
         if (!empty($statusPengiriman)) {
+        if ($statusPengiriman === 'Belum Disiapkan') {
+            // Filter khusus untuk "Belum Disiapkan" -> tanggal_jadwal masih null
+            $query->whereHas('penjadwalan', function ($q) {
+                $q->whereNull('tanggal_jadwal');
+            });
+        } else {
+            // Filter status pengiriman biasa seperti sebelumnya
             $query->whereHas('penjadwalan', function ($q) use ($statusPengiriman) {
                 $q->whereHas('pengiriman', function ($q2) use ($statusPengiriman) {
                     $q2->where('status_pengiriman', $statusPengiriman);
                 });
             });
-            $transaksi = $query->paginate(10)->appends($request->only('search', 'date', 'status_pengiriman'));
-        }else{
-            $transaksi = $transaksi->paginate(10)->withQueryString();
         }
-
+        $transaksi = $query->paginate(10)->appends($request->only('search', 'date', 'status_pengiriman'));
+    } else {
+        $transaksi = $transaksi->paginate(10)->withQueryString();
+    }
 
         $kurir = Pegawai::where('id_jabatan', 5)->get();
 

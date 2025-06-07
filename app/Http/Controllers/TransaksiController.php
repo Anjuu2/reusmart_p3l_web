@@ -169,11 +169,29 @@ class TransaksiController extends Controller
         return redirect()->back()->with('success', 'Pembayaran diverifikasi, status transaksi diubah, dan email notifikasi dikirim ke semua penitip terkait.');
     }
   
-  public function indexNota()
+  public function indexNota(Request $request)
     {
-        $transaksi = Transaksi::with('pembeli')
-            ->orderBy('tanggal_transaksi', 'desc')
-            ->paginate(10);
+        $search = $request->input('search');
+        $date = $request->input('date');
+
+        $query = Transaksi::with('pembeli')
+            ->orderBy('tanggal_transaksi', 'desc');
+
+        if ($search) {
+            $query->where(function($q) use ($search) {
+                $q->where('id_transaksi', 'like', "%{$search}%")
+                ->orWhere('nomor_transaksi', 'like', "%{$search}%")  // tambahan ini
+                ->orWhereHas('pembeli', function($q2) use ($search) {
+                    $q2->where('nama_pembeli', 'like', "%{$search}%");
+                });
+            });
+        }
+
+        if ($date) {
+            $query->whereDate('tanggal_transaksi', $date);
+        }
+
+        $transaksi = $query->paginate(10)->appends($request->only('search', 'date'));
 
         return view('pegawai_gudang.pengirimanBarang.cetakNota', compact('transaksi'));
     }

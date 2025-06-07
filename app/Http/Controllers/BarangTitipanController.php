@@ -13,10 +13,43 @@ use Carbon\Carbon;
 use Illuminate\Http\Support\Facades\Storage;
 use PDF;
 
-
-
 class BarangTitipanController extends Controller
 {
+    public function kirimNotifikasiMasaPenitipan()
+    {
+        $today = Carbon::today();
+        $h3 = $today->copy()->addDays(3);
+
+        $barangs = Barang::with('penitip')->whereNotNull('tanggal_akhir')->get();
+
+        foreach ($barangs as $barang) {
+            $penitip = $barang->penitip;
+
+            if (!$penitip || !$penitip->fcm_token) {
+                continue;
+            }
+
+            $tanggalAkhir = Carbon::parse($barang->tanggal_akhir);
+            $sudahPerpanjang = $barang->status_perpanjangan == 1;
+
+            if ($tanggalAkhir->isSameDay($h3) && !$barang->notifikasi_h3_terkirim) {
+                $penitip->kirimNotifikasiMasaPenitipan('h-3', $barang->nama_barang, $barang->kode_barang, $sudahPerpanjang);
+
+                $barang->notifikasi_h3_terkirim = true;
+                $barang->save();
+            }
+
+            if ($tanggalAkhir->isSameDay($today) && !$barang->notifikasi_hari_h_terkirim) {
+                $penitip->kirimNotifikasiMasaPenitipan('hari-h', $barang->nama_barang, $barang->kode_barang, $sudahPerpanjang);
+
+                $barang->notifikasi_hari_h_terkirim = true;
+                $barang->save();
+            }
+        }
+
+        return response()->json(['message' => 'Notifikasi masa penitipan sudah dikirim']);
+    }
+    
     public function show($id)
     {
         $produk = BarangTitipan::findOrFail($id);
