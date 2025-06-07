@@ -8,11 +8,12 @@ use App\Models\BarangTitipan;
 use App\Models\Penitip;
 use App\Models\Pegawai;
 use App\Models\Penjadwalan;
+use App\Models\DetailTransaksi;
 
 use App\Notifications\transaksiDisiapkan;
-use App\Notifications\transaksiDisiapkanNotif;
 use Illuminate\Support\Facades\DB;
 use Carbon\Carbon;
+use App\Services\FirebaseService;
 
 use Illuminate\Http\Request;
 use Barryvdh\DomPDF\Facade\Pdf;
@@ -146,12 +147,22 @@ class TransaksiController extends Controller
             }
 
             // Tambah notifikasi khusus mobile
+            $firebase = new FirebaseService();
+            
             foreach ($penitipBarangMap as $data) {
                 $penitip = $data['penitip'];
                 $barangList = collect($data['barang']);
 
-                // Kirim notifikasi mobile (database channel) dengan kelas TransaksiDisiapkanNotif
-                $penitip->notify(new TransaksiDisiapkanNotif($transaksi, $barangList));
+                // Kirim notifikasi push via Firebase Cloud Messaging (FCM)
+                $penitipFcmToken = $penitip->fcm_token ?? null;
+
+                // Buat judul dan isi notifikasi, bisa sesuaikan sesuai kebutuhan
+                $title = "Transaksi Disiapkan";
+                $body = "Barang: " . $barangList->implode(', ') . " sudah disiapkan untuk transaksi ID #" . $transaksi->id_transaksi;
+
+                if ($penitipFcmToken) {
+                    $firebase->sendMessage($penitipFcmToken, $title, $body);
+                }
             }
         }
 

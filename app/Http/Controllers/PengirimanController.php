@@ -9,13 +9,10 @@ use App\Mail\JadwalDikirim;
 use App\Mail\KonfirmasiPengiriman;
 use App\Models\BarangTitipan;
 use App\Models\Penitip;
-use App\Notifications\DikirimKurir;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Mail;
 use App\Services\FirebaseService;
-use App\Notifications\JadwalDikirimNotif;
-use App\Notifications\JadwalDiambil;
 use Illuminate\Support\Facades\Notification;
 
 class PengirimanController extends Controller
@@ -172,11 +169,6 @@ class PengirimanController extends Controller
             }
         }
 
-        // Notifikasi ke Pembeli
-        if ($transaksi->pembeli) {
-            $transaksi->pembeli->notify(new JadwalDikirimNotif($jadwal, $transaksi));
-        }
-
         // Notifikasi ke Penitip (unique collection)
         $penitips = collect();
         foreach ($transaksi->detailTransaksi as $detail) {
@@ -187,29 +179,6 @@ class PengirimanController extends Controller
                     $penitips->push($penitip);
                 }
             }
-        }
-
-        $penitips = $penitips->unique('id_penitip');
-        foreach ($penitips as $penitip) {
-            $penitip->notify(new JadwalDikirimNotif($jadwal, $transaksi));
-        }
-
-        // Notifikasi mobile ke Kurir
-        if ($jadwal->jenis_jadwal === 'Pengiriman' && $request->filled('id_kurir')) {
-            $kurir = Pegawai::find($validated['id_kurir']);
-            if ($kurir) {
-                $kurir->notify(new JadwalDikirimNotif($jadwal, $transaksi));
-            }
-        }
-
-        // Notifikasi ke Pembeli
-        if ($transaksi->pembeli) {
-            $transaksi->pembeli->notify(new JadwalDiambil($jadwal, $transaksi));
-        }
-
-        // Notifikasi ke Penitip
-        foreach ($penitips as $penitip) {
-            $penitip->notify(new JadwalDiambil($jadwal, $transaksi));
         }
 
         // Kirim Email

@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\KurirController;
 use App\Http\Controllers\LoginController;
 use App\Http\Controllers\PegawaiController;
 use Illuminate\Http\Request;
@@ -16,6 +17,7 @@ Route::middleware('auth:sanctum')->group(function () {
     Route::get('show', [PembeliController::class, 'showM'])->name('pembeli.show');
     Route::get('show', [PenitipController::class, 'showM'])->name('penitip.show');
     Route::get('show', [PegawaiController::class, 'showM'])->name('pegawai.show');
+    Route::get('index',[KurirController::class, 'index'])->name('kurir.index');
 });
 
 Route::middleware('auth:sanctum')->post('/save-fcm-token-pembeli', [PembeliController::class, 'saveFcmToken']);

@@ -77,7 +77,7 @@
 
         nav ul li a {
             text-decoration: none;
-            color: white
+            color: white;
             font-size: 15px;
             font-weight: 600;
         }
@@ -397,7 +397,7 @@
     <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.11.6/dist/umd/popper.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.min.js"></script>
 
-    <!-- <script>
+    <script>
         document.addEventListener('DOMContentLoaded', function () {
 
             const status = document.getElementById('status');
@@ -415,6 +415,6 @@
 
             beriPeringatan();
         });
-    </script> -->
+    </script>
 </body>
 </html>
