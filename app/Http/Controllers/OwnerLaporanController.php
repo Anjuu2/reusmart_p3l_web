@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 // use App\Models\DetailTransaksi;
 // use App\Models\Transaksi;
 use App\Models\BarangTitipan;
+use App\Models\Komisi;
 use App\Models\Kategori;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Http\Request;
@@ -208,66 +209,110 @@ class OwnerLaporanController extends Controller
         return $pdf->download("Laporan_Stok_Gudang_{$today}.pdf");
     }
 
+    // public function komisiIndex(Request $request)
+    // {
+    //     // filter bulan & tahun
+    //     $month = $request->query('month', Carbon::now()->month);
+    //     $year  = $request->query('year', Carbon::now()->year);
+
+    //     // ambil barang yang sudah terjual bulan tersebut
+    //     $items = BarangTitipan::with(['penitip'])
+    //         ->where('status_barang', 'Terjual')
+    //         ->whereYear('tanggal_keluar', $year)
+    //         ->whereMonth('tanggal_keluar', $month)
+    //         ->get();
+
+    //     // hitung komisi per item
+    //     $data = $items->map(function($item) {
+    //         $harga = $item->harga_jual;
+    //         $days  = $item->tanggal_masuk->diffInDays($item->tanggal_keluar);
+
+    //         $baseRate   = 0.20;
+    //         $hunterRate = 0.05;
+    //         $bonusRate  = 0.10;
+
+    //         if ($item->status_perpanjangan) {
+    //             $baseRate   = 0.30;
+    //             $hunterRate = 0.00;
+    //             $bonusRate  = 0.00;
+    //         }
+
+    //         $komisiKotor = $harga * $baseRate;
+
+    //         $komisiHunter = ($item->barang_hunter && $item->id_hunter)
+    //             ? $harga * $hunterRate
+    //             : 0;
+
+    //         $komisiPenitip = (!$item->status_perpanjangan && $days < 7)
+    //             ? $komisiKotor * $bonusRate
+    //             : 0;
+
+    //         $komisiReUseMart = $komisiKotor - $komisiHunter - $komisiPenitip;
+
+    //         return [
+    //             'kode'           => $item->id_barang,
+    //             'nama'           => $item->nama_barang,
+    //             'harga'          => $harga,
+    //             'tanggal_masuk'  => $item->tanggal_masuk->format('d/m/Y'),
+    //             'tanggal_laku'   => $item->tanggal_keluar->format('d/m/Y'),
+    //             'komisi_kotor'   => $komisiKotor,
+    //             'komisi_hunter'  => $komisiHunter,
+    //             'komisi_penitip' => $komisiPenitip,
+    //             'komisi_reuse'   => $komisiReUseMart,
+    //         ];
+    //     });
+
+    //     $bulan = Carbon::createFromDate($year, $month, 1)->locale('id')->isoFormat('MMMM');
+
+    //     return view('owner.laporan.komisiIndex', [
+    //         'data'          => $data,
+    //         'monthName'     => ucfirst($bulan),
+    //         'year'          => $year,
+    //         'tanggalCetak'  => Carbon::today()->locale('id')->isoFormat('DD MMMM YYYY'),
+    //     ]);
+    // }
+
     public function komisiIndex(Request $request)
     {
-        // filter bulan & tahun
         $month = $request->query('month', Carbon::now()->month);
         $year  = $request->query('year', Carbon::now()->year);
 
-        // ambil barang yang sudah terjual bulan tersebut
-        $items = BarangTitipan::with(['penitip'])
-            ->where('status_barang', 'Terjual')
-            ->whereYear('tanggal_keluar', $year)
-            ->whereMonth('tanggal_keluar', $month)
-            ->get();
+        $komisis = Komisi::with([
+            'transaksi.detailTransaksi.barang',
+            'penitip',
+            'pegawai'
+        ])
+        ->whereHas('transaksi', function($q) use($month, $year) {
+            $q->whereMonth('tanggal_transaksi', $month)
+            ->whereYear('tanggal_transaksi',  $year);
+        })
+        ->get();
 
-        // hitung komisi per item
-        $data = $items->map(function($item) {
-            $harga = $item->harga_jual;
-            $days  = $item->tanggal_masuk->diffInDays($item->tanggal_keluar);
+        $data = $komisis->map(function($k) {
+            $detail = $k->transaksi->detailTransaksi->firstWhere('id_barang', $k->id_barang);
 
-            $baseRate   = 0.20;
-            $hunterRate = 0.05;
-            $bonusRate  = 0.10;
-
-            if ($item->status_perpanjangan) {
-                $baseRate   = 0.30;
-                $hunterRate = 0.00;
-                $bonusRate  = 0.00;
-            }
-
-            $komisiKotor = $harga * $baseRate;
-
-            $komisiHunter = ($item->barang_hunter && $item->id_hunter)
-                ? $harga * $hunterRate
-                : 0;
-
-            $komisiPenitip = (!$item->status_perpanjangan && $days < 7)
-                ? $komisiKotor * $bonusRate
-                : 0;
-
-            $komisiReUseMart = $komisiKotor - $komisiHunter - $komisiPenitip;
+            $barang = $detail ? $detail->barang : null;
 
             return [
-                'kode'           => $item->id_barang,
-                'nama'           => $item->nama_barang,
-                'harga'          => $harga,
-                'tanggal_masuk'  => $item->tanggal_masuk->format('d/m/Y'),
-                'tanggal_laku'   => $item->tanggal_keluar->format('d/m/Y'),
-                'komisi_kotor'   => $komisiKotor,
-                'komisi_hunter'  => $komisiHunter,
-                'komisi_penitip' => $komisiPenitip,
-                'komisi_reuse'   => $komisiReUseMart,
+                'kode'           => $barang->id_barang ?? '-',
+                'nama'           => $barang->nama_barang ?? '-',
+                'harga'          => $barang->harga_jual ?? 0,
+                'tanggal_masuk'  => $barang ? $barang->tanggal_masuk->format('d/m/Y') : '-',
+                'tanggal_laku'   => $barang ? $barang->tanggal_keluar->format('d/m/Y') : '-',
+                'komisi_hunter'  => $k->komisi_hunter ?? 0,
+                'komisi_penitip' => $k->komisi_penitip ?? 0,
+                'komisi_reuse'   => $k->komisi      ?? 0,
             ];
         });
 
-        $bulan = Carbon::createFromDate($year, $month, 1)->locale('id')->isoFormat('MMMM');
+        $bulan       = Carbon::createFromDate($year, $month, 1)->locale('id')->isoFormat('MMMM');
+        $tanggalCetak = Carbon::today()->locale('id')->isoFormat('DD MMMM YYYY');
 
         return view('owner.laporan.komisiIndex', [
-            'data'          => $data,
-            'monthName'     => ucfirst($bulan),
-            'year'          => $year,
-            'tanggalCetak'  => Carbon::today()->locale('id')->isoFormat('DD MMMM YYYY'),
+            'data'         => $data,
+            'monthName'    => ucfirst($bulan),
+            'year'         => $year,
+            'tanggalCetak' => $tanggalCetak,
         ]);
     }
 
