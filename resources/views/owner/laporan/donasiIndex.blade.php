@@ -56,5 +56,9 @@
         </tbody>
       </table>
     </div>
+    
+    <div class="d-flex justify-content-center mt-4">
+        {{ $donations->appends(request()->query())->links() }}
+    </div>
 </div>
 @endsection

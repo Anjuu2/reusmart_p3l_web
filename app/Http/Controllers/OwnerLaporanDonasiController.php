@@ -21,7 +21,7 @@ class OwnerLaporanDonasiController extends Controller
         $donations = Donasi::with(['barang_titipan', 'barang_titipan.penitip', 'barang_titipan.hunter', 'request_donasi.organisasi'])
             ->whereYear('tanggal_donasi', $year)
             ->orderBy('tanggal_donasi', 'desc')
-            ->get();
+            ->paginate(10);
 
             // dd($donations->toArray());
 

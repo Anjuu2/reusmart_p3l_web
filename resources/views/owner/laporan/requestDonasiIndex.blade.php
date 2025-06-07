@@ -3,7 +3,6 @@
 <div class="container py-4">
     <h3 class="text-center"><strong>Laporan Request Donasi (Menunggu)</strong></h3>
 
-
     <div class="d-flex justify-content-between align-items-center mb-3">
         <div>
             <a href="{{ route('owner.laporan.requestdonasi.download', ['year' => request('year')]) }}"
@@ -33,11 +32,15 @@
                     </tr>
                 @empty
                     <tr>
-                        <td colspan="5">Tidak ada data request donasi yang menunggu di tahun ini.</td>
+                        <td colspan="4">Tidak ada data request donasi yang menunggu di tahun ini.</td>
                     </tr>
                 @endforelse
             </tbody>
         </table>
+    </div>
+
+    <div class="d-flex justify-content-center mt-4">
+        {{ $requests->appends(request()->query())->links() }}
     </div>
 </div>
 @endsection

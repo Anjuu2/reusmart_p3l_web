@@ -18,7 +18,8 @@ Route::middleware('auth:sanctum')->group(function () {
     Route::get('show', [PembeliController::class, 'showM'])->name('pembeli.show');
     Route::get('show', [PenitipController::class, 'showM'])->name('penitip.show');
     Route::get('show', [PegawaiController::class, 'showM'])->name('pegawai.show');
-    Route::get('index',[KurirController::class, 'index'])->name('kurir.index');
+    Route::get('/kurir-index',[KurirController::class, 'index']);
+    Route::post('/save-fcm-token-pegawai',[PegawaiController::class, 'saveFcmToken']);
 });
 
 Route::middleware(['auth:sanctum'])->group(function () {
