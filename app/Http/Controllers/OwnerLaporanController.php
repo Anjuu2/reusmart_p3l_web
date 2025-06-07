@@ -151,57 +151,60 @@ class OwnerLaporanController extends Controller
         return $pdf->download($filename);
     }
 
-    // public function index()
-    // {
-    //     $tahun = 2024;
+    public function stokIndex(Request $request)
+    {
+        $today = Carbon::today()->toDateString();
+        $query = BarangTitipan::with(['penitip', 'hunter'])->where('status_barang', 'Tersedia');
 
-    //     $dataBulanan = DetailTransaksi::selectRaw('
-    //             MONTH(transaksi.tanggal_transaksi) as bulan,
-    //             COUNT(detail_transaksi.id_barang) as jumlah_barang,
-    //             SUM(detail_transaksi.sub_total) as total_penjualan
-    //         ')
-    //         ->join('transaksi', 'detail_transaksi.id_transaksi', '=', 'transaksi.id_transaksi')
-    //         ->whereYear('transaksi.tanggal_transaksi', $tahun)
-    //         ->groupBy(DB::raw('MONTH(transaksi.tanggal_transaksi)'))
-    //         ->get();
+        // Pencarian
+        if ($request->filled('search')) {
+            $search = $request->search;
+            $query->where(function ($q) use ($search) {
+                $q->where('nama_barang', 'like', "%$search%")
+                ->orWhere('id_barang', 'like', "%$search%")
+                ->orWhere('id_penitip', 'like', "%$search%")
+                ->orWhereHas('penitip', fn($q2) => $q2->where('nama_penitip', 'like', "%$search%"))
+                ->orWhere('id_hunter', 'like', "%$search%")
+                ->orWhereHas('hunter', fn($q3) => $q3->where('nama_pegawai', 'like', "%$search%"))
+                ->orWhere('harga_jual', 'like', "%$search%");
+            });
+        }
 
-    //     // Data untuk chart dan tabel
-    //     $dataPerBulan = collect(range(1, 12))->map(function ($bulan) use ($dataBulanan) {
-    //         $data = $dataBulanan->firstWhere('bulan', $bulan);
-    //         return [
-    //             'bulan' => Carbon::create()->month($bulan)->locale('id')->isoFormat('MMMM'),
-    //             'jumlah_barang' => $data->jumlah_barang ?? 0,
-    //             'total_penjualan' => $data->total_penjualan ?? 0,
-    //         ];
-    //     });
+        // Urutan
+        $sort = $request->get('sort', 'tanggal_masuk');
+        $direction = $request->get('direction', 'asc');
+        $allowedSorts = ['id_barang', 'nama_barang', 'id_penitip', 'tanggal_masuk', 'harga_jual'];
+        if (in_array($sort, $allowedSorts)) {
+            $query->orderBy($sort, $direction);
+        }
 
-    //     return view('owner.laporan_penjualan', compact('dataPerBulan', 'tahun'));
-    // }
+        $stokItems = $query->paginate(10)->withQueryString();
 
-    // public function downloadPDF()
-    // {
-    //     $tahun = 2024;
+        return view('owner.laporan.stokGudang', [
+            'stokItems' => $stokItems,
+            'tanggalCetak' => $today,
+            'isPdf' => false,
+        ]);
+    }
 
-    //     $dataBulanan = DetailTransaksi::selectRaw('
-    //             MONTH(transaksi.tanggal_transaksi) as bulan,
-    //             COUNT(detail_transaksi.id_barang) as jumlah_barang,
-    //             SUM(detail_transaksi.sub_total) as total_penjualan
-    //         ')
-    //         ->join('transaksi', 'detail_transaksi.id_transaksi', '=', 'transaksi.id_transaksi')
-    //         ->whereYear('transaksi.tanggal_transaksi', $tahun)
-    //         ->groupBy(DB::raw('MONTH(transaksi.tanggal_transaksi)'))
-    //         ->get();
+    public function stokDownload(Request $request)
+    {
+        $today = Carbon::today()->toDateString();
 
-    //     $dataPerBulan = collect(range(1, 12))->map(function ($bulan) use ($dataBulanan) {
-    //         $data = $dataBulanan->firstWhere('bulan', $bulan);
-    //         return [
-    //             'bulan' => Carbon::create()->month($bulan)->locale('id')->isoFormat('MMMM'),
-    //             'jumlah_barang' => $data->jumlah_barang ?? 0,
-    //             'total_penjualan' => $data->total_penjualan ?? 0,
-    //         ];
-    //     });
+        // Ambil semua data, bukan paginate
+        $stokItems = BarangTitipan::with(['penitip', 'hunter'])
+            ->where('status_barang', 'Tersedia')
+            ->orderBy('tanggal_masuk', 'asc')
+            ->get();
 
-    //     $pdf = Pdf::loadView('owner.laporan_penjualan_pdf', compact('dataPerBulan', 'tahun'));
-    //     return $pdf->download('Laporan_Penjualan_Bulanan_'.$tahun.'.pdf');
-    // }
+        // Gunakan view khusus untuk PDF yang ringan
+        $pdf = PDF::loadView('owner.laporan.stokPdf', [
+            'stokItems'    => $stokItems,
+            'tanggalCetak' => $today,
+        ])->setPaper('a4', 'landscape')
+        ->setOptions(['enable-local-file-access' => true]);
+
+        return $pdf->download("Laporan_Stok_Gudang_{$today}.pdf");
+    }
+
 }

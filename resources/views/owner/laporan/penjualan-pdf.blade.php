@@ -47,7 +47,7 @@
 
         <div class="info">
             <p>Tahun: {{ $year }}</p>
-            <p>Tanggal Cetak: {{ strtolower(now()->locale('id')->isoFormat('DD MMMM YYYY')) }}</p>
+            <p>Tanggal Cetak: {{ ucfirst(now()->locale('id')->isoFormat('DD MMMM YYYY')) }}</p>
         </div>
 
         {{-- TABEL --}}
