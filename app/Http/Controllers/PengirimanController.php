@@ -122,27 +122,6 @@ class PengirimanController extends Controller
             if ($jadwal->jenis_jadwal === 'Pengiriman' && $request->filled('id_kurir')) {
                 $kurir = \App\Models\Pegawai::find($validated['id_kurir']);
             }
-
-            // Notifikasi ke Pembeli
-            if ($transaksi->pembeli) {
-                $transaksi->pembeli->notify(new \App\Notifications\DikirimKurir($jadwal, $transaksi, $kurir));
-            }
-
-            // Notifikasi ke Penitip
-            $penitips = collect();
-            foreach ($transaksi->detailTransaksi as $detail) {
-                $barang = \App\Models\BarangTitipan::find($detail->id_barang);
-                if ($barang) {
-                    $penitip = \App\Models\Penitip::find($barang->id_penitip);
-                    if ($penitip) {
-                        $penitips->push($penitip);
-                    }
-                }
-            }
-            $penitips = $penitips->unique('id_penitip');
-            foreach ($penitips as $penitip) {
-                $penitip->notify(new \App\Notifications\DikirimKurir($jadwal, $transaksi, $kurir));
-            }
         }
 
         // Siapkan daftar penerima email

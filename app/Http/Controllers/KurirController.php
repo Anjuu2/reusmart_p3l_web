@@ -21,6 +21,7 @@ class KurirController extends Controller
                 'data' => [
                     'id_pegawai' => $pegawai->id_pegawai,
                     'nama_pegawai' => $pegawai->nama_pegawai,
+                    'username' =>$pegawai->username,
                     'email' => $pegawai->email,
                     'notelp' => $pegawai->notelp,
                     'tanggal_lahir' => $pegawai->tanggal_lahir,
