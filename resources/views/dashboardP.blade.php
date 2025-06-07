@@ -198,7 +198,9 @@
     </div>
 
     <h4 class="mb-3">Daftar Barang Titipan Anda</h4>
-
+    <h6 class="mb-3">Jumlah total barang yang Anda titip: <span class="status-btn status-tersedia">{{ $totalBarang }}</span></h6>
+    <h6 class="mb-3">Yang belum laku: <t><span class="status-btn status-terjual">{{ $totalBarangBelumLaku }}</span></h6>
+    
     <div class="table-responsive">
         <table class="table table-striped">
             <thead>
