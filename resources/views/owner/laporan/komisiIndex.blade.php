@@ -67,7 +67,6 @@
               <td>{{ number_format($row['harga'],0,',','.') }}</td>
               <td>{{ $row['tanggal_masuk'] }}</td>
               <td>{{ $row['tanggal_laku'] }}</td>
-              <!-- <td>{{ number_format($row['komisi_kotor'],0,',','.') }}</td> -->
               <td>{{ number_format($row['komisi_hunter'],0,',','.') }}</td>
               <td>{{ number_format($row['komisi_reuse'],0,',','.') }}</td>
               <td>{{ number_format($row['komisi_penitip'],0,',','.') }}</td>
@@ -85,9 +84,6 @@
                     <td>{{ number_format(collect($data)->sum('harga'), 0, ',', '.') }}</td>
 
                     <td colspan="2" style="border-top: 1px solid #000; border-left: none; border-right: none;"></td>
-
-                    <!-- {{-- Total Komisi Kotor --}}
-                    <td>{{ number_format(collect($data)->sum('komisi_kotor'), 0, ',', '.') }}</td> -->
 
                     {{-- Total Komisi Hunter --}}
                     <td>{{ number_format(collect($data)->sum('komisi_hunter'), 0, ',', '.') }}</td>
