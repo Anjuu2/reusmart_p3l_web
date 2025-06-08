@@ -14,11 +14,12 @@ use App\Http\Controllers\BarangTitipanController;
 Route::post('/login', [LoginController::class, 'loginMobile'])->name('login');
 
 Route::middleware('auth:sanctum')->group(function () {
-    Route::post('/logout', [LoginController::class, 'logoutMobile'])->name('logout');
+    Route::post('/logout', [LoginController::class, 'logoutMobile']);
     Route::get('show', [PembeliController::class, 'showM'])->name('pembeli.show');
     Route::get('show', [PenitipController::class, 'showM'])->name('penitip.show');
     Route::get('show', [PegawaiController::class, 'showM'])->name('pegawai.show');
-    Route::get('/kurir-index',[KurirController::class, 'index']);
+    Route::get('/kurir/index',[KurirController::class, 'index']);
+    Route::get('/kurir/historyPengiriman',[KurirController::class, 'historyPengiriman']);
     Route::post('/save-fcm-token-pegawai',[PegawaiController::class, 'saveFcmToken']);
 });
 
