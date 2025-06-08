@@ -8,6 +8,7 @@ use App\Models\BarangTitipan;
 use App\Models\Komisi;
 use App\Models\Kategori;
 use App\Models\Transaksi;
+use App\Models\Badge;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Http\Request;
 use Carbon\Carbon;
@@ -261,32 +262,54 @@ class OwnerLaporanController extends Controller
 
         // 2. Tarik semua komisi yg tercatat untuk barang yang tanggal_keluar-nya di periode itu
         $komisis = Komisi::with(['transaksi.detailTransaksi.barang','penitip','pegawai'])
-            ->whereHas('transaksi.detailTransaksi.barang', function($q) use($month, $year) {
-                $q->whereMonth('tanggal_keluar', $month)
-                  ->whereYear('tanggal_keluar',  $year);
+            ->whereHas('transaksi', function($q) use($month, $year) {
+                $q->whereMonth('tanggal_transaksi', $month)
+                ->whereYear('tanggal_transaksi',  $year);
             })
             ->get();
 
         // 3. Map ke array untuk view
         $data = $komisis->map(function($k) {
-            $detail = $k->transaksi
-                        ->detailTransaksi
+            $detail = $k->transaksi->detailTransaksi
                         ->firstWhere('id_barang', $k->id_barang);
             $barang = optional($detail)->barang;
+
+            $tanggalMasuk = optional($barang)->tanggal_masuk;
+            $tanggalTransaksi = optional($k->transaksi)->tanggal_transaksi;
+
+            $komisiDasar = 0.20 * ($barang->harga_jual ?? 0); // 20% komisi dasar
+            $bonus = 0;
+
+            if ($tanggalMasuk && $tanggalTransaksi) {
+                $durasi = Carbon::parse($tanggalMasuk)->diffInDays(Carbon::parse($tanggalTransaksi));
+
+                $isCepatLaku = $durasi < 7;
+
+                $isTopSeller = \App\Models\Badge::where('id_penitip', $k->id_penitip)
+                    ->where('nama_badge', 'Top Seller')
+                    ->whereMonth('periode_pemberian', Carbon::parse($tanggalTransaksi)->month)
+                    ->whereYear('periode_pemberian', Carbon::parse($tanggalTransaksi)->year)
+                    ->exists();
+
+                if ($isTopSeller) {
+                    $bonus += $komisiDasar * 0.01;
+                }
+
+                if ($isCepatLaku) {
+                    $bonus += $komisiDasar * 0.10;
+                }
+            }
 
             return [
                 'kode'           => $barang->id_barang ?? '-',
                 'nama'           => $barang->nama_barang ?? '-',
                 'harga'          => $barang->harga_jual ?? 0,
-                'tanggal_masuk'  => $barang
-                                      ? $barang->tanggal_masuk->format('d/m/Y')
-                                      : '-',
-                'tanggal_laku'   => $barang
-                                      ? $barang->tanggal_keluar->format('d/m/Y')
-                                      : '-',
+                'tanggal_masuk'  => $tanggalMasuk ? $tanggalMasuk->format('d/m/Y') : '-',
+                'tanggal_laku'   => $tanggalTransaksi ? Carbon::parse($tanggalTransaksi)->format('d/m/Y') : '-',
                 'komisi_hunter'  => $k->komisi_hunter  ?? 0,
                 'komisi_penitip' => $k->komisi_penitip ?? 0,
                 'komisi_reuse'   => $k->komisi        ?? 0,
+                'bonus_penitip'  => (int) $bonus,
             ];
         });
 
@@ -313,32 +336,59 @@ class OwnerLaporanController extends Controller
 
         // 2. Tarik data Komisi seperti di index
         $komisis = Komisi::with(['transaksi.detailTransaksi.barang','penitip','pegawai'])
-            ->whereHas('transaksi.detailTransaksi.barang', function($q) use($month, $year) {
-                $q->whereMonth('tanggal_keluar', $month)
-                  ->whereYear('tanggal_keluar',  $year);
+            ->whereHas('transaksi', function($q) use($month, $year) {
+                $q->whereMonth('tanggal_transaksi', $month)
+                ->whereYear('tanggal_transaksi',  $year);
             })
             ->get();
 
         // 3. Map ke array untuk PDF
         $data = $komisis->map(function($k) {
-            $detail = $k->transaksi
-                        ->detailTransaksi
+            $detail = $k->transaksi->detailTransaksi
                         ->firstWhere('id_barang', $k->id_barang);
             $barang = optional($detail)->barang;
+
+            $tanggalMasuk = optional($barang)->tanggal_masuk;
+            $tanggalTransaksi = optional($k->transaksi)->tanggal_transaksi;
+
+            // Default 0
+            $bonus = 0;
+
+            // Hitung durasi laku
+            if ($tanggalMasuk && $tanggalTransaksi) {
+                $durasi = Carbon::parse($tanggalMasuk)->diffInDays(Carbon::parse($tanggalTransaksi));
+
+                // Ambil persentase bonus berdasarkan ketentuan
+                $isCepatLaku = $durasi < 7;
+
+                // Cek top seller dari tabel badge_penitip
+                $isTopSeller = \App\Models\Badge::where('id_penitip', $k->id_penitip)
+                    ->where('nama_badge', 'Top Seller')
+                    ->whereMonth('periode_pemberian', Carbon::parse($tanggalTransaksi)->month)
+                    ->whereYear('periode_pemberian', Carbon::parse($tanggalTransaksi)->year)
+                    ->exists();
+
+                $komisiReuseAsli = $k->komisi;
+
+                if ($isTopSeller) {
+                    $bonus += $komisiReuseAsli * 0.01;
+                }
+
+                if ($isCepatLaku) {
+                    $bonus += $komisiReuseAsli * 0.10;
+                }
+            }
 
             return [
                 'kode'           => $barang->id_barang ?? '-',
                 'nama'           => $barang->nama_barang ?? '-',
                 'harga'          => $barang->harga_jual ?? 0,
-                'tanggal_masuk'  => $barang
-                                      ? $barang->tanggal_masuk->format('d/m/Y')
-                                      : '-',
-                'tanggal_laku'   => $barang
-                                      ? $barang->tanggal_keluar->format('d/m/Y')
-                                      : '-',
+                'tanggal_masuk'  => $tanggalMasuk ? $tanggalMasuk->format('d/m/Y') : '-',
+                'tanggal_laku'   => $tanggalTransaksi ? Carbon::parse($tanggalTransaksi)->format('d/m/Y') : '-',
                 'komisi_hunter'  => $k->komisi_hunter  ?? 0,
                 'komisi_penitip' => $k->komisi_penitip ?? 0,
                 'komisi_reuse'   => $k->komisi        ?? 0,
+                'bonus_penitip'  => (int) $bonus,
             ];
         });
 

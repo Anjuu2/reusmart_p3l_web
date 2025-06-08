@@ -18,6 +18,29 @@ class HomeController extends Controller
         return view('home', compact('barangs'));
     }
 
+    public function apiIndex()
+    {
+        $barangs = BarangTitipan::with(['kategori','fotoBarang'])
+            ->where('status_barang','Tersedia')
+            ->get();
+
+        return response()->json([
+            'data' => $barangs
+        ]);
+    }
+
+    public function byCategory($categoryId)
+    {
+        $barangs = BarangTitipan::with(['kategori','fotoBarang'])
+            ->where('status_barang','Tersedia')
+            ->where('id_kategori',$categoryId)
+            ->get();
+
+        return response()->json([
+            'data' => $barangs
+        ]);
+    }
+    
     public function showProducts()
     {
         // Mengambil semua produk barang titipan

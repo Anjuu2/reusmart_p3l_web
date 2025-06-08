@@ -10,9 +10,11 @@ use App\Http\Controllers\OrganisasiController;
 use App\Http\Controllers\AlamatController;
 use App\Http\Controllers\PembeliController;
 use App\Http\Controllers\HomeController;
+use App\Http\Controllers\KategoriApiController;
+use App\Http\Controllers\BarangTitipanController;
+use App\Http\Controllers\KategoriController;
 use App\Http\Controllers\HunterController;
 use App\Http\Controllers\Api\KategoriApiController;
-use App\Http\Controllers\Api\BarangTitipanController;
 
 Route::post('/login', [LoginController::class, 'loginMobile'])->name('login');
 
@@ -36,9 +38,13 @@ Route::middleware(['auth:sanctum'])->group(function () {
 Route::middleware('auth:sanctum')->post('/save-fcm-token-pembeli', [PembeliController::class, 'saveFcmToken']);
 Route::middleware('auth:sanctum')->post('/save-fcm-token-penitip', [PenitipController::class, 'saveFcmToken']);
 
-
+Route::get('barangs/kategori/{id}', [HomeController::class, 'byCategory']);
+Route::get('barangs/{id}', [BarangTitipanController::class, 'apiShow']);
+Route::get('produk/search', [KategoriController::class, 'apiSearch']);
+Route::get('produk', [KategoriController::class, 'apiAllProducts']);
 Route::get('/', [HomeController::class, 'index']);
-Route::get('/kategori', [KategoriController::class, 'showAvailableProducts']);
-Route::get('/kategori/{id}', [KategoriController::class, 'showProductsByCategory']);
-Route::get('/barang-titipan', [BarangTitipanApiController::class, 'index']);
+Route::get('barangs', [HomeController::class, 'apiIndex']);
+Route::get('kategori', [KategoriController::class, 'apiIndex']);
+Route::get('kategori/{id}/produk', [KategoriController::class, 'apiProductsByCategory']);
+
 

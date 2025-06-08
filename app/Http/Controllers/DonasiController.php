@@ -81,17 +81,17 @@ class DonasiController extends Controller
             ->increment('poin', $poin);
     });
 
-        $firebase = new FirebaseService();
+        // $firebase = new FirebaseService();
 
-        $penitip = Penitip::find($barang->id_penitip);
-        $penitipFcmToken = $penitip ? $penitip->fcm_token : null;
+        // $penitip = Penitip::find($barang->id_penitip);
+        // $penitipFcmToken = $penitip ? $penitip->fcm_token : null;
 
-        $title = "Barang Didonasikan ID #{$barang->id_barang}";
-        $body = "Barang dengan nama '{$barang->nama_barang}' dengan ID #{$barang->id_barang} berhasil didonasikan.";
+        // $title = "Barang Didonasikan ID #{$barang->id_barang}";
+        // $body = "Barang dengan nama '{$barang->nama_barang}' dengan ID #{$barang->id_barang} berhasil didonasikan.";
 
-        if ($penitipFcmToken) {
-            $firebase->sendMessage($penitipFcmToken, $title, $body);
-        }
+        // if ($penitipFcmToken) {
+        //     $firebase->sendMessage($penitipFcmToken, $title, $body);
+        // }
         return redirect()->route('owner.donasi.index')->with('success', 'Donasi berhasil dialokasikan.');
     }
 

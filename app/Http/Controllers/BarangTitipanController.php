@@ -50,7 +50,17 @@ class BarangTitipanController extends Controller
         return response()->json(['message' => 'Notifikasi masa penitipan sudah dikirim']);
     }
     
-    public function show($id)
+    public function apishow($id)
+    {
+        $produk = BarangTitipan::with(['kategori','fotoBarang'])
+                    ->findOrFail($id);
+
+        return response()->json([
+            'data' => $produk
+        ]);
+    }
+
+    public function Show($id)
     {
         $produk = BarangTitipan::findOrFail($id);
         return view('produk.show', compact('produk'));
