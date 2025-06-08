@@ -13,16 +13,22 @@ use App\Http\Controllers\HomeController;
 use App\Http\Controllers\KategoriApiController;
 use App\Http\Controllers\BarangTitipanController;
 use App\Http\Controllers\KategoriController;
+use App\Http\Controllers\HunterController;
+use App\Http\Controllers\Api\KategoriApiController;
 
 Route::post('/login', [LoginController::class, 'loginMobile'])->name('login');
 
 Route::middleware('auth:sanctum')->group(function () {
-    Route::post('/logout', [LoginController::class, 'logoutMobile'])->name('logout');
+    Route::post('/logout', [LoginController::class, 'logoutMobile']);
     Route::get('show', [PembeliController::class, 'showM'])->name('pembeli.show');
     Route::get('show', [PenitipController::class, 'showM'])->name('penitip.show');
     Route::get('show', [PegawaiController::class, 'showM'])->name('pegawai.show');
     Route::get('/kurir-index',[KurirController::class, 'index']);
+    Route::get('/hunter-index',[HunterController::class, 'index']);
     Route::post('/save-fcm-token-pegawai',[PegawaiController::class, 'saveFcmToken']);
+    Route::get('/hunter/komisi/total', [HunterController::class, 'getTotalKomisiHunter']);
+    Route::get('/hunter-history-komisi', [HunterController::class, 'historyKomisi']);
+
 });
 
 Route::middleware(['auth:sanctum'])->group(function () {
