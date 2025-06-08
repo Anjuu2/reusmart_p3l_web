@@ -37,7 +37,7 @@ class KurirController extends Controller
         }
     }
 
-    public function historyPengiriman(Request $request)
+    public function historyPengiriman()
     {
         $kurir = Auth::guard('sanctum')->user();
 
@@ -70,10 +70,136 @@ class KurirController extends Controller
             ];
         });
 
+        return response()->json([
+            'success' => true,
+            'data' => $history
+        ]);
+    }
+
+    public function showPengiriman()
+    {
+        $kurir = Auth::guard('sanctum')->user();
+
+        if (!$kurir) {
+            return response()->json([
+                'success' => false,
+                'message' => 'Kurir tidak terautentikasi.'
+            ], 401);
+        }
+
+        $history = Pengiriman::with([
+            'penjadwalan.transaksi.detailTransaksi.barang_titipan'
+        ])
+        ->where('id_pegawai', $kurir->id_pegawai)
+        ->where('status_pengiriman', 'Diantar')
+        ->orderBy('id_pengiriman', 'desc')
+        ->get()
+        ->map(function ($item) {
+            // Ambil nama_barang dari detailTransaksi pertama (jika ada)
+            $detail = optional($item->penjadwalan->transaksi->detailTransaksi->first());
+            $namaBarang = optional($detail->barang_titipan)->nama_barang ?? '-';
+
+            return [
+                'id_pengiriman' => $item->id_pengiriman,
+                'nama_barang' => $namaBarang,
+                'tanggal_jadwal' => optional($item->penjadwalan)->tanggal_jadwal
+                    ? $item->penjadwalan->tanggal_jadwal->format('d/m/Y H:i')
+                    : '-',
+                'status_pengiriman' => $item->status_pengiriman ?? '-',
+            ];
+        });
 
         return response()->json([
             'success' => true,
             'data' => $history
+        ]);
+    }
+
+    public function detailPengiriman($id)
+    {
+        $kurir = Auth::guard('sanctum')->user();
+
+        if (!$kurir) {
+            return response()->json([
+                'success' => false,
+                'message' => 'Kurir tidak terautentikasi.'
+            ], 401);
+        }
+
+        $pengiriman = Pengiriman::with([
+            'penjadwalan.transaksi.pembeli',
+            'penjadwalan.transaksi.alamat',
+            'penjadwalan.transaksi.detailTransaksi.barang_titipan'
+        ])
+        ->where('id_pengiriman', $id)
+        ->where('id_pegawai', $kurir->id_pegawai)
+        ->first();
+
+        if (!$pengiriman) {
+            return response()->json([
+                'success' => false,
+                'message' => 'Pengiriman tidak ditemukan.'
+            ], 404);
+        }
+
+        $detail = optional($pengiriman->penjadwalan->transaksi->detailTransaksi->first());
+        $namaBarang = optional($detail->barang_titipan)->nama_barang ?? '-';
+        $namaPembeli = optional($pengiriman->penjadwalan->transaksi->pembeli)->nama_pembeli ?? '-';
+        $alamatPembeli = optional($pengiriman->penjadwalan->transaksi->alamat);
+        $alamatLengkap = $alamatPembeli 
+        ? "{$alamatPembeli->jalan}, {$alamatPembeli->kelurahan}, {$alamatPembeli->kecamatan}, {$alamatPembeli->kota}, {$alamatPembeli->provinsi}, {$alamatPembeli->kode_pos}" 
+        : '-';
+
+        return response()->json([
+            'success' => true,
+            'data' => [
+                'id_pengiriman' => $pengiriman->id_pengiriman,
+                'nama_barang' => $namaBarang,
+                'tanggal_jadwal' => optional($pengiriman->penjadwalan)->tanggal_jadwal
+                    ? $pengiriman->penjadwalan->tanggal_jadwal->format('d/m/Y H:i')
+                    : '-',
+                'status_pengiriman' => $pengiriman->status_pengiriman ?? '-',
+                'nama_pembeli' => $namaPembeli,
+                'alamat_pembeli' => $alamatLengkap,
+            ]
+        ]);
+    }
+
+    public function konfirmasiPengiriman($id)
+    {
+        $kurir = Auth::guard('sanctum')->user();
+
+        if (!$kurir) {
+            return response()->json([
+                'success' => false,
+                'message' => 'Kurir tidak terautentikasi.'
+            ], 401);
+        }
+
+        $pengiriman = Pengiriman::where('id_pengiriman', $id)
+            ->where('id_pegawai', $kurir->id_pegawai)
+            ->first();
+
+        if (!$pengiriman) {
+            return response()->json([
+                'success' => false,
+                'message' => 'Pengiriman tidak ditemukan.'
+            ], 404);
+        }
+
+        if ($pengiriman->status_pengiriman !== 'Diantar') {
+            return response()->json([
+                'success' => false,
+                'message' => 'Hanya pengiriman dengan status Diantar yang dapat dikonfirmasi.'
+            ], 400);
+        }
+
+        $pengiriman->status_pengiriman = 'Sampai';
+        $pengiriman->save();
+
+        return response()->json([
+            'success' => true,
+            'message' => 'Pengiriman berhasil dikonfirmasi menjadi Sampai.'
         ]);
     }
 }

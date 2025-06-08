@@ -20,6 +20,9 @@ Route::middleware('auth:sanctum')->group(function () {
     Route::get('show', [PegawaiController::class, 'showM'])->name('pegawai.show');
     Route::get('/kurir/index',[KurirController::class, 'index']);
     Route::get('/kurir/historyPengiriman',[KurirController::class, 'historyPengiriman']);
+    Route::get('/kurir/showPengiriman',[KurirController::class, 'showPengiriman']);
+    Route::get('/kurir/showPengiriman/detail/{id}',[KurirController::class, 'detailPengiriman']);
+    Route::patch('/kurir/konfirmasiPengiriman/{id}', [KurirController::class, 'konfirmasiPengiriman']);
     Route::post('/save-fcm-token-pegawai',[PegawaiController::class, 'saveFcmToken']);
 });
 
