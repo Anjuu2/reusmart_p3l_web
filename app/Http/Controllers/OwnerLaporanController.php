@@ -463,7 +463,9 @@ class OwnerLaporanController extends Controller
         // Ambil barang yang masa penitipannya habis
         $laporan = BarangTitipan::with('penitip')
             ->whereYear('tanggal_akhir', '=', $tahun)
+            ->where('status_barang', 'Tersedia')
             ->whereDate('tanggal_akhir', '<', now())
+            ->whereDate('tanggal_akhir', '>=', now()->subDays(7))
             ->orderBy('tanggal_akhir')
             ->paginate(10)
             ->appends(['tahun' => $tahun]);
@@ -480,7 +482,9 @@ class OwnerLaporanController extends Controller
 
         $laporan = BarangTitipan::with('penitip')
             ->whereYear('tanggal_akhir', '=', $tahun)
+            ->where('status_barang', 'Tersedia')
             ->whereDate('tanggal_akhir', '<', now())
+            ->whereDate('tanggal_akhir', '>=', now()->subDays(7))
             ->orderBy('tanggal_akhir')
             ->get();
 
