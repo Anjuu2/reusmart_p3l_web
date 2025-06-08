@@ -14,7 +14,9 @@ use App\Http\Controllers\KategoriApiController;
 use App\Http\Controllers\BarangTitipanController;
 use App\Http\Controllers\KategoriController;
 use App\Http\Controllers\HunterController;
-use App\Http\Controllers\Api\KategoriApiController;
+use App\Http\Controllers\RewardController;
+use App\Http\Controllers\MerchandiseController;
+// use App\Http\Controllers\Api\KategoriApiController;
 
 Route::post('/login', [LoginController::class, 'loginMobile'])->name('login');
 
@@ -28,7 +30,10 @@ Route::middleware('auth:sanctum')->group(function () {
     Route::post('/save-fcm-token-pegawai',[PegawaiController::class, 'saveFcmToken']);
     Route::get('/hunter/komisi/total', [HunterController::class, 'getTotalKomisiHunter']);
     Route::get('/hunter-history-komisi', [HunterController::class, 'historyKomisi']);
-
+    Route::get('/pembeli-profile', [PembeliController::class, 'profileMobile']);
+    Route::get('/merchandise', [MerchandiseController::class, 'index']);
+    Route::post('/reward/claim-merchandise', [RewardController::class, 'claimMerchandise']);
+    Route::get('/reward/history/{id_pembeli}', [RewardController::class, 'history']);
 });
 
 Route::middleware(['auth:sanctum'])->group(function () {
@@ -46,5 +51,7 @@ Route::get('/', [HomeController::class, 'index']);
 Route::get('barangs', [HomeController::class, 'apiIndex']);
 Route::get('kategori', [KategoriController::class, 'apiIndex']);
 Route::get('kategori/{id}/produk', [KategoriController::class, 'apiProductsByCategory']);
+Route::get('/merchandise', [MerchandiseController::class, 'index']);
+
 
 
