@@ -359,15 +359,11 @@ class LoginController extends Controller
 
     public function logoutMobile(Request $request)
     {
-        // Ambil user yang sedang login menggunakan Sanctum
         $user = Auth::guard('sanctum')->user();
 
-        // Cek jika ada user yang sedang login
         if ($user) {
-            // Menghapus token yang sedang digunakan
-            $user->tokens->each(function ($token) {
-                $token->delete();
-            });
+            // Hapus hanya token yang sedang digunakan
+            $user->currentAccessToken()->delete();
 
             return response()->json([
                 'success' => true,
@@ -375,7 +371,6 @@ class LoginController extends Controller
             ]);
         }
 
-        // Jika user tidak ditemukan atau sudah logout
         return response()->json([
             'success' => false,
             'message' => 'User tidak ditemukan atau sudah logout.',

@@ -32,6 +32,8 @@ Route::middleware(['auth:sanctum'])->group(function () {
 Route::middleware('auth:sanctum')->post('/save-fcm-token-pembeli', [PembeliController::class, 'saveFcmToken']);
 Route::middleware('auth:sanctum')->post('/save-fcm-token-penitip', [PenitipController::class, 'saveFcmToken']);
 
+Route::middleware('auth:penitip')->get('/penitip-index', [PenitipController::class, 'apiProfilePenitip']);
+
 Route::get('barangs/kategori/{id}', [HomeController::class, 'byCategory']);
 Route::get('barangs/{id}', [BarangTitipanController::class, 'apiShow']);
 Route::get('produk/search', [KategoriController::class, 'apiSearch']);

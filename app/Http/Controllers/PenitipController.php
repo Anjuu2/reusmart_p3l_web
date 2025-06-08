@@ -32,6 +32,48 @@ class PenitipController extends Controller
         return view('Penitip.profilePenitip', compact('penitip', 'transaksiList', 'avgRating', 'countRating'));
     }
 
+    public function apiProfilePenitip()
+    {
+        try {
+            $penitip = auth()->guard('penitip')->user();
+
+            if (!$penitip) {
+                return response()->json([
+                    'success' => false,
+                    'message' => 'Unauthorized'
+                ], 401);
+            }
+
+            // Ambil transaksi barang yang sudah terjual
+            $transaksiList = BarangTitipan::where('id_penitip', $penitip->id_penitip)
+                ->where('status_barang', 'terjual')
+                ->orderByDesc('tanggal_keluar')
+                ->get();
+
+            // Hitung rating rata-rata
+            $avgRating = Rating::where('id_penitip', $penitip->id_penitip)->avg('rating') ?? 0;
+
+            // Hitung jumlah rating
+            $countRating = Rating::where('id_penitip', $penitip->id_penitip)->count();
+
+            return response()->json([
+                'success' => true,
+                'data' => [
+                    'penitip' => $penitip,
+                    'transaksiList' => $transaksiList,
+                    'avgRating' => round($avgRating, 2),
+                    'countRating' => $countRating
+                ]
+            ]);
+        } catch (\Exception $e) {
+            return response()->json([
+                'success' => false,
+                'message' => 'Terjadi kesalahan',
+                'error' => $e->getMessage()
+            ], 500);
+        }
+    }
+
     public function index(Request $request)
     {
         $search = $request->input('q');
