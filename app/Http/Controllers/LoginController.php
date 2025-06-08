@@ -365,9 +365,7 @@ class LoginController extends Controller
         // Cek jika ada user yang sedang login
         if ($user) {
             // Menghapus token yang sedang digunakan
-            $user->tokens->each(function ($token) {
-                $token->delete();
-            });
+            $user->currentAccessToken()->delete();
 
             return response()->json([
                 'success' => true,

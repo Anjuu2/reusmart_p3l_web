@@ -124,9 +124,9 @@ class PengirimanController extends Controller
             }
 
             // Notifikasi ke Pembeli
-            if ($transaksi->pembeli) {
-                $transaksi->pembeli->notify(new \App\Notifications\DikirimKurir($jadwal, $transaksi, $kurir));
-            }
+            // if ($transaksi->pembeli) {
+            //     $transaksi->pembeli->notify(new \App\Notifications\DikirimKurir($jadwal, $transaksi, $kurir));
+            // }
 
             // Notifikasi ke Penitip
             $penitips = collect();
