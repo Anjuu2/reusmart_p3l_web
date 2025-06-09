@@ -32,6 +32,80 @@ class PenitipController extends Controller
         return view('Penitip.profilePenitip', compact('penitip', 'transaksiList', 'avgRating', 'countRating'));
     }
 
+    public function apiProfilePenitip()
+    {
+        try {
+            $penitip = auth('sanctum')->user();
+
+            if (!$penitip) {
+                return response()->json(['success'=>false,'message'=>'Unauthorized'],401);
+            }
+
+            // Hitung rating rata-rata
+            $avgRating = Rating::where('id_penitip', $penitip->id_penitip)->avg('rating') ?? 0;
+
+            // Hitung jumlah rating
+            $countRating = Rating::where('id_penitip', $penitip->id_penitip)->count();
+
+            $penitipData = [
+                'id_penitip'    => $penitip->id_penitip,
+                'poin'          => $penitip->poin,
+                'nama_penitip'  => $penitip->nama_penitip,
+                'email'         => $penitip->email,
+                'no_telp'       => $penitip->no_telp,
+                'alamat'        => $penitip->alamat,
+                'saldo_penitip' => $penitip->saldo_penitip,
+                'no_ktp'        => $penitip->no_ktp,
+                'username'      => $penitip->username,
+                'password'      => $penitip->password,
+                'foto_ktp'      => $penitip->foto_ktp,
+                'status_aktif'  => $penitip->status_aktif,
+            ];
+
+            return response()->json([
+                'success' => true,
+                'data' => [
+                    'penitip'       => $penitipData,
+                    // 'transaksiList' => $transaksiList,
+                    'avgRating'     => round($avgRating, 2),
+                    'countRating'   => $countRating,
+                ]
+            ]);
+        } catch (\Exception $e) {
+            return response()->json([
+                'success' => false,
+                'message' => 'Terjadi kesalahan',
+                'error' => $e->getMessage()
+            ], 500);
+        }
+    }
+
+    public function apiRiwayatTitipan()
+    {
+        try {
+            $penitip = auth('sanctum')->user();
+
+            if (!$penitip) {
+                return response()->json(['success'=>false,'message'=>'Unauthorized'],401);
+            }
+
+            $riwayat = BarangTitipan::where('id_penitip', $penitip->id_penitip)
+                ->orderByDesc('tanggal_masuk')
+                ->get();
+
+            return response()->json([
+                'success' => true,
+                'data' => $riwayat,
+            ]);
+        } catch (\Exception $e) {
+            return response()->json([
+                'success' => false,
+                'message' => 'Terjadi kesalahan',
+                'error' => $e->getMessage()
+            ], 500);
+        }
+    }
+
     public function index(Request $request)
     {
         $search = $request->input('q');
@@ -172,6 +246,42 @@ class PenitipController extends Controller
         $barangs = $query->orderByDesc('tanggal_masuk')->paginate(10);
 
         return view('penitip.dashboard', compact('barangs'));
+    }
+
+    public function apiDashboard(Request $request)
+    {
+        $penitip = auth('sanctum')->user();
+
+        if (!$penitip) {
+            return response()->json([
+                'success' => false,
+                'message' => 'Unauthorized'
+            ], 401);
+        }
+
+        $query = BarangTitipan::with(['kategori', 'fotoBarang']) // ← Tambahkan ini
+            ->where('id_penitip', $penitip->id_penitip);
+
+        if ($request->filled('search')) {
+            $query->where('nama_barang', 'like', '%' . $request->search . '%');
+        }
+
+        if ($request->filled('status') && strtolower($request->status) != 'semua') {
+            $query->where('status_barang', $request->status);
+        }
+
+        $barangs = $query->orderByDesc('tanggal_masuk')->paginate(5);
+
+        return response()->json([
+            'success' => true,
+            'data' => $barangs->items(),
+            'pagination' => [
+                'current_page' => $barangs->currentPage(),
+                'last_page' => $barangs->lastPage(),
+                'per_page' => $barangs->perPage(),
+                'total' => $barangs->total(),
+            ],
+        ]);
     }
 
     public function saveFcmToken(Request $request)
