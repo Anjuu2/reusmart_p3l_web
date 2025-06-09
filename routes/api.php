@@ -14,7 +14,6 @@ use App\Http\Controllers\KategoriApiController;
 use App\Http\Controllers\BarangTitipanController;
 use App\Http\Controllers\KategoriController;
 use App\Http\Controllers\HunterController;
-use App\Http\Controllers\Api\KategoriApiController;
 
 Route::post('/login', [LoginController::class, 'loginMobile'])->name('login');
 
@@ -25,6 +24,8 @@ Route::middleware('auth:sanctum')->group(function () {
     Route::get('show', [PegawaiController::class, 'showM'])->name('pegawai.show');
     Route::get('/kurir-index',[KurirController::class, 'index']);
     Route::get('/hunter-index',[HunterController::class, 'index']);
+    Route::get('/penitip-index',[PenitipController::class, 'apiProfilePenitip']);
+    Route::get('/penitip-history',[PenitipController::class, 'apiDashboard']);
     Route::post('/save-fcm-token-pegawai',[PegawaiController::class, 'saveFcmToken']);
     Route::get('/hunter/komisi/total', [HunterController::class, 'getTotalKomisiHunter']);
     Route::get('/hunter-history-komisi', [HunterController::class, 'historyKomisi']);
@@ -37,8 +38,6 @@ Route::middleware(['auth:sanctum'])->group(function () {
 
 Route::middleware('auth:sanctum')->post('/save-fcm-token-pembeli', [PembeliController::class, 'saveFcmToken']);
 Route::middleware('auth:sanctum')->post('/save-fcm-token-penitip', [PenitipController::class, 'saveFcmToken']);
-
-Route::middleware('auth:penitip')->get('/penitip-index', [PenitipController::class, 'apiProfilePenitip']);
 
 Route::get('barangs/kategori/{id}', [HomeController::class, 'byCategory']);
 Route::get('barangs/{id}', [BarangTitipanController::class, 'apiShow']);
