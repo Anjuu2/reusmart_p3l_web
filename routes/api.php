@@ -22,10 +22,14 @@ Route::middleware('auth:sanctum')->group(function () {
     Route::get('show', [PembeliController::class, 'showM'])->name('pembeli.show');
     Route::get('show', [PenitipController::class, 'showM'])->name('penitip.show');
     Route::get('show', [PegawaiController::class, 'showM'])->name('pegawai.show');
-    Route::get('/kurir-index',[KurirController::class, 'index']);
     Route::get('/hunter-index',[HunterController::class, 'index']);
     Route::get('/penitip-index',[PenitipController::class, 'apiProfilePenitip']);
     Route::get('/penitip-history',[PenitipController::class, 'apiDashboard']);
+    Route::get('/kurir/index',[KurirController::class, 'index']);
+    Route::get('/kurir/historyPengiriman',[KurirController::class, 'historyPengiriman']);
+    Route::get('/kurir/showPengiriman',[KurirController::class, 'showPengiriman']);
+    Route::get('/kurir/showPengiriman/detail/{id}',[KurirController::class, 'detailPengiriman']);
+    Route::patch('/kurir/konfirmasiPengiriman/{id}', [KurirController::class, 'konfirmasiPengiriman']);
     Route::post('/save-fcm-token-pegawai',[PegawaiController::class, 'saveFcmToken']);
     Route::get('/hunter/komisi/total', [HunterController::class, 'getTotalKomisiHunter']);
     Route::get('/hunter-history-komisi', [HunterController::class, 'historyKomisi']);
