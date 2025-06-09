@@ -40,8 +40,11 @@ Route::middleware('auth:sanctum')->group(function () {
     Route::get('/merchandise', [MerchandiseController::class, 'index']);
     Route::post('/reward/claim-merchandise', [RewardController::class, 'claimMerchandise']);
     Route::get('/reward/history/{id_pembeli}', [RewardController::class, 'history']);
+
 });
 
+Route::get('/products/{id?}', [BarangTitipanController::class, 'showMobile']);
+Route::get('/barangsMobile', [BarangTitipanController::class, 'showMobile']); 
 Route::middleware(['auth:sanctum'])->group(function () {
     Route::get('/kirim-notifikasi-penitipan', [BarangTitipanController::class, 'kirimNotifikasiMasaPenitipan']);
 });

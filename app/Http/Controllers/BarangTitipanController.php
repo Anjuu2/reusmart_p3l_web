@@ -593,4 +593,63 @@ class BarangTitipanController extends Controller
         return view('pegawai_gudang.barangTitipan.showDetail', compact('barang', 'nota', 'idNota'));
     }
 
+    public function showMobile(Request $request, $id = null)
+    {
+        try {
+            if ($id) {
+                // Jika ada ID, tampilkan detail produk
+                $product = BarangTitipan::with('fotoBarang', 'kategori')
+                    ->where('id_barang', $id)
+                    ->firstOrFail();
+                
+                return response()->json([
+                    'success' => true,
+                    'data' => $product
+                ]);
+            } else {
+                // Jika tidak ada ID, lakukan pencarian produk berdasarkan nama
+                $search = $request->query('search');
+                $products = BarangTitipan::with('fotoBarang', 'kategori')
+                    ->when($search, function ($query) use ($search) {
+                        return $query->where('nama_barang', 'like', "%{$search}%");
+                    })
+                    ->get();
+                
+                return response()->json([
+                    'success' => true,
+                    'data' => $products
+                ]);
+            }
+        } catch (\Exception $e) {
+            \Log::error('Error fetching product: ' . $e->getMessage());
+            return response()->json([
+                'success' => false,
+                'error' => 'Gagal mengambil produk.'
+            ], 500);
+        }
+    }
+    
+    public function searchProducts(Request $request)
+    {
+        try {
+            $search = $request->query('search');  // Ambil query parameter 'search'
+            
+            // Cari produk berdasarkan nama
+            $products = BarangTitipan::with('fotoBarang', 'kategori')
+                ->where('nama_barang', 'like', "%{$search}%")
+                ->get();
+
+            return response()->json([
+                'success' => true,
+                'data' => $products
+            ]);
+        } catch (\Exception $e) {
+            \Log::error('Error searching products: ' . $e->getMessage());
+            return response()->json([
+                'success' => false,
+                'error' => 'Gagal mencari produk.'
+            ], 500);
+        }
+    }
+
 }
