@@ -219,4 +219,29 @@ class PembeliController extends Controller
         return response()->json(['success' => true, 'message' => 'FCM token saved']);
     }
 
+    public function profileMobile(Request $request)
+    {
+        $pembeli = Auth::guard('sanctum')->user();
+
+        if (!$pembeli) {
+            return response()->json([
+                'success' => false,
+                'error' => 'Pembeli tidak ditemukan atau belum login.'
+            ], 401);
+        }
+
+        return response()->json([
+            'success' => true,
+            'data' => [
+                'id_pembeli' => $pembeli->id_pembeli,
+                'nama_pembeli' => $pembeli->nama_pembeli,
+                'username' => $pembeli->username,
+                'email' => $pembeli->email,
+                'notelp' => $pembeli->notelp,
+                'poin' => $pembeli->poin,
+                'status_aktif' => $pembeli->status_aktif,
+            ],
+        ]);
+    }
+
 }
