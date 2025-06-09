@@ -147,23 +147,23 @@ class TransaksiController extends Controller
             }
 
             // Tambah notifikasi khusus mobile
-            $firebase = new FirebaseService();
+            // $firebase = new FirebaseService();
             
-            foreach ($penitipBarangMap as $data) {
-                $penitip = $data['penitip'];
-                $barangList = collect($data['barang']);
+            // foreach ($penitipBarangMap as $data) {
+            //     $penitip = $data['penitip'];
+            //     $barangList = collect($data['barang']);
 
-                // Kirim notifikasi push via Firebase Cloud Messaging (FCM)
-                $penitipFcmToken = $penitip->fcm_token ?? null;
+            //     // Kirim notifikasi push via Firebase Cloud Messaging (FCM)
+            //     $penitipFcmToken = $penitip->fcm_token ?? null;
 
-                // Buat judul dan isi notifikasi, bisa sesuaikan sesuai kebutuhan
-                $title = "Transaksi Disiapkan";
-                $body = "Barang: " . $barangList->implode(', ') . " sudah disiapkan untuk transaksi ID #" . $transaksi->id_transaksi;
+            //     // Buat judul dan isi notifikasi, bisa sesuaikan sesuai kebutuhan
+            //     $title = "Transaksi Disiapkan";
+            //     $body = "Barang: " . $barangList->implode(', ') . " sudah disiapkan untuk transaksi ID #" . $transaksi->id_transaksi;
 
-                if ($penitipFcmToken) {
-                    $firebase->sendMessage($penitipFcmToken, $title, $body);
-                }
-            }
+            //     if ($penitipFcmToken) {
+            //         $firebase->sendMessage($penitipFcmToken, $title, $body);
+            //     }
+            // }
         }
 
         return redirect()->back()->with('success', 'Pembayaran diverifikasi, status transaksi diubah, dan email notifikasi dikirim ke semua penitip terkait.');

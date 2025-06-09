@@ -5,6 +5,10 @@ namespace App\Http\Controllers;
 // use App\Models\DetailTransaksi;
 // use App\Models\Transaksi;
 use App\Models\BarangTitipan;
+use App\Models\Komisi;
+use App\Models\Kategori;
+use App\Models\Transaksi;
+use App\Models\Badge;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Http\Request;
 use Carbon\Carbon;
@@ -16,7 +20,6 @@ class OwnerLaporanController extends Controller
 
     public function index(Request $request)
     {
-        // Ambil tahun dari query string, default = tahun sekarang
         $year = $request->query('year', Carbon::now()->year);
 
         // Inisialisasi array per bulan
@@ -29,16 +32,22 @@ class OwnerLaporanController extends Controller
             ];
         }
 
-        // Ambil semua barang yang terjual di tahun tersebut
-        $soldItems = BarangTitipan::where('status_barang', 'Terjual')
-            ->whereYear('tanggal_keluar', $year)
-            ->get(['harga_jual', 'tanggal_keluar']);
+        // Ambil semua transaksi yang selesai di tahun itu, beserta detail_transaksi
+        $transactions = Transaksi::with('detailTransaksi')
+            ->where('status_transaksi', 'Transaksi Selesai')
+            ->whereYear('tanggal_transaksi', $year)
+            ->get(['id_transaksi', 'tanggal_transaksi']);
 
         // Hitung per bulan
-        foreach ($soldItems as $item) {
-            $monthIndex = Carbon::parse($item->tanggal_keluar)->month;
-            $dataByMonth[$monthIndex]['count'] += 1;
-            $dataByMonth[$monthIndex]['gross'] += $item->harga_jual;
+        foreach ($transactions as $tx) {
+            $monthIndex = Carbon::parse($tx->tanggal_transaksi)->month;
+
+            // setiap detail adalah satu barang terjual
+            $itemCount = $tx->detailTransaksi->count();
+            $itemGross = $tx->detailTransaksi->sum('sub_total');
+
+            $dataByMonth[$monthIndex]['count'] += $itemCount;
+            $dataByMonth[$monthIndex]['gross'] += $itemGross;
         }
 
         return view('owner.laporan.penjualan', [
@@ -55,34 +64,34 @@ class OwnerLaporanController extends Controller
         $dataByMonth = [];
         for ($m = 1; $m <= 12; $m++) {
             $dataByMonth[$m] = [
-                // set locale ke 'id' lalu ambil nama bulan penuh (MMMM)
                 'month' => Carbon::createFromDate($year, $m, 1)
                                 ->locale('id')
-                                ->isoFormat('MMMM'),    // “Januari”, “Februari”, “Maret”, …
+                                ->isoFormat('MMMM'),
                 'count' => 0,
                 'gross' => 0,
             ];
         }
 
-        $soldItems = BarangTitipan::where('status_barang', 'Terjual')
-            ->whereYear('tanggal_keluar', $year)
-            ->get(['harga_jual', 'tanggal_keluar']);
+        $transactions = Transaksi::with('detailTransaksi')
+            ->where('status_transaksi', 'Transaksi Selesai')
+            ->whereYear('tanggal_transaksi', $year)
+            ->get(['id_transaksi', 'tanggal_transaksi']);
 
-        foreach ($soldItems as $item) {
-            $mIdx = Carbon::parse($item->tanggal_keluar)->month;
-            $dataByMonth[$mIdx]['count'] += 1;
-            $dataByMonth[$mIdx]['gross'] += $item->harga_jual;
+        foreach ($transactions as $tx) {
+            $mIdx = Carbon::parse($tx->tanggal_transaksi)->month;
+            $dataByMonth[$mIdx]['count'] += $tx->detailTransaksi->count();
+            $dataByMonth[$mIdx]['gross'] += $tx->detailTransaksi->sum('sub_total');
         }
 
-        // 2. Buat konfigurasi Chart.js sederhana untuk QuickChart
-        $labels = array_column($dataByMonth, 'month');
+        // 2. Siapkan ChartConfig
+        $labels    = array_column($dataByMonth, 'month');
         $dataCount = array_column($dataByMonth, 'count');
         $dataGross = array_column($dataByMonth, 'gross');
 
         $chartConfig = [
             'type' => 'bar',
             'data' => [
-                'labels' => $labels,
+                'labels'   => $labels,
                 'datasets' => [
                     [
                         'label'           => 'Jumlah Terjual',
@@ -101,54 +110,29 @@ class OwnerLaporanController extends Controller
                 ],
             ],
             'options' => [
-                'responsive' => false, // ukuran tetap
+                'responsive' => false,
                 'scales'     => [
-                    'y' => [
-                        'beginAtZero' => true,
-                    ],
+                    'y' => ['beginAtZero' => true],
                 ],
             ],
         ];
 
-        // 3. Panggil QuickChart untuk menghasilkan PNG
-        //    Endpoint QuickChart (tanpa API key) = https://quickchart.io/chart
-        $quickChartUrl = 'https://quickchart.io/chart';
-        $query = http_build_query([
-            'c'   => json_encode($chartConfig),
-            'w'   => 800, // lebar gambar
-            'h'   => 400, // tinggi gambar
-            'format' => 'png',
-        ]);
-        $url = "{$quickChartUrl}?{$query}";
+        $query    = http_build_query(['c'=>json_encode($chartConfig),'w'=>800,'h'=>400,'format'=>'png']);
+        $pngData  = @file_get_contents("https://quickchart.io/chart?{$query}");
+        $chartBase64 = $pngData ? base64_encode($pngData) : null;
 
-        // Ambil data PNG dari QuickChart
-        $pngData = @file_get_contents($url);
-        if ($pngData === false) {
-            // Jika gagal, kita bisa fallback ke string kosong atau grafik kosong
-            $chartBase64 = null;
-        } else {
-            // Encode ke base64
-            $chartBase64 = base64_encode($pngData);
-        }
-
-        // 4. Render view menjadi HTML, passing data
+        // 3. Render PDF
         $pdfView = view('owner.laporan.penjualan-pdf', [
-            'dataByMonth' => $dataByMonth,
-            'year'        => $year,
-            'chartBase64'=> $chartBase64, // kirim base64 string
+            'dataByMonth'=> $dataByMonth,
+            'year'       => $year,
+            'chartBase64'=> $chartBase64,
         ])->render();
 
-        // 5. Buat PDF
         $pdf = PDF::loadHTML($pdfView)
-            ->setOptions([
-                'no-outline'               => true,
-                'enable-javascript'        => false, // tidak perlu JS
-                'enable-local-file-access' => true,
-            ])
-            ->setPaper('a4', 'portrait');
+            ->setOptions(['no-outline'=>true,'enable-local-file-access'=>true])
+            ->setPaper('a4','portrait');
 
-        $filename = "Laporan_Penjualan_Bulanan_{$year}.pdf";
-        return $pdf->download($filename);
+        return $pdf->download("Laporan_Penjualan_{$year}.pdf");
     }
 
     public function stokIndex(Request $request)
@@ -207,121 +191,309 @@ class OwnerLaporanController extends Controller
         return $pdf->download("Laporan_Stok_Gudang_{$today}.pdf");
     }
 
+    // public function komisiIndex(Request $request)
+    // {
+    //     // filter bulan & tahun
+    //     $month = $request->query('month', Carbon::now()->month);
+    //     $year  = $request->query('year', Carbon::now()->year);
+
+    //     // ambil barang yang sudah terjual bulan tersebut
+    //     $items = BarangTitipan::with(['penitip'])
+    //         ->where('status_barang', 'Terjual')
+    //         ->whereYear('tanggal_keluar', $year)
+    //         ->whereMonth('tanggal_keluar', $month)
+    //         ->get();
+
+    //     // hitung komisi per item
+    //     $data = $items->map(function($item) {
+    //         $harga = $item->harga_jual;
+    //         $days  = $item->tanggal_masuk->diffInDays($item->tanggal_keluar);
+
+    //         $baseRate   = 0.20;
+    //         $hunterRate = 0.05;
+    //         $bonusRate  = 0.10;
+
+    //         if ($item->status_perpanjangan) {
+    //             $baseRate   = 0.30;
+    //             $hunterRate = 0.00;
+    //             $bonusRate  = 0.00;
+    //         }
+
+    //         $komisiKotor = $harga * $baseRate;
+
+    //         $komisiHunter = ($item->barang_hunter && $item->id_hunter)
+    //             ? $harga * $hunterRate
+    //             : 0;
+
+    //         $komisiPenitip = (!$item->status_perpanjangan && $days < 7)
+    //             ? $komisiKotor * $bonusRate
+    //             : 0;
+
+    //         $komisiReUseMart = $komisiKotor - $komisiHunter - $komisiPenitip;
+
+    //         return [
+    //             'kode'           => $item->id_barang,
+    //             'nama'           => $item->nama_barang,
+    //             'harga'          => $harga,
+    //             'tanggal_masuk'  => $item->tanggal_masuk->format('d/m/Y'),
+    //             'tanggal_laku'   => $item->tanggal_keluar->format('d/m/Y'),
+    //             'komisi_kotor'   => $komisiKotor,
+    //             'komisi_hunter'  => $komisiHunter,
+    //             'komisi_penitip' => $komisiPenitip,
+    //             'komisi_reuse'   => $komisiReUseMart,
+    //         ];
+    //     });
+
+    //     $bulan = Carbon::createFromDate($year, $month, 1)->locale('id')->isoFormat('MMMM');
+
+    //     return view('owner.laporan.komisiIndex', [
+    //         'data'          => $data,
+    //         'monthName'     => ucfirst($bulan),
+    //         'year'          => $year,
+    //         'tanggalCetak'  => Carbon::today()->locale('id')->isoFormat('DD MMMM YYYY'),
+    //     ]);
+    // }
+
     public function komisiIndex(Request $request)
     {
-        // filter bulan & tahun
+        // 1. Ambil filter bulan & tahun
         $month = $request->query('month', Carbon::now()->month);
-        $year  = $request->query('year', Carbon::now()->year);
+        $year  = $request->query('year',  Carbon::now()->year);
 
-        // ambil barang yang sudah terjual bulan tersebut
-        $items = BarangTitipan::with(['penitip'])
-            ->where('status_barang', 'Terjual')
-            ->whereYear('tanggal_keluar', $year)
-            ->whereMonth('tanggal_keluar', $month)
+        // 2. Tarik semua komisi yg tercatat untuk barang yang tanggal_keluar-nya di periode itu
+        $komisis = Komisi::with(['transaksi.detailTransaksi.barang','penitip','pegawai'])
+            ->whereHas('transaksi', function($q) use($month, $year) {
+                $q->whereMonth('tanggal_transaksi', $month)
+                ->whereYear('tanggal_transaksi',  $year);
+            })
             ->get();
 
-        // hitung komisi per item
-        $data = $items->map(function($item) {
-            $harga = $item->harga_jual;
-            $days  = $item->tanggal_masuk->diffInDays($item->tanggal_keluar);
+        // 3. Map ke array untuk view
+        $data = $komisis->map(function($k) {
+            $detail = $k->transaksi->detailTransaksi
+                        ->firstWhere('id_barang', $k->id_barang);
+            $barang = optional($detail)->barang;
 
-            $baseRate   = 0.20;
-            $hunterRate = 0.05;
-            $bonusRate  = 0.10;
+            $tanggalMasuk = optional($barang)->tanggal_masuk;
+            $tanggalTransaksi = optional($k->transaksi)->tanggal_transaksi;
 
-            if ($item->status_perpanjangan) {
-                $baseRate   = 0.30;
-                $hunterRate = 0.00;
-                $bonusRate  = 0.00;
+            $komisiDasar = 0.20 * ($barang->harga_jual ?? 0); // 20% komisi dasar
+            $bonus = 0;
+
+            if ($tanggalMasuk && $tanggalTransaksi) {
+                $durasi = Carbon::parse($tanggalMasuk)->diffInDays(Carbon::parse($tanggalTransaksi));
+
+                $isCepatLaku = $durasi < 7;
+
+                $isTopSeller = \App\Models\Badge::where('id_penitip', $k->id_penitip)
+                    ->where('nama_badge', 'Top Seller')
+                    ->whereMonth('periode_pemberian', Carbon::parse($tanggalTransaksi)->month)
+                    ->whereYear('periode_pemberian', Carbon::parse($tanggalTransaksi)->year)
+                    ->exists();
+
+                if ($isTopSeller) {
+                    $bonus += $komisiDasar * 0.01;
+                }
+
+                if ($isCepatLaku) {
+                    $bonus += $komisiDasar * 0.10;
+                }
             }
 
-            $komisiKotor = $harga * $baseRate;
-
-            $komisiHunter = ($item->barang_hunter && $item->id_hunter)
-                ? $harga * $hunterRate
-                : 0;
-
-            $komisiPenitip = (!$item->status_perpanjangan && $days < 7)
-                ? $komisiKotor * $bonusRate
-                : 0;
-
-            $komisiReUseMart = $komisiKotor - $komisiHunter - $komisiPenitip;
-
             return [
-                'kode'           => $item->id_barang,
-                'nama'           => $item->nama_barang,
-                'harga'          => $harga,
-                'tanggal_masuk'  => $item->tanggal_masuk->format('d/m/Y'),
-                'tanggal_laku'   => $item->tanggal_keluar->format('d/m/Y'),
-                'komisi_kotor'   => $komisiKotor,
-                'komisi_hunter'  => $komisiHunter,
-                'komisi_penitip' => $komisiPenitip,
-                'komisi_reuse'   => $komisiReUseMart,
+                'kode'           => $barang->id_barang ?? '-',
+                'nama'           => $barang->nama_barang ?? '-',
+                'harga'          => $barang->harga_jual ?? 0,
+                'tanggal_masuk'  => $tanggalMasuk ? $tanggalMasuk->format('d/m/Y') : '-',
+                'tanggal_laku'   => $tanggalTransaksi ? Carbon::parse($tanggalTransaksi)->format('d/m/Y') : '-',
+                'komisi_hunter'  => $k->komisi_hunter  ?? 0,
+                'komisi_penitip' => $k->komisi_penitip ?? 0,
+                'komisi_reuse'   => $k->komisi        ?? 0,
+                'bonus_penitip'  => (int) $bonus,
             ];
         });
 
-        $bulan = Carbon::createFromDate($year, $month, 1)->locale('id')->isoFormat('MMMM');
+        // 4. Nama bulan & tanggal cetak
+        $bulan       = Carbon::createFromDate($year, $month, 1)
+                               ->locale('id')->isoFormat('MMMM');
+        $tanggalCetak = Carbon::today()
+                               ->locale('id')->isoFormat('DD MMMM YYYY');
 
+        // 5. Render view
         return view('owner.laporan.komisiIndex', [
-            'data'          => $data,
-            'monthName'     => ucfirst($bulan),
-            'year'          => $year,
-            'tanggalCetak'  => Carbon::today()->locale('id')->isoFormat('DD MMMM YYYY'),
+            'data'         => $data,
+            'monthName'    => ucfirst($bulan),
+            'year'         => $year,
+            'tanggalCetak' => $tanggalCetak,
         ]);
     }
 
     public function komisiDownload(Request $request)
     {
-        // sama filter
+        // 1. Sama filter bulan & tahun
         $month = $request->query('month', Carbon::now()->month);
-        $year  = $request->query('year', Carbon::now()->year);
+        $year  = $request->query('year',  Carbon::now()->year);
 
-        $items = BarangTitipan::with(['penitip'])
-            ->where('status_barang', 'Terjual')
-            ->whereYear('tanggal_keluar', $year)
-            ->whereMonth('tanggal_keluar', $month)
+        // 2. Tarik data Komisi seperti di index
+        $komisis = Komisi::with(['transaksi.detailTransaksi.barang','penitip','pegawai'])
+            ->whereHas('transaksi', function($q) use($month, $year) {
+                $q->whereMonth('tanggal_transaksi', $month)
+                ->whereYear('tanggal_transaksi',  $year);
+            })
             ->get();
 
-        $data = $items->map(function($item) {
-            $harga = $item->harga_jual;
-            $days  = $item->tanggal_masuk->diffInDays($item->tanggal_keluar);
-            $baseRate   = 0.20;
-            $hunterRate = 0.05;
-            $bonusRate  = 0.10;
-            if ($item->status_perpanjangan) {
-                $baseRate   = 0.30;
-                $hunterRate = 0.00;
-                $bonusRate  = 0.00;
+        // 3. Map ke array untuk PDF
+        $data = $komisis->map(function($k) {
+            $detail = $k->transaksi->detailTransaksi
+                        ->firstWhere('id_barang', $k->id_barang);
+            $barang = optional($detail)->barang;
+
+            $tanggalMasuk = optional($barang)->tanggal_masuk;
+            $tanggalTransaksi = optional($k->transaksi)->tanggal_transaksi;
+
+            // Default 0
+            $bonus = 0;
+
+            // Hitung durasi laku
+            if ($tanggalMasuk && $tanggalTransaksi) {
+                $durasi = Carbon::parse($tanggalMasuk)->diffInDays(Carbon::parse($tanggalTransaksi));
+
+                // Ambil persentase bonus berdasarkan ketentuan
+                $isCepatLaku = $durasi < 7;
+
+                // Cek top seller dari tabel badge_penitip
+                $isTopSeller = \App\Models\Badge::where('id_penitip', $k->id_penitip)
+                    ->where('nama_badge', 'Top Seller')
+                    ->whereMonth('periode_pemberian', Carbon::parse($tanggalTransaksi)->month)
+                    ->whereYear('periode_pemberian', Carbon::parse($tanggalTransaksi)->year)
+                    ->exists();
+
+                $komisiReuseAsli = $k->komisi;
+
+                if ($isTopSeller) {
+                    $bonus += $komisiReuseAsli * 0.01;
+                }
+
+                if ($isCepatLaku) {
+                    $bonus += $komisiReuseAsli * 0.10;
+                }
             }
-            $komisiKotor     = $harga * $baseRate;
-            $komisiHunter    = $harga * $hunterRate;
-            $komisiPenitip   = (!$item->status_perpanjangan && $days < 7)
-                             ? $harga * $bonusRate
-                             : 0;
-            $komisiReUseMart = $komisiKotor - $komisiHunter - $komisiPenitip;
 
             return [
-                'kode'           => $item->id_barang,
-                'nama'           => $item->nama_barang,
-                'harga'          => $harga,
-                'tanggal_masuk'  => $item->tanggal_masuk->format('d/m/Y'),
-                'tanggal_laku'   => $item->tanggal_keluar->format('d/m/Y'),
-                'komisi_hunter'  => $komisiHunter,
-                'komisi_penitip' => $komisiPenitip,
-                'komisi_reuse'   => $komisiReUseMart,
+                'kode'           => $barang->id_barang ?? '-',
+                'nama'           => $barang->nama_barang ?? '-',
+                'harga'          => $barang->harga_jual ?? 0,
+                'tanggal_masuk'  => $tanggalMasuk ? $tanggalMasuk->format('d/m/Y') : '-',
+                'tanggal_laku'   => $tanggalTransaksi ? Carbon::parse($tanggalTransaksi)->format('d/m/Y') : '-',
+                'komisi_hunter'  => $k->komisi_hunter  ?? 0,
+                'komisi_penitip' => $k->komisi_penitip ?? 0,
+                'komisi_reuse'   => $k->komisi        ?? 0,
+                'bonus_penitip'  => (int) $bonus,
             ];
         });
 
-        $bulan = Carbon::createFromDate($year, $month, 1)->locale('id')->isoFormat('MMMM');
+        // 4. Nama bulan & tanggal cetak
+        $bulan       = Carbon::createFromDate($year, $month, 1)
+                               ->locale('id')->isoFormat('MMMM');
+        $tanggalCetak = Carbon::today()
+                               ->locale('id')->isoFormat('DD MMMM YYYY');
 
+        // 5. Generate PDF
         $pdf = PDF::loadView('owner.laporan.komisiPdf', [
-            'data'          => $data,
-            'monthName'     => ucfirst($bulan),
-            'year'          => $year,
-            'tanggalCetak'  => Carbon::today()->locale('id')->isoFormat('DD MMMM YYYY'),
+            'data'         => $data,
+            'monthName'    => ucfirst($bulan),
+            'year'         => $year,
+            'tanggalCetak' => $tanggalCetak,
         ])->setPaper('a4', 'portrait');
 
         return $pdf->download("Komisi_{$bulan}_{$year}.pdf");
+    }
+
+    public function laporanPerKategori(Request $request)
+    {
+        // Tangkap tahun dari request jika ada, default ke tahun sekarang
+        $tahun = $request->input('tahun', date('Y'));
+
+        $laporan = Kategori::select('kategori.nama_kategori')
+            ->leftJoin('barang_titipan', 'kategori.id_kategori', '=', 'barang_titipan.id_kategori')
+            ->selectRaw("
+                kategori.nama_kategori,
+                SUM(CASE WHEN barang_titipan.status_barang = 'Terjual' AND YEAR(barang_titipan.tanggal_keluar) = {$tahun} THEN 1 ELSE 0 END) as jumlah_terjual,
+                SUM(CASE WHEN barang_titipan.status_barang = 'Didonasikan' AND YEAR(barang_titipan.tanggal_keluar) = {$tahun} THEN 1 ELSE 0 END) as jumlah_donasi,
+                SUM(CASE WHEN barang_titipan.status_barang = 'Diambil Kembali' AND YEAR(barang_titipan.tanggal_keluar) = {$tahun} THEN 1 ELSE 0 END) as jumlah_gagal
+            ")
+            ->groupBy('kategori.nama_kategori')
+            ->orderBy('kategori.nama_kategori')
+            ->get();
+
+        return view('owner.laporan.penjualanPerKategori', [
+            'laporan' => $laporan,
+            'tahun' => $tahun
+        ]);
+    }
+
+    public function downloadLaporanPerKategori(Request $request)
+    {
+        $tahun = $request->input('tahun', date('Y'));
+
+        $laporan = Kategori::select('kategori.nama_kategori')
+            ->leftJoin('barang_titipan', 'kategori.id_kategori', '=', 'barang_titipan.id_kategori')
+            ->selectRaw("
+                kategori.nama_kategori,
+                SUM(CASE WHEN barang_titipan.status_barang = 'Terjual' AND YEAR(barang_titipan.tanggal_keluar) = {$tahun} THEN 1 ELSE 0 END) as jumlah_terjual,
+                SUM(CASE WHEN barang_titipan.status_barang = 'Didonasikan' AND YEAR(barang_titipan.tanggal_keluar) = {$tahun} THEN 1 ELSE 0 END) as jumlah_donasi,
+                SUM(CASE WHEN barang_titipan.status_barang = 'Diambil Kembali' AND YEAR(barang_titipan.tanggal_keluar) = {$tahun} THEN 1 ELSE 0 END) as jumlah_gagal
+            ")
+            ->groupBy('kategori.nama_kategori')
+            ->orderBy('kategori.nama_kategori')
+            ->get();
+
+        $pdf = PDF::loadView('owner.laporan.penjualanPerKategori-pdf', [
+            'laporan' => $laporan,
+            'tahun' => $tahun
+        ]);
+
+        return $pdf->download('Laporan_Penjualan_Per_Kategori_' . $tahun . '.pdf');
+    }
+
+    public function laporanBarangHabis(Request $request)
+    {
+        $tahun = $request->input('tahun', date('Y'));
+
+        // Ambil barang yang masa penitipannya habis
+        $laporan = BarangTitipan::with('penitip')
+            ->whereYear('tanggal_akhir', '=', $tahun)
+            ->where('status_barang', 'Tersedia')
+            ->whereDate('tanggal_akhir', '<', now())
+            ->whereDate('tanggal_akhir', '>=', now()->subDays(7))
+            ->orderBy('tanggal_akhir')
+            ->paginate(10)
+            ->appends(['tahun' => $tahun]);
+
+        return view('owner.laporan.barangHabis', [
+            'laporan' => $laporan,
+            'tahun' => $tahun
+        ]);
+    }
+
+    public function downloadLaporanBarangHabis(Request $request)
+    {
+        $tahun = $request->input('tahun', date('Y'));
+
+        $laporan = BarangTitipan::with('penitip')
+            ->whereYear('tanggal_akhir', '=', $tahun)
+            ->where('status_barang', 'Tersedia')
+            ->whereDate('tanggal_akhir', '<', now())
+            ->whereDate('tanggal_akhir', '>=', now()->subDays(7))
+            ->orderBy('tanggal_akhir')
+            ->get();
+
+        $pdf = PDF::loadView('owner.laporan.barangHabisPdf', [
+            'laporan' => $laporan,
+            'tahun' => $tahun
+        ]);
+
+        return $pdf->download('Laporan-Barang-Habis-' . $tahun . '.pdf');
     }
 
 }

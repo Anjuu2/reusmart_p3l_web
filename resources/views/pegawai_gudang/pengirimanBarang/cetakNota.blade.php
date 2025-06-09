@@ -118,7 +118,7 @@
                             {{ $namaKurir }}
                         </td>
                         <td>
-                            @if(strtolower($item->status_transaksi) !== 'menunggu pembayaran' && strtolower($item->status_transaksi) !== 'dibatalkan')
+                            @if(strtolower($item->status_transaksi) !== 'menunggu pembayaran' && strtolower($item->status_transaksi) !== 'batal')
                                 <a href="{{ route('pegawai_gudang.cetakNotaPdf', ['id' => $item->id_transaksi]) }}"
                                 target="_blank"
                                 class="btn btn-sm btn-dark">

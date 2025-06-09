@@ -9,7 +9,13 @@ use App\Http\Controllers\PenitipController;
 use App\Http\Controllers\OrganisasiController;
 use App\Http\Controllers\AlamatController;
 use App\Http\Controllers\PembeliController;
+use App\Http\Controllers\HomeController;
+use App\Http\Controllers\KategoriApiController;
 use App\Http\Controllers\BarangTitipanController;
+use App\Http\Controllers\KategoriController;
+use App\Http\Controllers\HunterController;
+use App\Http\Controllers\RewardController;
+use App\Http\Controllers\MerchandiseController;
 
 Route::post('/login', [LoginController::class, 'loginMobile'])->name('login');
 
@@ -18,12 +24,22 @@ Route::middleware('auth:sanctum')->group(function () {
     Route::get('show', [PembeliController::class, 'showM'])->name('pembeli.show');
     Route::get('show', [PenitipController::class, 'showM'])->name('penitip.show');
     Route::get('show', [PegawaiController::class, 'showM'])->name('pegawai.show');
+    Route::get('/hunter-index',[HunterController::class, 'index']);
+    Route::get('/penitip-index',[PenitipController::class, 'apiProfilePenitip']);
+    Route::get('/penitip-history',[PenitipController::class, 'apiDashboard']);
     Route::get('/kurir/index',[KurirController::class, 'index']);
     Route::get('/kurir/historyPengiriman',[KurirController::class, 'historyPengiriman']);
     Route::get('/kurir/showPengiriman',[KurirController::class, 'showPengiriman']);
     Route::get('/kurir/showPengiriman/detail/{id}',[KurirController::class, 'detailPengiriman']);
     Route::patch('/kurir/konfirmasiPengiriman/{id}', [KurirController::class, 'konfirmasiPengiriman']);
     Route::post('/save-fcm-token-pegawai',[PegawaiController::class, 'saveFcmToken']);
+    Route::get('/hunter/komisi/total', [HunterController::class, 'getTotalKomisiHunter']);
+    Route::get('/hunter-history-komisi', [HunterController::class, 'historyKomisi']);
+    Route::get('/pembeli-profile', [PembeliController::class, 'profileMobile']);
+    Route::get('/pembeli-history', [PembeliController::class, 'apiRiwayatTransaksi']);
+    Route::get('/merchandise', [MerchandiseController::class, 'index']);
+    Route::post('/reward/claim-merchandise', [RewardController::class, 'claimMerchandise']);
+    Route::get('/reward/history/{id_pembeli}', [RewardController::class, 'history']);
 });
 
 Route::middleware(['auth:sanctum'])->group(function () {
@@ -33,6 +49,15 @@ Route::middleware(['auth:sanctum'])->group(function () {
 Route::middleware('auth:sanctum')->post('/save-fcm-token-pembeli', [PembeliController::class, 'saveFcmToken']);
 Route::middleware('auth:sanctum')->post('/save-fcm-token-penitip', [PenitipController::class, 'saveFcmToken']);
 
-// use App\Http\Controllers\TestNotificationController;
+Route::get('barangs/kategori/{id}', [HomeController::class, 'byCategory']);
+Route::get('barangs/{id}', [BarangTitipanController::class, 'apiShow']);
+Route::get('produk/search', [KategoriController::class, 'apiSearch']);
+Route::get('produk', [KategoriController::class, 'apiAllProducts']);
+Route::get('/', [HomeController::class, 'index']);
+Route::get('barangs', [HomeController::class, 'apiIndex']);
+Route::get('kategori', [KategoriController::class, 'apiIndex']);
+Route::get('kategori/{id}/produk', [KategoriController::class, 'apiProductsByCategory']);
+Route::get('/merchandise', [MerchandiseController::class, 'index']);
 
-// Route::get('/test-fcm-notification', [TestNotificationController::class, 'sendTestNotification']);
+
+

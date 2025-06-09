@@ -122,6 +122,27 @@ class PengirimanController extends Controller
             if ($jadwal->jenis_jadwal === 'Pengiriman' && $request->filled('id_kurir')) {
                 $kurir = \App\Models\Pegawai::find($validated['id_kurir']);
             }
+
+            // Notifikasi ke Pembeli
+            // if ($transaksi->pembeli) {
+            //     $transaksi->pembeli->notify(new \App\Notifications\DikirimKurir($jadwal, $transaksi, $kurir));
+            // }
+
+            // Notifikasi ke Penitip
+            $penitips = collect();
+            foreach ($transaksi->detailTransaksi as $detail) {
+                $barang = \App\Models\BarangTitipan::find($detail->id_barang);
+                if ($barang) {
+                    $penitip = \App\Models\Penitip::find($barang->id_penitip);
+                    if ($penitip) {
+                        $penitips->push($penitip);
+                    }
+                }
+            }
+            $penitips = $penitips->unique('id_penitip');
+            foreach ($penitips as $penitip) {
+                $penitip->notify(new \App\Notifications\DikirimKurir($jadwal, $transaksi, $kurir));
+            }
         }
 
         // Siapkan daftar penerima email
@@ -330,14 +351,23 @@ class PengirimanController extends Controller
                 }
             }
 
-            $title = "Konfirmasi Pengambilan Transaksi #{$jadwal->transaksi->nomor_transaksi}";
-            $body = "Barang telah berhasil diambil.";
+            $titlePembeli = "Konfirmasi Pengambilan Transaksi #{$jadwal->transaksi->nomor_transaksi}";
+            $titlePenitip = "Konfirmasi Pengambilan Barang (disini ID barang)";
+            $titlePembeli = "Konfirmasi Pengambilan Transaksi #{$jadwal->transaksi->nomor_transaksi}";
+            $bodyPembeli = "Barang telah berhasil diambil.";
 
             if ($pembeliFcmToken) {
-                $firebase->sendMessage($pembeliFcmToken, $title, $body);
+                $firebase->sendMessage($pembeliFcmToken, $titlePembeli, $bodyPembeli);
             }
-            foreach ($penitipFcmTokens as $token) {
-                $firebase->sendMessage($token, $title, $body);
+
+            foreach ($jadwal->transaksi->detailTransaksi as $detail) {
+                $barang = $detail->barang;
+                $penitip = $barang->penitip;
+                if ($penitip && $penitip->fcm_token) {
+                    $titlePenitip = "Konfirmasi Pengambilan Barang ID #{$barang->id_barang}";
+                    $bodyPenitip = "Barang dengan nama {$barang->nama_barang} telah berhasil diambil oleh pembeli.";
+                    $firebase->sendMessage($penitip->fcm_token, $titlePenitip, $bodyPenitip);
+                }
             }
             return back()->with('success', 'Pengambilan berhasil dikonfirmasi dan komisi serta poin telah dihitung.');
         } catch (\Exception $e) {

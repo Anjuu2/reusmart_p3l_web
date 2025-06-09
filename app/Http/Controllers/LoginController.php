@@ -362,7 +362,7 @@ class LoginController extends Controller
         $user = Auth::guard('sanctum')->user();
 
         if ($user) {
-            // Hapus hanya token yang sedang digunakan
+            // Menghapus token yang sedang digunakan
             $user->currentAccessToken()->delete();
 
             return response()->json([

@@ -223,20 +223,132 @@
                                         ($jadwal->jenis_jadwal === 'Diambil' && $status === 'Disiapkan');
                                 @endphp
 
+                                <div class="modal fade" id="modalKonfirmasi{{ $jadwal->id_jadwal }}" tabindex="-1" aria-labelledby="modalLabel{{ $jadwal->id_jadwal }}" aria-hidden="true">
+                                <div class="modal-dialog modal-lg">
+                                    <div class="modal-content">
+                                    <form action="{{ route('pegawai_gudang.pengiriman.konfirmasi', ['id_jadwal' => $jadwal->id_jadwal]) }}" method="POST" onsubmit="return confirm('Yakin ingin melakukan konfirmasi?');">
+                                        @csrf
+                                        @method('PUT')
+
+                                        <div class="modal-header">
+                                        <h5 class="modal-title" id="modalLabel{{ $jadwal->id_jadwal }}">Rincian Komisi Transaksi #{{ $jadwal->transaksi->nomor_transaksi }}</h5>
+                                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                                        </div>
+
+                                        <div class="modal-body">
+                                        <table class="table table-bordered">
+                                            <thead>
+                                            <tr>
+                                                <th>Nama Barang</th>
+                                                <th>Penitip</th>
+                                                <th>Harga Jual</th>
+                                                <th>Komisi Reusemart</th>
+                                                <th>Komisi Hunter</th>
+                                                <th>Komisi Penitip</th>
+                                            </tr>
+                                            </thead>
+                                            <tbody>
+                                            @foreach($jadwal->transaksi->detailTransaksi as $detail)
+                                                @php
+                                                $barang = $detail->barang;
+                                                $hargaBarang = $barang->harga_jual;
+                                                $barangHunter = $barang->barang_hunter;
+                                                $statusPerpanjangan = $barang->status_perpanjangan;
+
+                                                $periodeTopSeller = date('Y-m-01', strtotime($jadwal->tanggal_jadwal));
+                                                $isTopSeller = \DB::table('badge')
+                                                    ->where('id_penitip', $barang->id_penitip)
+                                                    ->where('periode_pemberian', $periodeTopSeller)
+                                                    ->exists();
+
+                                                $komisiPersen = $statusPerpanjangan ? 0.30 : 0.20;
+                                                if ($isTopSeller) {
+                                                    $komisiPersen -= 0.01;
+                                                }
+
+                                                $komisiHunterPersen = 0;
+                                                $komisiHunterRp = 0;
+                                                if ($barangHunter) {
+                                                    $komisiHunterPersen = 0.05;
+                                                    $komisiPersen -= $komisiHunterPersen;
+                                                    $komisiHunterRp = 0.05 * $hargaBarang;
+                                                }
+
+                                                $komisiReusemart = $komisiPersen * $hargaBarang;
+
+                                                $tanggalMasuk = \Carbon\Carbon::parse($barang->tanggal_masuk);
+                                                $tanggalTransaksi = \Carbon\Carbon::parse($jadwal->transaksi->tanggal_transaksi);
+                                                $selisihHari = $tanggalMasuk->diffInDays($tanggalTransaksi);
+
+                                                $bonusDiskonPenitip = 0;
+                                                if ($selisihHari < 7) {
+                                                    $bonusDiskonPenitip = 0.10 * $komisiReusemart;
+                                                    $komisiReusemart -= $bonusDiskonPenitip;
+                                                }
+
+                                                $komisiPenitip = $hargaBarang - ($komisiReusemart + $komisiHunterRp);
+                                                @endphp
+                                                <tr>
+                                                <td>{{ $barang->nama_barang }}</td>
+                                                <td>{{ $barang->penitip->nama_penitip }}</td>
+                                                <td>Rp{{ number_format($hargaBarang, 0, ',', '.') }}</td>
+                                                <td>Rp{{ number_format($komisiReusemart, 0, ',', '.') }}</td>
+                                                <td>
+                                                    @if($barangHunter)
+                                                    Rp{{ number_format($komisiHunterRp, 0, ',', '.') }}
+                                                    @else
+                                                    -
+                                                    @endif
+                                                </td>
+                                                <td>
+                                                    Rp{{ number_format($komisiPenitip, 0, ',', '.') }}
+                                                    @if($bonusDiskonPenitip > 0)
+                                                    <br><small>(Bonus: 10%)</small>
+                                                    @endif
+                                                </td>
+                                                </tr>
+                                            @endforeach
+                                            </tbody>
+                                        </table>
+                                        </div>
+
+                                        <div class="modal-footer">
+                                        <button type="submit" class="btn btn-primary">Konfirmasi</button>
+                                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Batal</button>
+                                        </div>
+
+                                    </form>
+                                    </div>
+                                </div>
+                                </div>
+
                                 @if ($showConfirmButton)
                                     @if ($showConfirmButton && $jadwal->jenis_jadwal === 'Diambil')
-                                        <form action="{{ route('pegawai_gudang.pengiriman.konfirmasi', ['id_jadwal' => $jadwal->id_jadwal]) }}" method="POST" style="display:inline;" onsubmit="return confirm('Yakin ingin melakukan konfirmasi?');">
-                                            @csrf
-                                            @method('PUT')
-                                            <button type="submit" class="btn btn-sm btn-dark">
-                                                Konfirmasi Pengambilan
-                                            </button>
-                                        </form>
+                                        <a href="{{ route('pegawai_gudang.cetakNotaPdf', ['id' => $item->id_transaksi]) }}"
+                                            target="_blank"
+                                            class="btn btn-sm btn-dark">
+                                                <i class="bi bi-printer"></i>  Cetak PDF
+                                        </a>
+                                        <button type="button" class="btn btn-sm btn-primary" data-bs-toggle="modal" data-bs-target="#modalKonfirmasi{{ $jadwal->id_jadwal }}">
+                                        <i class="bi bi-check-circle"></i> Konfirmasi
+                                        </button>
                                     @else
-                                        <span class="badge bg-info">Transaksi Diproses</span>
+                                        <a href="{{ route('pegawai_gudang.cetakNotaPdf', ['id' => $item->id_transaksi]) }}"
+                                        target="_blank"
+                                        class="btn btn-sm btn-dark">
+                                            <i class="bi bi-printer"></i> Cetak PDF
+                                        </a>
                                     @endif
                                 @else
-                                    <span class="badge bg-secondary">Transaksi Diproses</span>
+                                    @if(strtolower($item->status_transaksi) !== 'menunggu pembayaran' && strtolower($jadwal->pengiriman->status_pengiriman) !== 'dibatalkan')
+                                        <a href="{{ route('pegawai_gudang.cetakNotaPdf', ['id' => $item->id_transaksi]) }}"
+                                        target="_blank"
+                                        class="btn btn-sm btn-dark">
+                                            <i class="bi bi-printer"></i> Cetak PDF
+                                        </a>
+                                    @else
+                                        <span>-</span>
+                                    @endif
                                 @endif
                             @else
                                 <em style="color: #888;">Belum Disiapkan</em>
@@ -248,6 +360,7 @@
                 <tr>
                     <td colspan="7" style="text-align:center; color: #888;">Tidak ada transaksi pengiriman atau pengambilan saat ini.</td>
                 </tr>
+                
             @endforelse
         </tbody>
     </table>

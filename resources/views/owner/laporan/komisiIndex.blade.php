@@ -1,8 +1,9 @@
 @extends('owner.dashboard')
 @section('isi')
 <div class="container py-4">
-    <h3 class="text-center"><strong>Laporan Komisi Bulanan per Produk</strong></h3>
+    <h3 class="text-center mb-5"><strong>Laporan Komisi Bulanan per Produk</strong></h3>
 
+    <div class="d-flex justify-content-between align-items-center mb-3">
     {{-- Filter bulan & tahun --}}
     <form class="row g-2 mb-3" method="GET" action="{{ route('owner.laporan.komisi') }}">
       <div class="col-auto">
@@ -29,13 +30,13 @@
       </div>
     </form>
 
-    <div class="d-flex justify-content-between align-items-center mb-3">
-        <div>
+    
+        <!-- <div>
             <p class="mb-0">
                 <strong>Bulan:</strong> {{ $monthName }} | <strong>Tahun:</strong> {{ $year }}
-                <!-- <strong>Tanggal Cetak:</strong> {{ $tanggalCetak }}</p> -->
+                <strong>Tanggal Cetak:</strong> {{ $tanggalCetak }}</p>
             </p>
-        </div>
+        </div> -->
         <div>
             <a href="{{ route('owner.laporan.komisi.download', ['month' => request('month'), 'year' => request('year')]) }}"
             class="btn btn-sm btn-danger">
@@ -56,6 +57,7 @@
             <!-- <th>Komisi Kotor<br>(20% / 30%)</th> -->
             <th>Komisi Hunter</th>
             <th>Komisi ReUseMart</th>
+            <th>Komisi Penitip</th>
             <th>Bonus Penitip</th>
           </tr>
         </thead>
@@ -67,10 +69,10 @@
               <td>{{ number_format($row['harga'],0,',','.') }}</td>
               <td>{{ $row['tanggal_masuk'] }}</td>
               <td>{{ $row['tanggal_laku'] }}</td>
-              <!-- <td>{{ number_format($row['komisi_kotor'],0,',','.') }}</td> -->
               <td>{{ number_format($row['komisi_hunter'],0,',','.') }}</td>
               <td>{{ number_format($row['komisi_reuse'],0,',','.') }}</td>
               <td>{{ number_format($row['komisi_penitip'],0,',','.') }}</td>
+              <td>{{ number_format($row['bonus_penitip'],0,',','.') }}</td>
             </tr>
           @empty
             <tr><td colspan="8">Tidak ada penjualan di bulan ini.</td></tr>
@@ -86,17 +88,17 @@
 
                     <td colspan="2" style="border-top: 1px solid #000; border-left: none; border-right: none;"></td>
 
-                    <!-- {{-- Total Komisi Kotor --}}
-                    <td>{{ number_format(collect($data)->sum('komisi_kotor'), 0, ',', '.') }}</td> -->
-
                     {{-- Total Komisi Hunter --}}
                     <td>{{ number_format(collect($data)->sum('komisi_hunter'), 0, ',', '.') }}</td>
 
                     {{-- Total Komisi ReUseMart --}}
                     <td>{{ number_format(collect($data)->sum('komisi_reuse'), 0, ',', '.') }}</td>
+                    
+                    {{-- Total Komisi Penitip --}}
+                    <td>{{ number_format(collect($data)->sum('komisi_penitip'), 0, ',', '.') }}</td>
 
                     {{-- Total Bonus Penitip --}}
-                    <td>{{ number_format(collect($data)->sum('komisi_penitip'), 0, ',', '.') }}</td>
+                    <td>{{ number_format(collect($data)->sum('bonus_penitip'), 0, ',', '.') }}</td>
                 </tr>
             </tfoot>
       </table>

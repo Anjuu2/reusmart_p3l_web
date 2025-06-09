@@ -45,6 +45,51 @@ class KategoriController extends Controller
 
     //     return view('kategori', compact('kategori', 'produk'));
     // }
+    // KategoriController.php
+
+    public function apiIndex()
+    {
+        $kats = Kategori::all();
+        return response()->json(['data' => $kats]);
+    }
+
+    public function apiProductsByCategory($id)
+    {
+        $kategori = Kategori::findOrFail($id);
+
+        $produk = BarangTitipan::with(['kategori','fotoBarang'])
+            ->where('id_kategori', $id)
+            ->where('status_barang','Tersedia')
+            ->get();
+
+        return response()->json([
+            'kategori' => $kategori,
+            'data'     => $produk
+        ]);
+    }
+
+    public function apiAllProducts()
+    {
+        $produk = BarangTitipan::with(['kategori','fotoBarang'])
+            ->where('status_barang','Tersedia')
+            ->get();
+
+        return response()->json([
+            'data' => $produk
+        ]);
+    }
+
+    public function apiSearch(Request $request)
+    {
+        $q = $request->query('query','');
+        $produk = BarangTitipan::with(['kategori','fotoBarang'])
+            ->when($q, fn($qb) => $qb->where('nama_barang','like',"%{$q}%"))
+            ->get();
+
+        return response()->json([
+            'data' => $produk
+        ]);
+    }
 
     public function showProductsByCategory($id)
     {
@@ -56,8 +101,6 @@ class KategoriController extends Controller
             ->where('id_kategori', $id)
             ->where('status_barang', 'Tersedia')
             ->get();
-
-        // Kirim data ke view
         return view('kategori', compact('kategori', 'produk'));
     }
 

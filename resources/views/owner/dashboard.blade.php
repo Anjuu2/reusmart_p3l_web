@@ -151,6 +151,13 @@
                                 <div class="collapse" id="collapseLaporan">
                                     <ul class="btn-toggle-nav list-unstyled fw-normal pb-1 small ps-3">
                                         <li>
+                                            <a class="nav-link fs-6" href="{{ route('owner.laporan.penjualanPerKategori') }}">Penjualan Per Kategori</a>
+                                        </li>
+                                    </ul>
+                                </div>
+                                <div class="collapse" id="collapseLaporan">
+                                    <ul class="btn-toggle-nav list-unstyled fw-normal pb-1 small ps-3">
+                                        <li>
                                             <a class="nav-link fs-6" href="{{ route('owner.laporan.komisi') }}">Komisi Bulanan (per produk)</a>
                                         </li>
                                     </ul>
@@ -166,6 +173,13 @@
                                     <ul class="btn-toggle-nav list-unstyled fw-normal pb-1 small ps-3">
                                         <li>
                                             <a class="nav-link fs-6" href="{{ route('owner.laporan.donasi') }}">Donasi Barang</a>
+                                        </li>
+                                    </ul>
+                                </div>
+                                <div class="collapse" id="collapseLaporan">
+                                    <ul class="btn-toggle-nav list-unstyled fw-normal pb-1 small ps-3">
+                                        <li>
+                                            <a class="nav-link fs-6" href="{{ route('owner.laporan.barangHabis') }}">Barang Habis Masa Titipan</a>
                                         </li>
                                     </ul>
                                 </div>

@@ -36,14 +36,7 @@
     <table class="no-border">
         <tr>
             <td><strong>No Nota</strong></td>
-            @php
-                $tanggalTransaksi = \Carbon\Carbon::parse($transaksi->tanggal_transaksi);
-                $tahun = $tanggalTransaksi->format('y');
-                $bulan = $tanggalTransaksi->format('m');
-                $nomorUrut = $transaksi->id_transaksi;
-                $noNota = "{$tahun}.{$bulan}.{$nomorUrut}";
-            @endphp
-            <td>: {{ $noNota }}</td>
+            <td>: {{ $transaksi->nomor_transaksi }}</td>
         </tr>
         <tr>
             <td><strong>Tanggal Pesan</strong></td>
@@ -170,7 +163,7 @@
     @endphp
     <p><strong>Total Poin Customer:</strong> {{ $totalPoinCustomer }}</p>
 
-    <p>QC oleh: {{ $transaksi->qc->nama_pegawai ?? '-' }} ({{ $transaksi->qc->id_pegawai ?? '-' }})</p>
+    <!-- <p>QC oleh: {{ $transaksi->qc->nama_pegawai ?? '-' }} ({{ $transaksi->qc->id_pegawai ?? '-' }})</p> -->
 
     <br><br>
     <p>{{ $diterimaLabel }}: ________________________</p>

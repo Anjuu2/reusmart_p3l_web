@@ -50,7 +50,17 @@ class BarangTitipanController extends Controller
         return response()->json(['message' => 'Notifikasi masa penitipan sudah dikirim']);
     }
     
-    public function show($id)
+    public function apishow($id)
+    {
+        $produk = BarangTitipan::with(['kategori','fotoBarang'])
+                    ->findOrFail($id);
+
+        return response()->json([
+            'data' => $produk
+        ]);
+    }
+
+    public function Show($id)
     {
         $produk = BarangTitipan::findOrFail($id);
         return view('produk.show', compact('produk'));
@@ -76,6 +86,12 @@ class BarangTitipanController extends Controller
         $query = BarangTitipan::with('fotoBarang', 'kategori')
                     ->where('id_penitip', $penitip->id_penitip);
 
+        $totalBarang = BarangTitipan::where('id_penitip', $penitip->id_penitip)->count();
+        $totalBarangBelumLaku = BarangTitipan::where('id_penitip', $penitip->id_penitip)
+                ->where('status_barang', 'Tersedia')
+                ->count();
+
+
         if ($request->has('q') && $request->q != '') {
             $search = $request->q;
             $query->where('nama_barang', 'like', "%$search%");
@@ -83,7 +99,7 @@ class BarangTitipanController extends Controller
 
         $barangs = $query->paginate(10);
 
-        return view('dashboardP', compact('barangs'));
+        return view('dashboardP', compact('barangs', 'totalBarang', 'totalBarangBelumLaku'));
     }
 
     public function perpanjang($id)
