@@ -244,4 +244,61 @@ class PembeliController extends Controller
         ]);
     }
 
+    public function apiRiwayatTransaksi(Request $request)
+    {
+        $pembeli = auth()->user();
+
+        if (!$pembeli) {
+            return response()->json([
+                'success' => false,
+                'error' => 'Unauthorized. Pembeli tidak ditemukan.'
+            ], 401);
+        }
+
+        $userId = $pembeli->id_pembeli;
+        $search = $request->input('search');
+
+        $query = Transaksi::with([
+            'detailTransaksi.barang.ratingDetail',
+            'penjadwalans.pengiriman'
+        ])->where('id_pembeli', $userId);
+
+        if ($search) {
+            $query->where(function ($q) use ($search) {
+                $q->where('id_transaksi', 'like', "%{$search}%")
+                ->orWhere('status_transaksi', 'like', "%{$search}%")
+                ->orWhereHas('detailTransaksi.barang', function ($q2) use ($search) {
+                    $q2->where('nama_barang', 'like', "%{$search}%");
+                })
+                ->orWhereHas('penjadwalans.pengiriman', function ($q3) use ($search) {
+                    $q3->where('status_pengiriman', 'like', "%{$search}%");
+                });
+            });
+        }
+
+        $transaksiList = $query->orderByDesc('tanggal_transaksi')->paginate(5);
+
+        // Ambil status pengiriman untuk tiap transaksi
+        foreach ($transaksiList as $transaksi) {
+            $statusPengirimanText = 'Belum ada pengiriman';
+
+            if ($transaksi->penjadwalans) {
+                foreach ($transaksi->penjadwalans as $penjadwalan) {
+                    if ($penjadwalan && $penjadwalan->pengiriman) {
+                        $statusPengirimanText = strtolower(trim($penjadwalan->pengiriman->status_pengiriman));
+                        if (in_array($statusPengirimanText, ['diterima', 'sampai'])) {
+                            break;
+                        }
+                    }
+                }
+            }
+
+            $transaksi->status_pengiriman = $statusPengirimanText;
+        }
+
+        return response()->json([
+            'success' => true,
+            'data' => $transaksiList,
+        ]);
+    }
 }

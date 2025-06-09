@@ -36,6 +36,7 @@ Route::middleware('auth:sanctum')->group(function () {
     Route::get('/hunter/komisi/total', [HunterController::class, 'getTotalKomisiHunter']);
     Route::get('/hunter-history-komisi', [HunterController::class, 'historyKomisi']);
     Route::get('/pembeli-profile', [PembeliController::class, 'profileMobile']);
+    Route::get('/pembeli-history', [PembeliController::class, 'apiRiwayatTransaksi']);
     Route::get('/merchandise', [MerchandiseController::class, 'index']);
     Route::post('/reward/claim-merchandise', [RewardController::class, 'claimMerchandise']);
     Route::get('/reward/history/{id_pembeli}', [RewardController::class, 'history']);
