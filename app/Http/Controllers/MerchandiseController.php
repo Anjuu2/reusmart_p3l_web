@@ -23,7 +23,7 @@ class MerchandiseController extends Controller
             foreach ($merchandise as $item) {
                 // Membuat URL gambar dari nama_merchandise (pastikan format nama file sesuai)
                 $namaGambar = str_replace(' ', '_', strtolower($item->nama_merchandise)) . '.jpg';
-                $item->gambar_url = asset('storage/merchandise/' . $namaGambar);
+                $item->gambar_url = asset('images/merchandise/' . $namaGambar);
             }
 
             return response()->json([
