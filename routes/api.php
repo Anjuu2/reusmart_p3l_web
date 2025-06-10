@@ -16,6 +16,9 @@ use App\Http\Controllers\KategoriController;
 use App\Http\Controllers\HunterController;
 use App\Http\Controllers\RewardController;
 use App\Http\Controllers\MerchandiseController;
+use App\Http\Controllers\TopSellerController;
+use App\Http\Controllers\AdminController;
+use App\Http\Controllers\BadgeController;
 
 Route::post('/login', [LoginController::class, 'loginMobile'])->name('login');
 
@@ -40,7 +43,27 @@ Route::middleware('auth:sanctum')->group(function () {
     Route::get('/merchandise', [MerchandiseController::class, 'index']);
     Route::post('/reward/claim-merchandise', [RewardController::class, 'claimMerchandise']);
     Route::get('/reward/history/{id_pembeli}', [RewardController::class, 'history']);
+
+    Route::get('/top-seller/current', [TopSellerController::class, 'setTopSellerCurrentMonth']);
+    Route::post('/top-seller/last-month', [TopSellerController::class, 'setTopSellerLastMonth']);
+    Route::get('/top-seller/bonus', [TopSellerController::class, 'giveBonusToTopSeller']);
+
+    Route::get('/top-seller', [BadgeController::class, 'getTopSeller']);
+    Route::get('/top-seller/current-month-full', [BadgeController::class, 'getTopSellerCurrentMonthFull']);
+
+    Route::get('/barang-donasi', [TopSellerController::class, 'changeStatusBarangForDonation']);
+
+    // Route::get('/penitip/badge', [BadgeController::class, 'getMyBadges']);
+    // Route::get('/admin/penitip/{id}/badge', [BadgeController::class, 'getBadgesByPenitipId']);
+    // Route::post('/admin/badge', [BadgeController::class, 'giveBadge']);
+
+    Route::get('/admin/top-seller/current-month', [AdminController::class, 'getTopSellerCurrentMonth'])->name('admin.topSellerCurrentMonth');
+    Route::post('/admin/top-seller/last-month', [AdminController::class, 'setTopSellerLastMonth'])->name('admin.setTopSellerLastMonth');
+
+    Route::get('/barangsMobile', [BarangTitipanController::class, 'showMobile']); 
+    Route::get('/kategoriMobile', [KategoriController::class, 'indexKategori']);
 });
+Route::get('/top-seller', [BadgeController::class, 'getTopSeller']);
 
 Route::middleware(['auth:sanctum'])->group(function () {
     Route::get('/kirim-notifikasi-penitipan', [BarangTitipanController::class, 'kirimNotifikasiMasaPenitipan']);

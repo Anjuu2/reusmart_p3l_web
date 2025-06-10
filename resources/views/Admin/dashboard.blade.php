@@ -6,7 +6,9 @@
         <title>Dashboard</title>
         
         <style>
-            .main-sidebar{
+            .main-sidebar {
+                height: 100vh; /* Menyesuaikan tinggi dengan layar */
+                overflow-y: auto; /* Agar sidebar bisa di-scroll jika terlalu panjang */
                 background: linear-gradient(135deg, rgba(0, 128, 0, 0.7) 0%, rgba(108, 241, 108, 0.7) 100%);
             }
 
@@ -36,6 +38,11 @@
 
             .modal-content{
                 border-radius: 10px;
+            }
+
+            .content-wrapper {
+                padding-top: 20px; /* Memberikan padding agar tidak tabrakan dengan header */
+                min-height: calc(100vh - 50px); /* Agar konten tidak tumpang tindih dengan footer */
             }
 
             .modal-header{
@@ -120,6 +127,12 @@
                                 <a href="{{ url('pegawai') }}" class="nav-link">
                                     <i class="bi bi-person-badge-fill"></i>
                                     <p>Pegawai</p>
+                                </a>
+                            </li>
+                            <li class="nav-item">
+                                <a href="{{ route('admin.topSeller') }}" class="nav-link">
+                                    <i class="nav-icon bi bi-stars"></i>
+                                    <p>Top Seller</p>
                                 </a>
                             </li>
                         </ul>

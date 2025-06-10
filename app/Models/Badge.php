@@ -35,7 +35,9 @@ class Badge extends Model
 	protected $fillable = [
 		'id_penitip',
 		'nama_badge',
-		'periode_pemberian'
+		'periode_pemberian',
+		'bonus',
+		'total_penjualan',
 	];
 
 	public function penitip()

@@ -30,6 +30,8 @@ use App\Http\Controllers\RewardController;
 use App\Http\Controllers\OwnerLaporanDonasiController;
 use App\Http\Controllers\OwnerLaporanRequestDonasiController;
 use App\Http\Controllers\OwnerLaporanTransaksiPenitipController;
+use App\Http\Controllers\TopSellerController;
+use App\Http\Controllers\AdminController;
 
 Route::get('/', [HomeController::class, 'index']);
 Route::get('/kategori', [KategoriController::class, 'showAvailableProducts']);
@@ -224,6 +226,13 @@ use App\Http\Controllers\DiskusiController;
 Route::middleware('auth:pegawai')->get('/dashboard', function () {
     return view('admin.dashboard');
 })->name('dashboard.admin');
+
+Route::middleware('auth:pegawai')->group(function () {
+    Route::get('/admin/top-seller', [AdminController::class, 'getTopSellerCurrentMonth'])->name('admin.topSeller');
+    Route::get('/admin/top-seller/current-month', [AdminController::class, 'getTopSellerCurrentMonth'])->name('admin.topSellerCurrentMonth');
+    Route::post('/admin/top-seller/last-month', [AdminController::class, 'setTopSellerLastMonth'])->name('admin.setTopSellerLastMonth');
+});
+
 
 Route::middleware('auth:pegawai')->get('/organisasi', [OrganisasiController::class, 'index'])
      ->name('organisasi.index');
