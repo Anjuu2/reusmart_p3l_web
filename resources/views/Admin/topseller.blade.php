@@ -1,6 +1,7 @@
 @extends('Admin.dashboard')
 
 @section('isi')
+
 <div class="container">
     <h2 class="text-center my-4 mt-4 text-primary">🏆 Top Seller Bulan Ini</h2>
 
@@ -11,9 +12,17 @@
     </div>
     @endif
 
-    @if(session('success'))
-        <div class="alert alert-success">
+    @if (session('success'))
+        <div class="alert alert-success alert-dismissible fade show" role="alert">
             {{ session('success') }}
+
+            @if(session('bonus_added') && session('penitip'))
+                <br>
+                🎉 <strong>{{ session('penitip') }}</strong> mendapat tambahan saldo sebesar 
+                <strong>Rp {{ number_format(session('bonus_added'), 0, ',', '.') }}</strong>!
+            @endif
+
+            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
         </div>
     @endif
 
@@ -61,7 +70,11 @@
     @endif
 
     {{-- Tombol Tentukan Top Seller Bulan Lalu --}}
-    <form id="topSellerForm" action="{{ route('admin.setTopSellerLastMonth') }}" method="POST" class="text-start mb-4">
+    <!-- <form id="topSellerForm" action="{{ route('admin.setTopSellerLastMonth') }}" method="POST" class="text-start mb-4">
+        @csrf
+        <button type="submit" class="btn btn-outline-primary btn-lg">Tentukan Top Seller</button>
+    </form> -->
+    <form id="topSellerForm" class="text-start mb-4">
         @csrf
         <button type="submit" class="btn btn-outline-primary btn-lg">Tentukan Top Seller</button>
     </form>
@@ -97,3 +110,36 @@
         @endif
     </div>
 @endsection
+<script>
+document.getElementById('topSellerForm').addEventListener('submit', async function(e) {
+    e.preventDefault();
+
+    const form = e.target;
+
+    try {
+        const response = await fetch("{{ route('admin.setTopSellerLastMonth') }}", {
+            method: 'POST',
+            headers: {
+                'X-CSRF-TOKEN': '{{ csrf_token() }}',
+                'Accept': 'application/json',
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify({})
+        });
+
+        const data = await response.json();
+
+        if (response.ok) {
+            alert('✅ ' + data.message + '\n\n🏆 Top Seller: ' + data.top_seller.nama +
+                '\n💰 Total Penjualan: Rp ' + new Intl.NumberFormat('id-ID').format(data.top_seller.total_penjualan) +
+                '\n🎁 Bonus: Rp ' + new Intl.NumberFormat('id-ID').format(data.top_seller.bonus));
+            location.reload(); // reload halaman untuk tampilkan badge & saldo baru
+        } else {
+            alert('❌ Gagal: ' + (data.message || 'Terjadi kesalahan.'));
+        }
+    } catch (error) {
+        console.error('Error saat submit:', error);
+        alert('Terjadi kesalahan jaringan.');
+    }
+});
+</script>
