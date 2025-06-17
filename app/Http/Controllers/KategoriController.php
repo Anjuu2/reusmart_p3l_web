@@ -47,6 +47,22 @@ class KategoriController extends Controller
     // }
     // KategoriController.php
 
+    public function indexKategori()
+    {
+        try {
+            $categories = Kategori::all();  // Mengambil semua kategori
+            return response()->json([
+                'success' => true,
+                'data' => $categories
+            ]);
+        } catch (\Exception $e) {
+            return response()->json([
+                'success' => false,
+                'error' => 'Gagal mengambil kategori.',
+            ], 500);
+        }
+    }
+    
     public function apiIndex()
     {
         $kats = Kategori::all();

@@ -16,6 +16,65 @@ use PDF;
 
 class BarangTitipanController extends Controller
 {
+
+    public function showMobile(Request $request, $id = null)
+    {
+        try {
+            // Mendapatkan query pencarian dan category_id dari request
+            $search = $request->query('search');
+            $categoryId = $request->query('category_id');
+
+            // Menambahkan log untuk melihat nilainya
+            Log::info('Search query: ' . ($search ?: 'Tidak ada nilai pencarian'));
+            Log::info('Category ID: ' . ($categoryId ?: 'Tidak ada kategori'));
+
+            if ($id) {
+                // Jika ada ID, tampilkan detail produk
+                $product = BarangTitipan::with('fotoBarang', 'kategori')
+                    ->where('id_barang', $id)
+                    ->where('status_barang', 'Tersedia') // Memastikan hanya menampilkan barang dengan status "Tersedia"
+                    ->firstOrFail();
+
+                return response()->json([
+                    'success' => true,
+                    'data' => $product
+                ]);
+            } else {
+                if (empty($search)) {
+                    $search = 'Tidak ada nilai pencarian';  // Menetapkan nilai default jika tidak ada pencarian
+                }
+
+                $productsQuery = BarangTitipan::with('fotoBarang', 'kategori');
+
+                // Jika search tidak kosong, lakukan pencarian berdasarkan nama
+                if ($search !== 'Tidak ada nilai pencarian') {
+                    $productsQuery->where('nama_barang', 'like', "%{$search}%");
+                }
+
+                // Jika categoryId ada dan tidak sama dengan 'Semua', filter berdasarkan kategori
+                if ($categoryId && $categoryId != 'Semua') {
+                    $productsQuery->where('id_kategori', $categoryId);
+                }
+
+                // Menambahkan filter untuk hanya menampilkan barang dengan status "Tersedia"
+                $productsQuery->where('status_barang', 'Tersedia');
+
+                // Paginate the results
+                $products = $productsQuery->paginate(10);  // Limiting results to 10 per page
+
+                return response()->json([
+                    'success' => true,
+                    'data' => $products
+                ]);
+            }
+        } catch (\Exception $e) {
+            \Log::error('Error fetching product: ' . $e->getMessage());
+            return response()->json([
+                'success' => false,
+                'error' => 'Gagal mengambil produk.'
+            ], 500);
+        }
+    }
     public function kirimNotifikasiMasaPenitipan()
     {
         $today = Carbon::today();
