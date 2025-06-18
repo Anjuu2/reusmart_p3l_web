@@ -35,7 +35,7 @@ class OrganisasiController extends Controller
             'nama_organisasi' => $request->nama_organisasi,
             'alamat'          => $request->alamat,
             'email'           => $request->email,
-            'password'        => Hash::Make($request->password),
+            'password'        => $request->password,
             'status_aktif'    => 1,
         ]);
 
