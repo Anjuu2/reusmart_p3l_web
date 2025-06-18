@@ -64,7 +64,7 @@ Route::middleware('auth:sanctum')->group(function () {
     Route::get('/kategoriMobile', [KategoriController::class, 'indexKategori']);
 
 // Route::get('/top-seller', [BadgeController::class, 'getTopSeller']);
-
+});
 Route::get('/products/{id?}', [BarangTitipanController::class, 'showMobile']);
 // Route::get('/barangsMobile', [BarangTitipanController::class, 'showMobile']); 
 // Route::get('/kategoriMobile', [KategoriController::class, 'indexKategori']);
