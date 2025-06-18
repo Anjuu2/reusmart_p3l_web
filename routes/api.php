@@ -61,11 +61,10 @@ Route::middleware('auth:sanctum')->group(function () {
     Route::get('/admin/top-seller/current-month', [AdminController::class, 'getTopSellerCurrentMonth'])->name('admin.topSellerCurrentMonth');
     Route::post('/admin/top-seller/last-month', [AdminController::class, 'setTopSellerLastMonth'])->name('admin.setTopSellerLastMonth');
 
-    Route::get('/barangsMobile', [BarangTitipanController::class, 'showMobile']); 
-    Route::get('/kategoriMobile', [KategoriController::class, 'indexKategori']);
-
 // Route::get('/top-seller', [BadgeController::class, 'getTopSeller']);
 });
+Route::get('/barangsMobile', [BarangTitipanController::class, 'showMobile']); 
+Route::get('/kategoriMobile', [KategoriController::class, 'indexKategori']);
 Route::get('/products/{id?}', [BarangTitipanController::class, 'showMobile']);
 // Route::get('/barangsMobile', [BarangTitipanController::class, 'showMobile']); 
 // Route::get('/kategoriMobile', [KategoriController::class, 'indexKategori']);
