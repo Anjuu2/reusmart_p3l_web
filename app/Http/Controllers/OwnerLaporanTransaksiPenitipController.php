@@ -34,12 +34,15 @@ class OwnerLaporanTransaksiPenitipController extends Controller
             $totalPendapatan = 0;
 
             foreach ($penitip->barang_titipans as $item) {
-                $komisi = optional($item->komisi)->komisi ?? 0;
-                $hargaJualBersih = $item->harga_jual - $komisi;
+                $komisiData = \DB::table('komisi')->where('id_barang', $item->id_barang)->first();
+                $persentase_komisi = $komisiData->komisi ?? 0;
 
-                $bonus = (!$item->status_perpanjangan && $item->tanggal_masuk->diffInDays(optional($item->transaksi)->tanggal_transaksi) < 7)
-                    ? ($komisi * 0.10)
-                    : 0;
+                    $total = optional($item->transaksi)->jumlah_total ?? 0;
+                    $hargaJualBersih = $item->harga_jual - $persentase_komisi;
+
+                    $bonus = (!$item->status_perpanjangan && $item->tanggal_masuk->diffInDays($item->transaksi->tanggal_transaksi) < 7)
+                        ? ($persentase_komisi * 0.10)
+                        : 0;
 
                 $pendapatan = $hargaJualBersih + $bonus;
 
@@ -93,29 +96,31 @@ class OwnerLaporanTransaksiPenitipController extends Controller
             ->get();
 
         $laporan = $transaksi->map(function ($item) {
-            $komisi = optional($item->komisi)->komisi ?? 0;
-            $hargaJualBersih = $item->harga_jual - $komisi;
+        $komisiData = \DB::table('komisi')->where('id_barang', $item->id_barang)->first();
+        $komisi = $komisiData->komisi ?? 0;
 
-            $tanggalLaku = optional($item->transaksi)->tanggal_transaksi 
-                ? Carbon::parse($item->transaksi->tanggal_transaksi)->format('d/m/Y')
-                : '-';
+        $hargaJualBersih = $item->harga_jual - $komisi;
 
-            $bonus = (!$item->status_perpanjangan && $item->tanggal_masuk->diffInDays(optional($item->transaksi)->tanggal_transaksi) < 7)
-                ? ($komisi * 0.10)
-                : 0;
+        $tanggalLaku = optional($item->transaksi)->tanggal_transaksi 
+            ? Carbon::parse($item->transaksi->tanggal_transaksi)->format('d/m/Y')
+            : '-';
 
-            $pendapatan = $hargaJualBersih + $bonus;
+        $bonus = (!$item->status_perpanjangan && $item->tanggal_masuk->diffInDays(optional($item->transaksi)->tanggal_transaksi) < 7)
+            ? ($komisi * 0.10)
+            : 0;
 
-            return [
-                'kode' => strtoupper(substr($item->nama_barang, 0, 1)) . $item->id_barang,
-                'nama' => $item->nama_barang,
-                'tanggal_masuk' => $item->tanggal_masuk->format('d/m/Y'),
-                'tanggal_laku' => $tanggalLaku,
-                'harga_jual_bersih' => $hargaJualBersih,
-                'bonus_terjual_cepat' => $bonus,
-                'pendapatan' => $pendapatan,
-            ];
-        });
+        $pendapatan = $hargaJualBersih + $bonus;
+
+        return [
+            'kode' => strtoupper(substr($item->nama_barang, 0, 1)) . $item->id_barang,
+            'nama' => $item->nama_barang,
+            'tanggal_masuk' => $item->tanggal_masuk->format('d/m/Y'),
+            'tanggal_laku' => $tanggalLaku,
+            'harga_jual_bersih' => $hargaJualBersih,
+            'bonus_terjual_cepat' => $bonus,
+            'pendapatan' => $pendapatan,
+        ];
+    });
 
         $bulanNama = Carbon::createFromDate($year, $month, 1)->locale('id')->isoFormat('MMMM');
 

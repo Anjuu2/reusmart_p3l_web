@@ -150,4 +150,16 @@ class BarangTitipan extends Model
 	{
 		return $this->belongsTo(NotaPenitipan::class, 'id_nota');
 	}
+
+	public function transaksi()
+{
+    return $this->hasOneThrough(
+        \App\Models\Transaksi::class,
+        \App\Models\DetailTransaksi::class,
+        'id_barang', // FK di DetailTransaksi
+        'id_transaksi', // FK di Transaksi
+        'id_barang', // PK di BarangTitipan
+        'id_transaksi'  // PK di Transaksi
+    );
+}
 }
