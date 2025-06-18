@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 use App\Models\Kategori;
 use App\Models\BarangTitipan;
+use Illuminate\Support\Facades\Log;
 
 class KategoriController extends Controller
 {
@@ -47,6 +48,29 @@ class KategoriController extends Controller
     // }
     // KategoriController.php
 
+    public function indexKategori()
+    {
+        try {
+            $categories = Kategori::all();  // Mengambil semua kategori
+            
+            // Log jika kategori berhasil diambil
+            Log::info('Kategori berhasil diambil.', ['categories' => $categories]);
+
+            return response()->json([
+                'success' => true,
+                'data' => $categories
+            ]);
+        } catch (\Exception $e) {
+            // Log jika terjadi error
+            Log::error('Gagal mengambil kategori.', ['error' => $e->getMessage()]);
+
+            return response()->json([
+                'success' => false,
+                'error' => 'Gagal mengambil kategori.',
+            ], 500);
+        }
+    }
+    
     public function apiIndex()
     {
         $kats = Kategori::all();

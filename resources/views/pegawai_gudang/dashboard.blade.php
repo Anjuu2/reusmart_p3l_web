@@ -104,7 +104,7 @@
                     <div class="user-panel mt-3 pb-3 mb-3 d-flex">
                         <div class="image">
                             <a href="{{ route('dashboard.pegawai_gudang') }}">
-                                <img src="{{ asset('images/logo2.png') }}" alt="Logo Reusmart" class="brand-image img-circle elevation-3" style="opacity: .8; width: 200px; height: 80px;">
+                                <img src="{{ asset('images/logo2.png') }}" alt="Logo Reusmart" class="" style="opacity: .8; width: 200px; height: 80px;">
                             </a>
                         </div>
                     </div>
@@ -151,7 +151,7 @@
             </main>
 
             <footer class="main-footer mt-auto text-center py-3">
-                <strong>Kami ada untuk Anda</strong>
+                <strong>© 2025 ReUseMart</strong>
             </footer>
         </div>
 

@@ -101,5 +101,42 @@ class HunterController extends Controller
         ]);
     }
 
+    public function historyKomisiLiveCode(Request $request)
+    {
+        $hunter = $request->user(); 
+
+        $month = $request->input('month', null); 
+        $year = $request->input('year', null);   
+
+        $query = \App\Models\Komisi::with(['barang', 'transaksi'])
+            ->where('id_pegawai', $hunter->id_pegawai)
+            ->orderByDesc('id_komisi');
+
+
+        if ($month && $year) {
+            $query->whereHas('transaksi', function ($query) use ($month, $year) {
+                $query->whereMonth('tanggal_transaksi', $month)
+                    ->whereYear('tanggal_transaksi', $year);
+            });
+        }
+
+        $komisiList = $query->get()
+            ->map(function ($komisi) {
+                return [
+                    'nama_barang' => $komisi->barang->nama_barang ?? '-',
+                    'tanggal_transaksi' => optional($komisi->transaksi)->tanggal_transaksi 
+                                        ? \Carbon\Carbon::parse($komisi->transaksi->tanggal_transaksi)->format('d/m/Y H:i')
+                                        : '-',
+                    'komisi_barang' => $komisi->komisi_hunter ?? 0,
+                ];
+            });
+
+
+        return response()->json([
+            'success' => true,
+            'data' => $komisiList
+        ]);
+    }
+
 
 }

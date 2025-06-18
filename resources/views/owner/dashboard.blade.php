@@ -59,7 +59,7 @@
         <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css">
         <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
         <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
-        <!-- Link untuk CSS Bootstrap -->
+        <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css" rel="stylesheet">
         <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.6/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-4Q6Gf2aSP4eDXB8Miphtr37CMZZQ5oXLH2yaXMJ2w8e2ZtHTl7GptT4jmndRuHDT" crossorigin="anonymous">
         <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/admin-lte@3.2.0/dist/css/adminlte.min.css">
     </head>
@@ -100,7 +100,7 @@
                     <div class="user-panel mt-3 pb-3 mb-3 d-flex">
                         <div class="image">
                             <a href="{{ route('dashboard.owner') }}">
-                                <img src="{{ asset('images/logo2.png') }}" alt="Logo Reusmart" class="brand-image img-circle elevation-3" style="opacity: .8; width: 200px; height: 80px;">
+                                <img src="{{ asset('images/logo2.png') }}" alt="Logo Reusmart" class="" style="opacity: .8; width: 200px; height: 80px;">
                             </a>
                         </div>
                     </div>
@@ -209,7 +209,7 @@
 
             <footer class="main-footer">
                 
-                <strong>Kami ada untuk Anda </strong>
+                <strong>© 2025 ReUseMart</strong>
             </footer>
         </div>
 
