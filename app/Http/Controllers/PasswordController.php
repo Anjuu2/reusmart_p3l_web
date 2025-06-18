@@ -19,7 +19,7 @@ class PasswordController extends Controller
             'email' => 'required|email',
         ]);
 
-        $url = 'http://127.0.0.1:8000/changePassword';
+        $url = 'http://reusemart.shop/changePassword';
 
         // Kirim email
         Mail::to($data['email'])
@@ -43,7 +43,7 @@ class PasswordController extends Controller
             $pembeli = Pembeli::where('email', $request->email)->first();
 
             $pembeli->update([
-                'password' => Hash::make($request->password),
+                'password' => $request->password,
             ]);
 
             return redirect()
@@ -57,7 +57,7 @@ class PasswordController extends Controller
             $penitip = Penitip::where('email', $request->email)->first();
 
             $penitip->update([
-                'password' => Hash::make($request->password),
+                'password' => $request->password,
             ]);
 
             return redirect()
@@ -71,7 +71,7 @@ class PasswordController extends Controller
             $organisasi = Organisasi::where('email', $request->email)->first();
 
             $organisasi->update([
-                'password' => Hash::make($request->password),
+                'password' => $request->password,
             ]);
 
             return redirect()

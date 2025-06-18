@@ -112,6 +112,17 @@
                     <nav class="mt-2">
                         <ul class="nav nav-pills nav-sidebar flex-column" data-widget="treeview" role="menu" data-acccordion="false">
                             <li class="nav-item">
+                                <a class="nav-link" href="{{ route('cs.diskusi.index') }}">
+                                    <i class="bi bi-wechat"></i>
+                                    <p>Diskusi</p>
+                                </a>
+                            </li>
+                        </ul>
+                    </nav>
+
+                    <nav class="mt-2">
+                        <ul class="nav nav-pills nav-sidebar flex-column" data-widget="treeview" role="menu" data-acccordion="false">
+                            <li class="nav-item">
                                 <a class="nav-link" href="{{ route('cs.penitip.index') }}">
                                     <i class="bi bi-shop"></i>
                                     <p>Penitip</p>

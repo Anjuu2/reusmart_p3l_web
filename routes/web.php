@@ -14,6 +14,8 @@ use App\Http\Controllers\LoginController;
 use App\Http\Controllers\PembeliController;
 use App\Http\Controllers\PembeliHistoryController;
 use App\Http\Controllers\PenitipController;
+use App\Http\Controllers\AlamatController;
+use App\Http\Controllers\DiskusiController;
 
 use App\Http\Controllers\RequestDonasiController;
 use Illuminate\Http\Request;
@@ -169,6 +171,9 @@ Route::middleware(['auth:pegawai'])->prefix('cs')->group(function () {
 
     Route::get('/cs/merchandise-claims', [RewardController::class, 'index'])->name('cs.reward.index');
     Route::post('/cs/merchandise-claims/{id}/take', [RewardController::class, 'ambilMerch'])->name('cs.reward.ambilMerch');
+
+    Route::get('/diskusi/belum-dijawab', [DiskusiController::class, 'showBelumDijawab'])->name('cs.diskusi.index');
+    Route::post('/diskusi/{id}/jawab', [DiskusiController::class, 'jawab'])->name('cs.diskusi.jawab');
 });
 
 Route::middleware(['auth:organisasi'])->prefix('organisasi')->group(function () {
@@ -216,8 +221,7 @@ Route::middleware('auth:pegawai')->group(function () {
     Route::get('/pegawai/search', [PegawaiController::class, 'search'])->name('pegawai.search');
 });
 
-use App\Http\Controllers\AlamatController;
-use App\Http\Controllers\DiskusiController;
+
 
 // Route::get('/', function () {
 //     return view('home');
@@ -290,9 +294,8 @@ Route::middleware('auth:pembeli')->get('/alamat/pembeli', fn() => view('Pembeli.
 Route::middleware('auth:penitip')->get('/profile/penitip', [PenitipController::class, 'profilePenitip'])->name('penitip.profil');
 Route::middleware('auth:penitip')->put('/profile/penitip/{id}', [PenitipController::class, 'update'])->name('penitip.update');
 
-Route::get('/diskusi', [DiskusiController::class, 'index'])->name('diskusi.index');
-Route::middleware('auth:pembeli')->post('/diskusi/{id_barang}/tanya', [DiskusiController::class, 'storePertanyaan'])->name('diskusi.tanya');
-Route::middleware('auth:pegawai')->post('/diskusi/{id_diskusi}/jawab', [DiskusiController::class, 'jawab'])->name('diskusi.jawab');
+Route::middleware('auth:pembeli')->get('/diskusi', [DiskusiController::class, 'index'])->name('diskusi.index');
+Route::middleware('auth:pembeli')->post('/diskusi/tanya', [DiskusiController::class, 'storePertanyaan'])->name('diskusi.tanya');
 
 Route::middleware('auth:pembeli')->group(function () {
     // Route untuk menampilkan data alamat
