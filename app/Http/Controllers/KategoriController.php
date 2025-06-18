@@ -142,20 +142,4 @@ class KategoriController extends Controller
 
         return view('kategori', compact('kategori', 'barang'));
     }
-
-    public function indexKategori()
-    {
-        try {
-            $categories = Kategori::all();  // Mengambil semua kategori
-            return response()->json([
-                'success' => true,
-                'data' => $categories
-            ]);
-        } catch (\Exception $e) {
-            return response()->json([
-                'success' => false,
-                'error' => 'Gagal mengambil kategori.',
-            ], 500);
-        }
-    }
 }
