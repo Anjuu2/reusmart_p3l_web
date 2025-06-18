@@ -85,6 +85,7 @@ class Transaksi extends Model
 	{
 		return $this->hasMany(Penjadwalan::class, 'id_transaksi');
 	}
+	
 	public function penitip()
 	{
 		return $this->hasOneThrough(

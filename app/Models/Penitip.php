@@ -119,4 +119,9 @@ class Penitip extends Authenticatable
         \Log::info("Notifikasi dikirim ke {$this->nama_penitip} dengan judul: $title");
     }
 
+    public function transaksi()
+    {
+        return $this->hasManyThrough(Transaksi::class, BarangTitipan::class, 'id_penitip', 'id_barang', 'id_penitip', 'id_barang');
+    }
+
 }

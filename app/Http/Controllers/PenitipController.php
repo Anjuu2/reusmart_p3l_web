@@ -301,4 +301,6 @@ class PenitipController extends Controller
         return response()->json(['success' => true, 'message' => 'FCM token saved']);
     }
 
+    
+
 }
