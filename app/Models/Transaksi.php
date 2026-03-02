@@ -43,7 +43,12 @@ class Transaksi extends Model
 		'id_pembeli',
 		'tanggal_transaksi',
 		'total_pembayaran',
-		'status_transaksi'
+		'status_transaksi',
+		'jenis_pengiriman',
+		'nomor_transaksi',
+		'poin_didapat',
+		'id_alamat',
+		'poin_digunakan'
 	];
 
 	public function pembeli()
@@ -64,6 +69,16 @@ class Transaksi extends Model
 	public function pembayarans()
 	{
 		return $this->hasMany(Pembayaran::class, 'id_transaksi');
+	}
+
+	// public function penjadwalans()
+	// {
+	// 	return $this->hasMany(Penjadwalan::class, 'id_transaksi');
+	// }
+
+	public function penjadwalans()
+	{
+		return $this->hasMany(Penjadwalan::class, 'id_transaksi');
 	}
 
 	public function penjadwalan()
@@ -113,5 +128,4 @@ class Transaksi extends Model
 		return $this->belongsTo(AlamatPembeli::class, 'id_alamat');
 	}
 	
-
 }

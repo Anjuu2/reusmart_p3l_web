@@ -571,8 +571,13 @@ class ComposerStaticInit88970a0117c062eed55fa8728fc43833
     );
 
     public static $classMap = array (
+        'App\\Console\\Commands\\AutoPembatalanTransaksi' => __DIR__ . '/../..' . '/app/Console/Commands/AutoPembatalanTransaksi.php',
+        'App\\Console\\Commands\\TestScheduleCommand' => __DIR__ . '/../..' . '/app/Console/Commands/TestScheduleCommand.php',
+        'App\\Console\\Kernel' => __DIR__ . '/../..' . '/app/Console/Kernel.php',
+        'App\\Http\\Controllers\\AboutController' => __DIR__ . '/../..' . '/app/Http/Controllers/AboutController.php',
         'App\\Http\\Controllers\\AlamatController' => __DIR__ . '/../..' . '/app/Http/Controllers/AlamatController.php',
         'App\\Http\\Controllers\\BarangTitipanController' => __DIR__ . '/../..' . '/app/Http/Controllers/BarangTitipanController.php',
+        'App\\Http\\Controllers\\CheckoutController' => __DIR__ . '/../..' . '/app/Http/Controllers/CheckoutController.php',
         'App\\Http\\Controllers\\Controller' => __DIR__ . '/../..' . '/app/Http/Controllers/Controller.php',
         'App\\Http\\Controllers\\DetailBarangController' => __DIR__ . '/../..' . '/app/Http/Controllers/DetailBarangController.php',
         'App\\Http\\Controllers\\DiskusiController' => __DIR__ . '/../..' . '/app/Http/Controllers/DiskusiController.php',
@@ -581,6 +586,7 @@ class ComposerStaticInit88970a0117c062eed55fa8728fc43833
         'App\\Http\\Controllers\\KategoriController' => __DIR__ . '/../..' . '/app/Http/Controllers/KategoriController.php',
         'App\\Http\\Controllers\\KeranjangController' => __DIR__ . '/../..' . '/app/Http/Controllers/KeranjangController.php',
         'App\\Http\\Controllers\\LoginController' => __DIR__ . '/../..' . '/app/Http/Controllers/LoginController.php',
+        'App\\Http\\Controllers\\NotaPenitipanController' => __DIR__ . '/../..' . '/app/Http/Controllers/NotaPenitipanController.php',
         'App\\Http\\Controllers\\OrganisasiController' => __DIR__ . '/../..' . '/app/Http/Controllers/OrganisasiController.php',
         'App\\Http\\Controllers\\PasswordController' => __DIR__ . '/../..' . '/app/Http/Controllers/PasswordController.php',
         'App\\Http\\Controllers\\PegawaiController' => __DIR__ . '/../..' . '/app/Http/Controllers/PegawaiController.php',
@@ -609,6 +615,7 @@ class ComposerStaticInit88970a0117c062eed55fa8728fc43833
         'App\\Models\\Keranjang' => __DIR__ . '/../..' . '/app/Models/Keranjang.php',
         'App\\Models\\Komisi' => __DIR__ . '/../..' . '/app/Models/Komisi.php',
         'App\\Models\\Merchandise' => __DIR__ . '/../..' . '/app/Models/Merchandise.php',
+        'App\\Models\\NotaPenitipan' => __DIR__ . '/../..' . '/app/Models/NotaPenitipan.php',
         'App\\Models\\Organisasi' => __DIR__ . '/../..' . '/app/Models/Organisasi.php',
         'App\\Models\\Pegawai' => __DIR__ . '/../..' . '/app/Models/Pegawai.php',
         'App\\Models\\Pembayaran' => __DIR__ . '/../..' . '/app/Models/Pembayaran.php',
@@ -623,6 +630,7 @@ class ComposerStaticInit88970a0117c062eed55fa8728fc43833
         'App\\Models\\Transaksi' => __DIR__ . '/../..' . '/app/Models/Transaksi.php',
         'App\\Models\\User' => __DIR__ . '/../..' . '/app/Models/User.php',
         'App\\Notifications\\BarangDidonasikan' => __DIR__ . '/../..' . '/app/Notifications/BarangDidonasikan.php',
+        'App\\Notifications\\transaksiDisiapkan' => __DIR__ . '/../..' . '/app/Notifications/transaksiDisiapkan.php',
         'App\\Providers\\AppServiceProvider' => __DIR__ . '/../..' . '/app/Providers/AppServiceProvider.php',
         'Attribute' => __DIR__ . '/..' . '/symfony/polyfill-php80/Resources/stubs/Attribute.php',
         'Barryvdh\\DomPDF\\Facade\\Pdf' => __DIR__ . '/..' . '/barryvdh/laravel-dompdf/src/Facade/Pdf.php',

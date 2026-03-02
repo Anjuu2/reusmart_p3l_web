@@ -16,6 +16,7 @@ class Kernel extends ConsoleKernel
         $schedule->command('transaksi:auto-pembatalan')
                 ->everyMinute()
                 ->appendOutputTo(storage_path('logs/schedule.log'));
+
     }
 
     protected function commands()
@@ -23,4 +24,5 @@ class Kernel extends ConsoleKernel
         $this->load(__DIR__.'/Commands');
         require base_path('routes/console.php');
     }
+
 }

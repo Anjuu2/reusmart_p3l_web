@@ -38,9 +38,14 @@ class Pengiriman extends Model
 		'status_pengiriman'
 	];
 
+	// public function penjadwalan()
+	// {
+	// 	return $this->belongsTo(Penjadwalan::class, 'id_jadwal');
+	// }
+
 	public function penjadwalan()
 	{
-		return $this->belongsTo(Penjadwalan::class, 'id_jadwal');
+		return $this->belongsTo(Penjadwalan::class, 'id_jadwal', 'id_jadwal');
 	}
 
 	public function pegawai()

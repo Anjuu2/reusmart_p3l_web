@@ -6,8 +6,13 @@ $vendorDir = dirname(__DIR__);
 $baseDir = dirname($vendorDir);
 
 return array(
+    'App\\Console\\Commands\\AutoPembatalanTransaksi' => $baseDir . '/app/Console/Commands/AutoPembatalanTransaksi.php',
+    'App\\Console\\Commands\\TestScheduleCommand' => $baseDir . '/app/Console/Commands/TestScheduleCommand.php',
+    'App\\Console\\Kernel' => $baseDir . '/app/Console/Kernel.php',
+    'App\\Http\\Controllers\\AboutController' => $baseDir . '/app/Http/Controllers/AboutController.php',
     'App\\Http\\Controllers\\AlamatController' => $baseDir . '/app/Http/Controllers/AlamatController.php',
     'App\\Http\\Controllers\\BarangTitipanController' => $baseDir . '/app/Http/Controllers/BarangTitipanController.php',
+    'App\\Http\\Controllers\\CheckoutController' => $baseDir . '/app/Http/Controllers/CheckoutController.php',
     'App\\Http\\Controllers\\Controller' => $baseDir . '/app/Http/Controllers/Controller.php',
     'App\\Http\\Controllers\\DetailBarangController' => $baseDir . '/app/Http/Controllers/DetailBarangController.php',
     'App\\Http\\Controllers\\DiskusiController' => $baseDir . '/app/Http/Controllers/DiskusiController.php',
@@ -16,6 +21,7 @@ return array(
     'App\\Http\\Controllers\\KategoriController' => $baseDir . '/app/Http/Controllers/KategoriController.php',
     'App\\Http\\Controllers\\KeranjangController' => $baseDir . '/app/Http/Controllers/KeranjangController.php',
     'App\\Http\\Controllers\\LoginController' => $baseDir . '/app/Http/Controllers/LoginController.php',
+    'App\\Http\\Controllers\\NotaPenitipanController' => $baseDir . '/app/Http/Controllers/NotaPenitipanController.php',
     'App\\Http\\Controllers\\OrganisasiController' => $baseDir . '/app/Http/Controllers/OrganisasiController.php',
     'App\\Http\\Controllers\\PasswordController' => $baseDir . '/app/Http/Controllers/PasswordController.php',
     'App\\Http\\Controllers\\PegawaiController' => $baseDir . '/app/Http/Controllers/PegawaiController.php',
@@ -44,6 +50,7 @@ return array(
     'App\\Models\\Keranjang' => $baseDir . '/app/Models/Keranjang.php',
     'App\\Models\\Komisi' => $baseDir . '/app/Models/Komisi.php',
     'App\\Models\\Merchandise' => $baseDir . '/app/Models/Merchandise.php',
+    'App\\Models\\NotaPenitipan' => $baseDir . '/app/Models/NotaPenitipan.php',
     'App\\Models\\Organisasi' => $baseDir . '/app/Models/Organisasi.php',
     'App\\Models\\Pegawai' => $baseDir . '/app/Models/Pegawai.php',
     'App\\Models\\Pembayaran' => $baseDir . '/app/Models/Pembayaran.php',
@@ -58,6 +65,7 @@ return array(
     'App\\Models\\Transaksi' => $baseDir . '/app/Models/Transaksi.php',
     'App\\Models\\User' => $baseDir . '/app/Models/User.php',
     'App\\Notifications\\BarangDidonasikan' => $baseDir . '/app/Notifications/BarangDidonasikan.php',
+    'App\\Notifications\\transaksiDisiapkan' => $baseDir . '/app/Notifications/transaksiDisiapkan.php',
     'App\\Providers\\AppServiceProvider' => $baseDir . '/app/Providers/AppServiceProvider.php',
     'Attribute' => $vendorDir . '/symfony/polyfill-php80/Resources/stubs/Attribute.php',
     'Barryvdh\\DomPDF\\Facade\\Pdf' => $vendorDir . '/barryvdh/laravel-dompdf/src/Facade/Pdf.php',

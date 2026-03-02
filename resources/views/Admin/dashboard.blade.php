@@ -1,179 +1,338 @@
 <!DOCTYPE html>
-<html lang="en">
-    <head>
-        <meta charset="utf-8">
-        <meta name="viewport"content="width=device-width, initial-scale=1.0">
-        <title>Dashboard</title>
+<html lang="id">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Admin Portal | ReUseMart</title>
+    
+    <!-- Fonts & Icons -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800&family=Plus+Jakarta+Sans:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
+    
+    <!-- Bootstrap CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+    
+    <style>
+        :root {
+            --admin-dark: #0f172a;       
+            --admin-accent: #3b82f6;     /* Blue accent for Admin */
+            --admin-accent-hover: #2563eb;
+            --admin-surface: #1e293b;
+            --admin-bg: #f8fafc;
+            
+            --sidebar-width: 280px;
+            --header-height: 70px;
+            
+            --radius-sm: 8px;
+            --radius-md: 12px;
+            --radius-lg: 16px;
+            --radius-pill: 50px;
+            
+            --shadow-sm: 0 2px 4px rgba(15, 23, 42, 0.05);
+            --shadow-md: 0 4px 6px -1px rgba(15, 23, 42, 0.1), 0 2px 4px -1px rgba(15, 23, 42, 0.06);
+            --shadow-lg: 0 10px 15px -3px rgba(15, 23, 42, 0.1), 0 4px 6px -2px rgba(15, 23, 42, 0.05);
+        }
+
+        body {
+            font-family: 'Plus Jakarta Sans', sans-serif;
+            background-color: var(--admin-bg);
+            color: #334155;
+            overflow-x: hidden;
+        }
+
+        h1, h2, h3, h4, h5, h6, .font-outfit {
+            font-family: 'Outfit', sans-serif;
+        }
+
+        /* Sidebar Styling */
+        .sidebar {
+            width: var(--sidebar-width);
+            background-color: var(--admin-dark);
+            height: 100vh;
+            position: fixed;
+            top: 0;
+            left: 0;
+            z-index: 1000;
+            transition: all 0.3s ease;
+            box-shadow: 4px 0 10px rgba(0,0,0,0.1);
+            display: flex;
+            flex-direction: column;
+            color: #f8fafc;
+        }
+
+        .sidebar-brand {
+            height: var(--header-height);
+            display: flex;
+            align-items: center;
+            padding: 0 1.5rem;
+            color: var(--admin-accent);
+            font-family: 'Outfit', sans-serif;
+            font-size: 1.5rem;
+            font-weight: 800;
+            letter-spacing: -0.5px;
+            text-decoration: none;
+            border-bottom: 1px solid rgba(255,255,255,0.05);
+        }
+
+        .nav-menu {
+            padding: 1.5rem 1rem;
+            flex-grow: 1;
+            overflow-y: auto;
+        }
+
+        .nav-label {
+            font-size: 0.75rem;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            color: #64748b;
+            font-weight: 700;
+            margin: 1.5rem 0 0.5rem 1rem;
+        }
+
+        .nav-item {
+            margin-bottom: 0.25rem;
+        }
+
+        .nav-link {
+            display: flex;
+            align-items: center;
+            padding: 0.75rem 1rem;
+            color: #cbd5e1;
+            border-radius: var(--radius-md);
+            transition: all 0.2s ease;
+            text-decoration: none;
+            font-weight: 500;
+        }
+
+        .nav-link i {
+            font-size: 1.25rem;
+            margin-right: 1rem;
+            color: #94a3b8;
+            transition: all 0.2s ease;
+        }
+
+        .nav-link:hover {
+            background-color: rgba(59, 130, 246, 0.1);
+            color: var(--admin-accent);
+        }
+
+        .nav-link:hover i {
+            color: var(--admin-accent);
+        }
+
+        .nav-link.active {
+            background: linear-gradient(135deg, rgba(59, 130, 246, 0.2) 0%, rgba(59, 130, 246, 0.05) 100%);
+            color: var(--admin-accent);
+            border-left: 3px solid var(--admin-accent);
+            font-weight: 600;
+        }
+
+        .nav-link.active i {
+            color: var(--admin-accent);
+        }
+
+        /* User Footer */
+        .sidebar-footer {
+            padding: 1.25rem;
+            border-top: 1px solid rgba(255,255,255,0.05);
+            background: rgba(0,0,0,0.2);
+        }
         
-        <style>
-            .main-sidebar{
-                background: linear-gradient(135deg, rgba(0, 128, 0, 0.7) 0%, rgba(108, 241, 108, 0.7) 100%);
-            }
+        .admin-profile {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+        
+        .admin-avatar {
+            width: 40px;
+            height: 40px;
+            border-radius: 10px;
+            background: linear-gradient(135deg, var(--admin-accent), #60a5fa);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: #fff;
+            font-weight: bold;
+            font-size: 1.2rem;
+            box-shadow: 0 0 10px rgba(59, 130, 246, 0.3);
+        }
 
-            .main-header{
-                background-color: #ffffff;
-                box-shadow: 0 2px 5px rgba(0,0,0,0.1);
-            }
+        /* Main Content */
+        .main-content {
+            margin-left: var(--sidebar-width);
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+        }
 
-            .nav-sidebar .nav-item .nav-link{
-                border-radius: 10px;
-                transition: background-color 0.3 ease;
-            }
+        /* Top Header */
+        .top-header {
+            height: var(--header-height);
+            background-color: rgba(255, 255, 255, 0.9);
+            backdrop-filter: blur(10px);
+            border-bottom: 1px solid #e2e8f0;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 0 2rem;
+            position: sticky;
+            top: 0;
+            z-index: 999;
+        }
 
-            .nav-sidebar .nav-item .nav-link:hover{
-                background-color: rgba(255, 255, 255, 0.1);
-            }
+        .header-title {
+            font-size: 1.25rem;
+            font-weight: 700;
+            color: var(--admin-dark);
+            margin: 0;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
 
-            .card{
-                border-radius: 10px;
-                box-shadow: 0 4px 8px rgba(0,0,0,0.1);
-                transition: transform 0.3s ease-in-out;
-            }
+        /* Page Content */
+        .content-body {
+            padding: 2rem;
+            flex-grow: 1;
+        }
 
-            .card:hover{
-                transform: scale(1.02);
-            }
+        /* Buttons & Components */
+        .btn-logout {
+            background-color: transparent;
+            color: #ef4444;
+            border: 1px solid #fee2e2;
+            padding: 0.5rem 1rem;
+            border-radius: var(--radius-pill);
+            font-weight: 600;
+            font-size: 0.9rem;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            transition: all 0.2s ease;
+        }
 
-            .modal-content{
-                border-radius: 10px;
-            }
+        .btn-logout:hover {
+            background-color: #fef2f2;
+            border-color: #ef4444;
+            color: #dc2626;
+        }
+        
+        .btn-primary {
+            background: linear-gradient(135deg, var(--admin-accent), #60a5fa);
+            color: #fff !important;
+            border: none;
+            box-shadow: 0 4px 10px rgba(59, 130, 246, 0.3);
+            border-radius: var(--radius-pill);
+            transition: all 0.3s ease;
+        }
+        
+        .btn-primary:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 15px rgba(59, 130, 246, 0.4);
+        }
 
-            .modal-header{
-                background-color: #3498db;
-                color: white;
-            }
+        /* Scrollbar */
+        ::-webkit-scrollbar { width: 6px; height: 6px; }
+        ::-webkit-scrollbar-track { background: transparent; }
+        ::-webkit-scrollbar-thumb { background: #cbd5e1; border-radius: 10px; }
+        ::-webkit-scrollbar-thumb:hover { background: #94a3b8; }
+    </style>
+</head>
+<body>
 
-            .btn-close{
-                background-color: white;
-            }
+    <!-- Sidebar -->
+    <aside class="sidebar">
+        <a href="{{ url('dashboard.admin') }}" class="sidebar-brand">
+            <i class="bi bi-shield-lock-fill me-2"></i> ReUseMart <span style="font-size: 0.8rem; font-weight: 500; color:var(--admin-accent); margin-left: 8px; border: 1px solid var(--admin-accent); padding: 2px 6px; border-radius: 4px;">ADMIN</span>
+        </a>
 
-            .main-footer{
-                background-color: #f8f9fa;
-                border-top: 1px solid #dee2e6;
-                padding: 10px;
-                text-align: center;
-            }
-        </style>
-
-        <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Source+Sans+Pro:300,400,400i,700&display=fallback">
-        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css">
-        <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
-        <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
-        <!-- Link untuk CSS Bootstrap -->
-        <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.6/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-4Q6Gf2aSP4eDXB8Miphtr37CMZZQ5oXLH2yaXMJ2w8e2ZtHTl7GptT4jmndRuHDT" crossorigin="anonymous">
-        <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/admin-lte@3.2.0/dist/css/adminlte.min.css">
-    </head>
-    <body class="hold-transition sidebar-mini">
-        <div class="wrapper">
-            <nav class="main-header navbar navbar-expand navbar-white navbar-light">
-                <ul class="navbar-nav">
-                    <li class="nav-item">
-                        <a class="nav-link" data-widget="pushmenu" href="#" role="button">
-                            <i class="fas fa-bars"></i>
-                        </a>
-                    </li>
-                </ul>
-
-                <ul class="navbar-nav ml-auto">
-                    <li class="nav-item">
-                        <button type="button" class="btn btn-danger" data-bs-toggle="modal" data-bs-target="#staticBackdrop">
-                            <i class="bi bi-box-arrow-right"></i> Logout
-                        </button>
-                    </li>
-                </ul>
-
-                <ul class="navbar-nav ml-left">
-                    <li class="nav-item">
-                        <a class="nav-link" data-widget="fullscreen" href="#" role="button">
-                            <i class="fas fa-expand-arrows-alt"></i>
-                        </a>
-                    </li>
-                </ul>
-            </nav>
-
-            <aside class="main-sidebar sidebar-dark-primary elevation-4">
-                <a href="{{ url('dashboard.admin') }}" class="brand-link">
-
-                    <span class="brand-text font-weight-light" style="padding-left:5vw;">Reusemart</span>
+        <div class="nav-menu">
+            <div class="nav-label">Main System</div>
+            
+            <div class="nav-item">
+                <a href="{{ route('dashboard.admin') }}" class="nav-link {{ request()->routeIs('dashboard.admin') ? 'active' : '' }}">
+                    <i class="bi bi-grid-1x2-fill"></i>
+                    <span>Dashboard Panel</span>
                 </a>
-
-                <div class="sidebar">
-                    <div class="user-panel mt-3 pb-3 mb-3 d-flex">
-                        <div class="image">
-                            <a href="{{ route('dashboard.admin') }}">
-                                <img src="{{ asset('images/logo2.png') }}" alt="Logo Reusmart"
-                                    class="brand-image img-circle elevation-3"
-                                    style="opacity: .8; width: 200px; height: 80px;">
-                            </a>
-                        </div>
-                    </div>
-
-                    <nav class="mt-2">
-                        <ul class="nav nav-pills nav-sidebar flex-column" data-widget="treeview" role="menu" data-acccordion="false">
-                            <li class="nav-item">
-                                <a href="{{url('organisasi')}}" class="nav-link">
-                                    <i class="nav-icon bi bi-buildings-fill" style="padding-left: -10px;"></i>
-                                    <p>Organisasi</p>
-                                </a>
-                            </li>
-                            <li class="nav-item">
-                                <a href="{{ url('pegawai') }}" class="nav-link">
-                                    <i class="bi bi-person-badge-fill"></i>
-                                    <p>Pegawai</p>
-                                </a>
-                            </li>
-                            <li class="nav-item">
-                                <a href="{{url('bank/profile')}}" class="nav-link">
-                                    <i class="bi bi-person-fill"></i>
-                                    <p>Profile</p>
-                                </a>
-                            </li>
-                            <li class="nav-item">
-                                <a href="{{url('bank/pengajuanPinjaman')}}" class="nav-link">
-                                    <i class="bi bi-cash-coin"></i>
-                                    <p>Pengajuan Pinjaman</p>
-                                </a>
-                            </li>
-                            <li class="nav-item">
-                                <a href="{{url('bank/pembayaranAngsuran')}}" class="nav-link">
-                                    <i class="bi bi-wallet2"></i>
-                                    <p>Pembayaran Angsuran</p>
-                                </a>
-                            </li>
-                        </ul>
-                    </nav>
-                </div>
-            </aside>
-
-            <div class="content-wrapper">
-                @yield('isi')
             </div>
 
-            <footer class="main-footer">
-                
-                <strong>Kami ada untuk Anda </strong>
-            </footer>
+            <div class="nav-label mt-4">Database Master</div>
+            
+            <div class="nav-item">
+                <a href="{{ url('organisasi') }}" class="nav-link {{ request()->is('organisasi*') ? 'active' : '' }}">
+                    <i class="bi bi-buildings-fill"></i>
+                    <span>Manajemen Organisasi</span>
+                </a>
+            </div>
+            
+            <div class="nav-item">
+                <a href="{{ url('pegawai') }}" class="nav-link {{ request()->is('pegawai*') ? 'active' : '' }}">
+                    <i class="bi bi-person-badge-fill"></i>
+                    <span>Registrasi Staff</span>
+                </a>
+            </div>
         </div>
 
-    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script> 
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.6/dist/js/bootstrap.bundle.min.js" integrity="sha384-j1CDi7MgGQ12Z7Qab0qlWQ/Qqz24Gc6BM0thvEMVjHnfYGF0rmFCozFSxQBxwHKO" crossorigin="anonymous"></script>
-    <script src="https://cdn.jsdelivr.net/npm/admin-lte@3.1.0/dist/js/adminlte.min.js"></script>
-    </body>
-        
-    <div class="modal fade" id="staticBackdrop" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="staticBackdropLabel" aria-hidden="true">
+        <div class="sidebar-footer">
+            <div class="admin-profile">
+                <div class="admin-avatar"><i class="bi bi-shield-check"></i></div>
+                <div>
+                    <h6 class="m-0 text-white font-outfit" style="font-size: 0.95rem;">System Admin</h6>
+                    <span class="text-muted" style="font-size: 0.75rem;">Root Access</span>
+                </div>
+            </div>
+        </div>
+    </aside>
+
+    <!-- Main Content -->
+    <main class="main-content">
+        <!-- Top Header -->
+        <header class="top-header d-flex justify-content-between">
+            <h1 class="header-title">
+                <span class="badge bg-primary bg-opacity-10 text-primary rounded-circle d-flex align-items-center justify-content-center p-0" style="width: 36px; height: 36px;">
+                    <i class="bi bi-cpu-fill"></i>
+                </span>
+                Administration Server
+            </h1>
+            
+            <div class="header-actions">
+                <button type="button" class="btn-logout" data-bs-toggle="modal" data-bs-target="#logoutModal">
+                    <i class="bi bi-box-arrow-right"></i> Keluar Server
+                </button>
+            </div>
+        </header>
+
+        <!-- Page Content -->
+        <div class="content-body">
+            @yield('isi')
+        </div>
+    </main>
+
+    <!-- Logout Modal -->
+    <div class="modal fade" id="logoutModal" tabindex="-1" aria-labelledby="logoutModalLabel" aria-hidden="true">
         <div class="modal-dialog modal-dialog-centered">
-            <div class="modal-content">
-                <div class="modal-header bg-danger">
-                    <h1 class="modal-title fs-5" id="staticBackdropLabel">Apakah ingin Logout</h1>
+            <div class="modal-content" style="border-radius: var(--radius-lg); border: none;">
+                <div class="modal-header border-0 bg-danger bg-opacity-10 text-danger" style="border-top-left-radius: var(--radius-lg); border-top-right-radius: var(--radius-lg);">
+                    <h5 class="modal-title font-outfit fw-bold" id="logoutModalLabel"><i class="bi bi-exclamation-triangle-fill me-2"></i>Konfirmasi Disconnect</h5>
                     <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                 </div>
-                <div class="modal-footer">
-                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
-                    <a href="{{url('/')}}">
-                        <button type="button" class="btn btn-danger" id="logout-btn">Logout</button>
-                    </a>
+                <div class="modal-body text-center py-4">
+                    <p class="mb-0 fs-5">Sesi Anda sebagai Administrator akan berakhir.<br>Lanjutkan proses logout?</p>
+                </div>
+                <div class="modal-footer border-0 d-flex justify-content-center pt-0 pb-4">
+                    <button type="button" class="btn btn-light rounded-pill px-4 fw-bold" data-bs-dismiss="modal">Batalkan</button>
+                    <a href="{{url('/')}}" class="btn btn-danger rounded-pill px-4 fw-bold shadow-sm">Disconnect</a>
                 </div>
             </div>
         </div>
     </div>
+
+    <!-- Scripts -->
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+    @stack('scripts')
+</body>
 </html>
