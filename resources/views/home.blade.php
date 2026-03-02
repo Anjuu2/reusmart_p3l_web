@@ -641,7 +641,7 @@
         <div class="container d-flex justify-content-between align-items-center">
             
             <a href="{{ url('/') }}" class="navbar-brand">
-                <img src="{{ asset('images/logo2.png') }}" alt="Logo" class="brand-logo">
+                <img src="{{ asset('images/logo.png') }}" alt="Logo" class="brand-logo">
                 <h1 class="brand-text">ReUse<span>Mart</span></h1>
             </a>
 
@@ -860,7 +860,7 @@
                 <div class="col-lg-4 col-md-6">
                     <div class="footer-brand">
                         <a href="{{ url('/') }}" class="navbar-brand text-decoration-none">
-                            <img src="{{ asset('images/logo2.png') }}" alt="Logo" class="brand-logo">
+                            <img src="{{ asset('images/logo.png') }}" alt="Logo" class="brand-logo">
                             <h2 class="brand-text d-inline-block m-0 ms-2">ReUse<span>Mart</span></h2>
                         </a>
                         <p class="footer-desc">
