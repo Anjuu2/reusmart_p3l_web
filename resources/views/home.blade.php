@@ -1,571 +1,719 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="id">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>ReUseMart - Home</title>
+    <title>ReUseMart | Buy, Sell & Donate Sustainably</title>
 
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&family=Outfit:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    
     <!-- Bootstrap CSS -->
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.1/font/bootstrap-icons.css" rel="stylesheet">
+
+    <!-- Swiper CSS for modern sliders -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/swiper@10/swiper-bundle.min.css" />
 
     <style>
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
+        :root {
+            /* Vibrant Modern Palette */
+            --color-primary: #10b981; /* Emerald green */
+            --color-primary-dark: #059669;
+            --color-secondary: #0f172a; /* Slate 900 for dark texts/elements */
+            --color-accent: #f59e0b; /* Amber for highlights/badges */
+            --color-bg: #f8fafc; /* Slate 50 background */
+            --color-surface: #ffffff;
+            --color-text-main: #1e293b;
+            --color-text-light: #64748b;
+            --color-border: #e2e8f0;
+            
+            /* Gradients & Shadows */
+            --gradient-primary: linear-gradient(135deg, #10b981 0%, #059669 100%);
+            --shadow-sm: 0 1px 2px 0 rgb(0 0 0 / 0.05);
+            --shadow-md: 0 4px 6px -1px rgb(0 0 0 / 0.1), 0 2px 4px -2px rgb(0 0 0 / 0.1);
+            --shadow-lg: 0 10px 15px -3px rgb(0 0 0 / 0.1), 0 4px 6px -4px rgb(0 0 0 / 0.1);
+            --shadow-glow: 0 0 20px rgba(16, 185, 129, 0.3);
+            
+            /* Border Radius */
+            --radius-md: 12px;
+            --radius-lg: 20px;
+            --radius-xl: 30px;
+            --radius-pill: 9999px;
         }
 
         body {
-            font-family: Arial, sans-serif;
-            color: #333;
-            background-color: rgba(255, 255, 255, 0.8) !important;
-            backdrop-filter: saturate(150%) blur(30px);
-            z-index: 3;
+            font-family: 'Plus Jakarta Sans', sans-serif;
+            color: var(--color-text-main);
+            background-color: var(--color-bg);
+            -webkit-font-smoothing: antialiased;
+            overflow-x: hidden;
         }
 
-        .container {
-            padding: 0 20px;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            flex-wrap: nowrap; /* agar tidak melipat */
+        h1, h2, h3, h4, h5, h6, .brand-text {
+            font-family: 'Outfit', sans-serif;
+            font-weight: 700;
         }
 
-        .logo {
-            margin-left: -40px;
-            background-color: rgba(111, 143, 70, 1); /* semi-transparan */
-            padding: 8px 12px;
-            border-radius: 50%;
+        a {
+            text-decoration: none;
+            color: inherit;
         }
 
-        header {
-            background-color: rgba(111, 143, 70, 1);
-            padding: 10px 0;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
+        /* -------------------------
+           MODERN NAVBAR
+        -------------------------- */
+        .navbar-glass {
+            background: rgba(255, 255, 255, 0.85);
+            backdrop-filter: blur(12px);
+            -webkit-backdrop-filter: blur(12px);
+            border-bottom: 1px solid rgba(255,255,255,0.3);
+            padding: 15px 0;
             position: sticky;
             top: 0;
-            z-index: 1000;
-            height: 80px; /* atur tinggi navbar */
-            box-shadow: 0 4px 6px -2px rgba(0, 0, 0, 0.1);
+            z-index: 1030;
+            box-shadow: 0 4px 30px rgba(0, 0, 0, 0.03);
+            transition: all 0.3s ease;
         }
 
-        header .logo img {
-            height: 60px;
-            filter: drop-shadow(2px 2px 4px rgba(0, 0, 0, 0.2)); /* efek bayangan */
-            transition: transform 0.3s ease;
-            border-radius: 50%;
-        }
-
-        header .logo img:hover {
-            transform: scale(1.1); 
-            filter: drop-shadow(6px 6px 12px rgba(0, 0, 0, 0.3));
-            cursor: pointer;
-        }
-
-        nav ul {
+        .navbar-brand {
             display: flex;
-            list-style-type: none;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .brand-logo {
+            width: 42px;
+            height: 42px;
+            border-radius: 12px;
+            object-fit: cover;
+            box-shadow: var(--shadow-sm);
+        }
+
+        .brand-text {
+            font-size: 1.5rem;
+            color: var(--color-secondary);
+            letter-spacing: -0.5px;
+            margin: 0;
+        }
+
+        .brand-text span {
+            color: var(--color-primary);
+        }
+
+        .nav-links {
+            display: flex;
+            gap: 32px;
             margin: 0;
             padding: 0;
+            list-style: none;
         }
 
-        nav ul li {
-            margin: 0 20px;
-        }
-
-        nav ul li a {
-            text-decoration: none;
-            color: white
-            font-size: 15px;
+        .nav-links a {
             font-weight: 600;
-        }
-
-        .cart-search {
-            display: flex;
-            align-items: center;
-        }
-
-        .cart-search select,
-        .cart-search input[type="search"] {
-            width: 200px;
-            padding: 8px;
-            border-radius: 20px;
-            border: 1px solid #ccc;
-            margin-right: 10px;
-            outline: none;
-        }
-
-        .cart-search input[type="search"] {
-            width: 200px;
-        }
-
-        .cart-search a img {
-            width: 24px;
-            height: 24px;
-            margin-right: 10px;
-        }
-
-        .cart-search .icons {
-            display: flex;
-            align-items: center;
-        }
-
-        .cart-search .icons a {
-            margin-left: 15px;
-        }
-
-        .navbar-shadow-separator {
-            height: 1px;
-            background-color: #ccc;
-            box-shadow: 0 4px 6px -2px rgba(0, 0, 0, 0.15);
-            margin-bottom: 5px;
-        }
-
-        #carouselExampleCaptions {
-            max-height: 500px;
-            overflow: hidden;
-        }
-
-        .carousel-item {
-            height: 400px;
+            font-size: 0.95rem;
+            color: var(--color-text-light);
+            transition: color 0.2s ease;
             position: relative;
         }
 
-        .carousel-item img {
-            height: 100%;
-            width: 100%;
-            object-fit: cover;
+        .nav-links a:hover, .nav-links a.active {
+            color: var(--color-secondary);
         }
 
-        .carousel-item a:hover img {
-            box-shadow: 0px 4px 20px rgba(0, 0, 0, 0.2);
-            cursor: pointer; /* Menambahkan pointer saat hover */
-        }
-
-        .carousel-caption {
+        .nav-links a::after {
+            content: '';
             position: absolute;
-            bottom: 0;
+            width: 0;
+            height: 2px;
+            bottom: -5px;
             left: 0;
-            right: 0;
-            padding: 15px 30px;
-            background: rgba(0, 0, 0, 0.5); /* latar belakang transparan gelap */
-            color: white;
-            text-align: left;
+            background: var(--gradient-primary);
+            transition: width 0.3s ease;
+            border-radius: 2px;
         }
 
-        .carousel-divider {
-            width: 80%;
-            height: 1px; /* tebal garis */
-            background-color: rgba(111, 143, 70, 1);; /* warna garis */
-            margin: 20px auto; /* jarak dari carousel */
-            box-shadow: 0px 2px 4px rgba(0, 0, 0, 0.1); /* bayangan untuk garis */
-        }
-
-        /* Judul Kategori */
-        .category-title {
-            text-align: center;
-            margin-top: 20px;
-        }
-
-        .category-title h2 {
-            font-size: 28px;
-            font-weight: 600;
-            color: #333;
-        }
-
-        /* Container untuk Kategori */
-        .category-container {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(85px, max-content));
-            gap: 10px;
-            justify-items: center;
-            margin-top: 20px;
-            width: 80%;
-            margin-left: auto;
-            margin-right: auto;
-        }
-
-        /* Setiap Kartu Kategori */
-        .category-card {
-            background-color: #f9f9f9;
-            padding: 8px;
-            border-radius: 15px;
-            text-align: center;
-            box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.1);
-            height: 100px;
-            margin: 0;
-            text-decoration: none;
-        }
-
-        .category-card img {
-            width: 75%;
-            height: 65px;
-            object-fit: cover;
-            border-radius: 10px;
-        }
-
-        .category-card h3 {
-            margin-top: 5px;
-            margin: 2px 0 0 0;
-            font-size: 8px;
-            color: #333;
-            text-decoration: none;
-        }
-
-        .populer-produk{
-            text-align: left;
-            margin-top: 30px;
-            margin-left: 125px;
-        }
-
-        .populer-produk h2 {
-            font-size: 16px;
-            font-weight: 600;
-            color: #333;
-        }
-
-        .product-container {
-            display: flex;  /* Menggunakan Flexbox */
-            justify-content: space-between;  /* Membuat produk bersebelahan dengan jarak yang sama */
-            gap: 10px;  /* Memberikan jarak antar produk */
-            margin-top: 5px;
-            flex-wrap: wrap;  /* Memastikan produk akan membungkus ke baris berikutnya jika ruang tidak cukup */
-            margin-left: 125px;
-            margin-right: 125px;
-        }
-
-        /* Kartu Produk */
-        .product-card {
-            background-color: #fff;
-            border-radius: 10px;
-            box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.1);
-            width: 200px;
-            text-align: center;
-            margin: 10px auto;
-            padding: 10px;
-            display: block;
-            text-decoration: none;
-            color: inherit;
-            border: 2px solid #f1f1f1;
-            width: calc(20% - 10px);
-            margin-bottom: 10px; 
-            height: 400px;
-        }
-
-        .product-card:hover {
-            transform: scale(1.05); /* Memperbesar produk sedikit saat hover */
-        }
-
-        /* Gambar Produk */
-        .product-image {
+        .nav-links a:hover::after, .nav-links a.active::after {
             width: 100%;
-            height: 190px;
-            border-radius: 10px;
-            margin-top: 10px;
-            object-fit: cover;
         }
 
-        .product-card img {
-            height: 170px;
-            width: 100%;
-            object-fit: contain;
-            margin-bottom: 10px;
-        }
-
-        /* Informasi Produk */
-        .product-info {
-            margin-top: 15px;
-            flex-grow: 1;
+        .nav-actions {
             display: flex;
-            flex-direction: column;
-            align-items: flex-start;
+            align-items: center;
+            gap: 12px;
         }
 
-        /* Nama Kategori Produk */
-        .product-category {
-            font-size: 10px;
-            color: #777;
-            text-align: left;
+        .action-btn {
+            width: 44px;
+            height: 44px;
+            border-radius: var(--radius-pill);
+            background: var(--color-surface);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: var(--color-text-main);
+            font-size: 1.2rem;
+            border: 1px solid var(--color-border);
+            transition: all 0.2s ease;
+            position: relative;
         }
 
-        /* Nama Produk */
-        .product-name {
-            font-size: 14px;
+        .action-btn:hover {
+            background: var(--color-primary);
+            color: white;
+            border-color: var(--color-primary);
+            transform: translateY(-2px);
+            box-shadow: var(--shadow-glow);
+        }
+
+        .cart-badge {
+            position: absolute;
+            top: -5px;
+            right: -5px;
+            background: var(--color-accent);
+            color: white;
+            font-size: 0.7rem;
+            font-weight: 800;
+            width: 20px;
+            height: 20px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border-radius: 50%;
+            border: 2px solid var(--color-surface);
+        }
+
+        .btn-primary-custom {
+            background: var(--gradient-primary);
+            color: white;
+            border: none;
+            padding: 10px 24px;
+            border-radius: var(--radius-pill);
             font-weight: 600;
-            color: #333;
-            margin: 10px 0;
+            font-size: 0.95rem;
+            transition: all 0.3s ease;
+            box-shadow: var(--shadow-md);
         }
 
-        /* Rating Produk */
-        .product-rating {
-            font-size: 10px;
-            color: #ff5a5f;
+        .btn-primary-custom:hover {
+            transform: translateY(-2px);
+            box-shadow: var(--shadow-lg), var(--shadow-glow);
+            color: white;
         }
 
-        /* Nama Merek Produk */
-        .product-status {
-            font-size: 11px;
-            color: #777;
-            text-align: left;
+        /* -------------------------
+           HERO BANNER
+        -------------------------- */
+        .hero-section {
+            padding: 24px 0 40px;
         }
 
-        .product-brand {
-            font-size: 11px;
-            color: #777;
+        .hero-banner {
+            position: relative;
+            border-radius: var(--radius-xl);
+            overflow: hidden;
+            background: var(--color-secondary);
+            min-height: 480px;
+            display: flex;
+            align-items: center;
         }
 
-        /* Harga Produk */
-        .product-price {
+        .hero-content {
+            position: relative;
+            z-index: 2;
+            padding: 60px;
+            max-width: 600px;
+            color: white;
+        }
+
+        .hero-badge {
+            display: inline-block;
+            background: rgba(255,255,255,0.15);
+            backdrop-filter: blur(10px);
+            padding: 8px 16px;
+            border-radius: var(--radius-pill);
+            font-size: 0.85rem;
+            font-weight: 600;
+            letter-spacing: 1px;
+            text-transform: uppercase;
+            margin-bottom: 24px;
+            border: 1px solid rgba(255,255,255,0.2);
+        }
+
+        .hero-title {
+            font-size: 3.5rem;
+            line-height: 1.1;
+            margin-bottom: 20px;
+            letter-spacing: -1px;
+        }
+
+        .hero-desc {
+            font-size: 1.1rem;
+            color: rgba(255,255,255,0.8);
+            line-height: 1.6;
+            margin-bottom: 32px;
+        }
+
+        /* Swiper for Hero Background */
+        .hero-swiper {
+            position: absolute !important;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: 1;
+        }
+
+        .hero-swiper::after {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(to right, rgba(15,23,42,0.95) 0%, rgba(15,23,42,0.6) 50%, rgba(15,23,42,0.1) 100%);
+            z-index: 2;
+        }
+
+        .hero-swiper .swiper-slide img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            object-position: center;
+        }
+
+        /* -------------------------
+           CATEGORIES WIDGET
+        -------------------------- */
+        .section-header {
             display: flex;
             justify-content: space-between;
-            align-items: center;
-            margin-top: 10px;
-            width: 100%;
+            align-items: flex-end;
+            margin-bottom: 30px;
+            margin-top: 50px;
         }
 
-        /* Harga Produk (Di kiri) */
-        .price-container {
-            flex: 1;
-            text-align: left;
+        .section-title {
+            font-size: 2rem;
+            letter-spacing: -0.5px;
+            color: var(--color-secondary);
+            margin: 0;
         }
 
-        .current-price {
-            font-size: 13px;
-            font-weight: bold;
-            color: #333;
-            flex-direction: column;
-        }
-
-        .add-to-cart-container {
-            display: flex;
-            justify-content: center;
-            align-items: center;
-        }
-
-        /* Tombol Add to Cart */
-        .add-to-cart {
-            background-color: #F0FFF0;
-            color: #28a745;
-            padding: 5px 10px;
-            border: 2px solid #F0FFF0;;
-            border-radius: 6px;
+        .section-link {
+            font-weight: 600;
+            color: var(--color-primary);
             display: flex;
             align-items: center;
-            font-size: 11px;
+            gap: 5px;
+            transition: gap 0.2s;
+        }
+
+        .section-link:hover {
+            gap: 8px;
+            color: var(--color-primary-dark);
+        }
+
+        .category-swiper {
+            padding: 10px 5px 30px; /* Space for shadow */
+        }
+
+        .category-item {
+            background: var(--color-surface);
+            border-radius: var(--radius-lg);
+            padding: 24px 16px;
+            text-align: center;
+            border: 1px solid var(--color-border);
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            display: block;
             cursor: pointer;
         }
 
-        .add-to-cart img {
-            margin-right: 5px; /* Jarak antara ikon cart dan teks Add */
-            height: 18px;
+        .category-item:hover {
+            transform: translateY(-8px);
+            border-color: var(--color-primary);
+            box-shadow: 0 15px 30px rgba(16, 185, 129, 0.1);
         }
 
-        .add-to-cart:hover {
-            background-color: #ACE1AF;
-        }
-
-        footer {
-            background-color: #f4f4f4;
-            padding: 10px 50px;  
-            border-top: 1px solid rgba(111, 143, 70, 1);;
-            font-size: 14px;
-        }
-
-        .footer-container {
+        .category-icon-wrapper {
+            width: 64px;
+            height: 64px;
+            background: var(--color-bg);
+            border-radius: 50%;
             display: flex;
-            justify-content: space-between;  /* Menempatkan elemen di kiri dan kanan */
             align-items: center;
-            flex-wrap: wrap;
-            gap: 10px;  
+            justify-content: center;
+            margin: 0 auto 16px;
+            transition: transform 0.3s ease;
         }
 
-        .footer-left p {
+        .category-item:hover .category-icon-wrapper {
+            background: #ecfdf5; /* emerald 50 */
+            transform: scale(1.1);
+        }
+
+        .category-icon-wrapper img {
+            width: 32px;
+            height: 32px;
+            object-fit: contain;
+        }
+
+        .category-title {
+            font-weight: 700;
+            font-size: 0.95rem;
+            color: var(--color-secondary);
             margin: 0;
-            font-size: 14px;
-            font-weight: 600;
-            color: #333;
         }
 
-        /* Footer Middle - Social Icons */
-        .footer-middle {
+        /* -------------------------
+           PRODUCT BROWSING
+        -------------------------- */
+        .product-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
+            gap: 24px;
+            margin-bottom: 60px;
+        }
+
+        .product-card {
+            background: var(--color-surface);
+            border-radius: var(--radius-lg);
+            border: 1px solid var(--color-border);
+            overflow: hidden;
+            transition: all 0.3s ease;
             display: flex;
-            justify-content: right;
-            flex: 1;
+            flex-direction: column;
+            position: relative;
         }
 
-        .social-icons {
+        .product-card:hover {
+            transform: translateY(-5px);
+            box-shadow: var(--shadow-lg);
+            border-color: rgba(16, 185, 129, 0.3);
+        }
+
+        .product-media {
+            position: relative;
+            padding-top: 100%; /* 1:1 Aspect Ratio */
+            background: #f1f5f9;
+            overflow: hidden;
+        }
+
+        .product-media img {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            transition: transform 0.5s ease;
+        }
+
+        .product-card:hover .product-media img {
+            transform: scale(1.08);
+        }
+
+        .status-tag {
+            position: absolute;
+            top: 12px;
+            left: 12px;
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(4px);
+            padding: 6px 12px;
+            border-radius: var(--radius-pill);
+            font-size: 0.75rem;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            z-index: 2;
+            box-shadow: var(--shadow-sm);
+        }
+
+        .status-tersedia { color: var(--color-primary); }
+        .status-terjual { color: #ef4444; }
+        .status-donasi { color: var(--color-accent); }
+
+        .product-details {
+            padding: 20px;
             display: flex;
-            gap: 15px;
-            margin-top: 10px;
+            flex-direction: column;
+            flex-grow: 1;
         }
 
-        .social-icon img {
-            width: 21px;
-            height: 21px;
-            transition: transform 0.3s;
+        .product-cat-name {
+            font-size: 0.75rem;
+            font-weight: 700;
+            color: var(--color-text-light);
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            margin-bottom: 8px;
         }
 
-        .social-icon:hover img {
-            transform: scale(1.2);
+        .product-title {
+            font-size: 1.1rem;
+            font-weight: 700;
+            color: var(--color-secondary);
+            margin-bottom: 12px;
+            line-height: 1.4;
+            display: -webkit-box;
+            -webkit-line-clamp: 2;
+            -webkit-box-orient: vertical;
+            overflow: hidden;
         }
 
-        /* Responsive Design */
-        @media (max-width: 768px) {
-            .container {
-                flex-direction: row;
-                justify-content: space-between;
-            }
+        .product-footer {
+            margin-top: auto;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding-top: 16px;
+            border-top: 1px solid var(--color-border);
+        }
 
-            nav ul {
-                margin-top: 15px;
-                flex-direction: row;
-                align-items: center;
-                gap: 15px;
-            }
+        .product-price {
+            font-size: 1.25rem;
+            font-weight: 800;
+            font-family: 'Outfit', sans-serif;
+            color: var(--color-primary);
+        }
 
-            nav ul li {
-                margin: 5px 0;
-            }
+        .btn-add-cart {
+            background: #ecfdf5;
+            color: var(--color-primary);
+            border: none;
+            width: 40px;
+            height: 40px;
+            border-radius: var(--radius-pill);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.2rem;
+            transition: all 0.2s;
+            cursor: pointer;
+        }
 
-            .cart-search input[type="search"] {
-                width: 150px;
-                display: none;
-            }
+        .btn-add-cart:hover {
+            background: var(--color-primary);
+            color: white;
+            transform: scale(1.1) rotate(-5deg);
+        }
 
-            .category-container {
-                grid-template-columns: repeat(6, 1fr);
-            }
+        /* -------------------------
+           FOOTER
+        -------------------------- */
+        .modern-footer {
+            background: var(--color-secondary);
+            color: white;
+            padding: 60px 0 24px;
+            margin-top: auto;
+        }
 
-            .category-card img {
-                width: 65%;
-                height: 45px;
-            }
+        .footer-brand .brand-logo {
+            filter: brightness(0) invert(1);
+        }
 
-            .category-card {
-                height: 90px;
-            }
+        .footer-brand .brand-text {
+            color: white;
+        }
 
-            .populer-produk{
-                text-align: left;
-                margin-top: 20px;
-                margin-left: 65px;
-            }
+        .footer-desc {
+            color: #94a3b8;
+            margin-top: 16px;
+            font-size: 0.95rem;
+            line-height: 1.6;
+            max-width: 300px;
+        }
 
-            .product-container {
-                margin-left: 60px;
-                margin-right: 60px;
-                gap: 1px;
-            }
+        .footer-title {
+            font-size: 1.1rem;
+            margin-bottom: 20px;
+            color: white;
+        }
 
-            .product-card {
-                width: calc(20% - 10px); /* Produk akan lebih besar pada layar kecil */
-                height: 400px;
-                margin-bottom: 10px; /* Menambahkan jarak antara produk */
-                height: 280px;
-                flex-direction: column;
-            }
+        .footer-links {
+            list-style: none;
+            padding: 0;
+            margin: 0;
+        }
 
-            /* Gambar Produk */
-            .product-image {
-                width: 100%;
-                height: 80px;
-                object-fit: cover;
-            }
+        .footer-links li {
+            margin-bottom: 12px;
+        }
 
-            /* Nama Kategori Produk */
-            .product-category {
-                font-size: 6px;
-            }
+        .footer-links a {
+            color: #94a3b8;
+            transition: color 0.2s;
+            font-size: 0.95rem;
+        }
 
-            /* Nama Produk */
-            .product-name {
-                font-size: 9px;
-            }
+        .footer-links a:hover {
+            color: var(--color-primary);
+            text-decoration: none;
+        }
 
-            /* Rating Produk */
-            .product-rating {
-                font-size: 9px;
-            }
+        .social-row {
+            display: flex;
+            gap: 12px;
+        }
 
-            /* Nama Merek Produk */
-            .product-brand {
-                font-size: 8px;
-            }
+        .social-circle {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            background: rgba(255,255,255,0.1);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            transition: all 0.3s;
+        }
 
-            .current-price {
-                font-size: 6px;
-                flex-direction: column;
-            }
+        .social-circle:hover {
+            background: var(--color-primary);
+            transform: translateY(-3px);
+            color: white;
+        }
 
-            /* Tombol Add to Cart */
-            .add-to-cart {
-                padding: 2px 4px;
-                font-size: 6px;
-            }
+        .footer-bottom {
+            margin-top: 60px;
+            padding-top: 24px;
+            border-top: 1px solid rgba(255,255,255,0.1);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            color: #64748b;
+            font-size: 0.85rem;
+        }
 
-            .add-to-cart img {
-                margin-right: 5px; 
-                width: 8px;
-                height: 8px;
-            }
+        /* Sweet Custom Toasts */
+        .toast-container {
+            z-index: 1060;
+        }
+        .toast {
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255,255,255,0.5);
+            border-radius: 16px;
+            box-shadow: 0 15px 35px rgba(0,0,0,0.1);
+            overflow: hidden;
+        }
+        .toast-header {
+            border-bottom: none;
+            padding: 15px 20px 5px;
+            background: transparent;
+        }
+        .toast-body {
+            padding: 5px 20px 20px;
+            font-size: 0.95rem;
+            color: var(--color-text-main);
+        }
 
-            .add-to-cart:hover {
-                background-color: #ACE1AF;
-            }
+        /* Responsive Fixes */
+        @media (max-width: 991px) {
+            .nav-links { display: none; } /* Hide links on tablet/mobile for offcanvas or simpler view */
+            .hero-title { font-size: 2.5rem; }
+            .hero-content { padding: 40px; }
+            .hero-banner { min-height: 400px; }
+        }
 
-            footer {
-                padding: 5px 40px;  
+        @media (max-width: 576px) {
+            .hero-content { padding: 30px 20px; text-align: center; }
+            .hero-title { font-size: 2rem; }
+            .hero-swiper::after {
+                background: linear-gradient(to top, rgba(15,23,42,0.95) 0%, rgba(15,23,42,0.4) 100%);
             }
-
-            .footer-left p {
-                font-size: 10px;
-            }
-
-            .social-icon img {
-                width: 14px;
-                height: 14px;
-            }
+            .section-header { flex-direction: column; align-items: flex-start; gap: 10px; }
+            .product-grid { grid-template-columns: repeat(auto-fill, minmax(160px, 1fr)); gap: 16px; }
+            .product-media { padding-top: 120%; }
+            .product-title { font-size: 0.95rem; }
+            .product-price { font-size: 1.1rem; }
+            .btn-add-cart { width: 34px; height: 34px; font-size: 1rem; }
+            .footer-bottom { flex-direction: column; gap: 10px; text-align: center; }
         }
     </style>
 </head>
 <body>
-    <!-- Header Section -->
-    <header>
-        <div class="container">
-            <div class="logo">
-                <a href="{{ url('/') }}">
-                    <img src="{{ asset('images/logo2.png') }}" alt="Brand Logo">
+
+    <!-- Transparent Glass Navbar -->
+    <nav class="navbar-glass">
+        <div class="container d-flex justify-content-between align-items-center">
+            
+            <a href="{{ url('/') }}" class="navbar-brand">
+                <img src="{{ asset('images/logo2.png') }}" alt="Logo" class="brand-logo">
+                <h1 class="brand-text">ReUse<span>Mart</span></h1>
+            </a>
+
+            <ul class="nav-links d-none d-lg-flex">
+                <li><a href="{{ url('/') }}" class="active">Beranda</a></li>
+                <li><a href="{{ url('/kategori') }}">Koleksi Barang</a></li>
+                <li><a href="/about">Tentang Kami</a></li>
+            </ul>
+
+            <div class="nav-actions">
+                <a href="{{ route('diskusi.index') }}" class="action-btn" title="Diskusi/Pesan">
+                    <i class="bi bi-chat-dots"></i>
                 </a>
-            </div>
-            <nav>
-                <ul>
-                    <li><a href="{{ url('/kategori') }}" style="color: white;">Collection</a></li>
-                    <li><a href="/about" style="color: white;">About Us</a></li>
-                </ul>
-            </nav>
-            <!-- Cart, Search, and Location -->
-            <div class="cart-search">
-                <!-- Icons -->
-                <div class="icons">
-                    <a href="{{ route('keranjang') }}"><img src="https://img.icons8.com/material/24/ffffff/shopping-cart.png" alt="Cart"></a>
-                    <a href="{{ route('diskusi.index') }}"><img src="https://img.icons8.com/?size=100&id=123773&format=png&color=ffffff" alt="Diskusi"></a>
-                    <a href="{{ route(Auth::guard('penitip')->check() ? 'penitip.profil' : 'pembeli.profil') }}">
-                        <img src="https://img.icons8.com/material/24/ffffff/user.png" alt="Account">
+                
+                <a href="{{ route('keranjang') }}" class="action-btn" title="Keranjang">
+                    <i class="bi bi-bag"></i>
+                    <!-- Notifikasi Badge Keranjang jika diperlukan -->
+                    <span class="cart-badge">3</span>
+                </a>
+                
+                <div class="dropdown">
+                    <a href="#" class="action-btn" data-bs-toggle="dropdown" aria-expanded="false">
+                        <i class="bi bi-person"></i>
                     </a>
+                    <ul class="dropdown-menu dropdown-menu-end border-0 shadow-lg" style="border-radius: 16px; padding: 10px;">
+                        @if(Auth::guard('penitip')->check() || Auth::guard('pembeli')->check())
+                            <li>
+                                <a class="dropdown-item rounded-3 py-2 fw-medium" href="{{ route(Auth::guard('penitip')->check() ? 'penitip.profil' : 'pembeli.profil') }}">
+                                    <i class="bi bi-person-circle me-2 text-primary"></i> Profil Saya
+                                </a>
+                            </li>
+                            <li><hr class="dropdown-divider my-2"></li>
+                            <li>
+                                <form id="logout-form" action="{{ route('logout') }}" method="POST" style="display: none;">
+                                    @csrf
+                                </form>
+                                <a href="#" class="dropdown-item rounded-3 py-2 fw-medium text-danger" onclick="
+                                    if(confirm('Yakin ingin keluar?')) {
+                                        event.preventDefault();
+                                        document.getElementById('logout-form').submit();
+                                    }
+                                ">
+                                    <i class="bi bi-box-arrow-right me-2"></i> Keluar
+                                </a>
+                            </li>
+                        @else
+                            <li>
+                                <a class="dropdown-item rounded-3 py-2 fw-medium" href="{{ route('login') }}">
+                                    <i class="bi bi-box-arrow-in-right me-2 text-primary"></i> Masuk
+                                </a>
+                            </li>
+                            <li>
+                                <a class="dropdown-item rounded-3 py-2 fw-medium" href="{{ route('register') }}">
+                                    <i class="bi bi-person-plus me-2 text-success"></i> Daftar
+                                </a>
+                            </li>
+                        @endif
+                    </ul>
                 </div>
             </div>
-        </div>
-    </header>
 
-    {{-- Toast tetap menempel di layar --}}
-    <div class="toast-container position-fixed top-0 end-0 p-3" style="z-index: 1055;">
+        </div>
+    </nav>
+
+    <!-- Toast Notifications -->
+    <div class="toast-container position-fixed top-0 end-0 p-4">
         @if (session('success'))
-            <div id="liveToast" class="toast fade" role="alert" aria-live="assertive" aria-atomic="true">
-                <div class="toast-header bg-success text-white">
-                    <strong class="me-auto">Sukses</strong>
-                    <button type="button" class="btn-close btn-close-white" data-bs-dismiss="toast" aria-label="Close"></button>
+            <div id="liveToast" class="toast" role="alert" aria-live="assertive" aria-atomic="true">
+                <div class="toast-header">
+                    <i class="bi bi-check-circle-fill text-success fs-5 me-2"></i>
+                    <strong class="me-auto text-success" style="font-family: 'Outfit', sans-serif; font-size:1.1rem;">Berhasil</strong>
+                    <button type="button" class="btn-close" data-bs-dismiss="toast" aria-label="Close"></button>
                 </div>
                 <div class="toast-body">
                     {{ session('success') }}
@@ -574,10 +722,11 @@
         @endif
 
         @if (session('warning'))
-            <div id="liveToast" class="toast fade" role="alert" aria-live="assertive" aria-atomic="true">
-                <div class="toast-header bg-danger text-white">
-                    <strong class="me-auto">Peringatan</strong>
-                    <button type="button" class="btn-close btn-close-white" data-bs-dismiss="toast" aria-label="Close"></button>
+            <div id="liveToast" class="toast" role="alert" aria-live="assertive" aria-atomic="true">
+                <div class="toast-header">
+                    <i class="bi bi-exclamation-triangle-fill text-warning fs-5 me-2"></i>
+                    <strong class="me-auto text-warning" style="font-family: 'Outfit', sans-serif; font-size:1.1rem;">Peringatan</strong>
+                    <button type="button" class="btn-close" data-bs-dismiss="toast" aria-label="Close"></button>
                 </div>
                 <div class="toast-body">
                     {{ session('warning') }}
@@ -586,159 +735,229 @@
         @endif
     </div>
 
-    <!-- <div class="navbar-shadow-separator"></div> -->
-    
-    <!-- Main Section -->
+    <!-- Main Content -->
     <main>
-        <div id="carouselExampleCaptions" class="carousel slide">
-            <div class="carousel-indicators">
-                <button type="button" data-bs-target="#carouselExampleCaptions" data-bs-slide-to="0" class="active" aria-current="true" aria-label="Slide 1"></button>
-                <button type="button" data-bs-target="#carouselExampleCaptions" data-bs-slide-to="1" aria-label="Slide 2"></button>
-                <button type="button" data-bs-target="#carouselExampleCaptions" data-bs-slide-to="2" aria-label="Slide 3"></button>
-            </div>
-            <div class="carousel-inner">
-                @foreach($barangs->take(3) as $index => $barang)
-                <div class="carousel-item {{ $index === 0 ? 'active' : '' }}">
-                    <a href="{{ url('product/' . $barang->id_barang) }}">
-                        <img src="{{ asset('images/barang/' . ($barang->fotoBarang->first()->nama_file ?? 'default.jpg')) }}" alt="Foto Barang" class="img-fluid">
-                    </a>
-                    <div class="carousel-caption d-none d-md-block">
-                        <h5>{{ $barang->nama_barang }}</h5>
-                        <p>{{ Str::limit($barang->deskripsi, 100) }}</p>
+        
+        <!-- Hero Section -->
+        <section class="container hero-section">
+            <div class="hero-banner">
+                <!-- Background Swiper -->
+                <div class="swiper hero-swiper">
+                    <div class="swiper-wrapper">
+                        @foreach($barangs->take(3) as $barang)
+                            <div class="swiper-slide">
+                                <img src="{{ asset('images/barang/' . ($barang->fotoBarang->first()->nama_file ?? 'default.jpg')) }}" alt="Slide Image">
+                            </div>
+                        @endforeach
+                        <!-- Fallback if there are no items -->
+                        @if($barangs->isEmpty())
+                            <div class="swiper-slide">
+                                <img src="https://images.unsplash.com/photo-1542838132-92c53300491e?auto=format&fit=crop&q=80&w=1920" alt="Groceries">
+                            </div>
+                        @endif
                     </div>
                 </div>
+
+                <!-- Overlay Content -->
+                <div class="hero-content">
+                    <span class="hero-badge">Tindakan Nyata</span>
+                    <h1 class="hero-title">Kurangi Limbah, Berbagi Manfaat.</h1>
+                    <p class="hero-desc">Beli, jual, atau donasikan barang bekas layak pakai dan ubah yang tak terpakai menjadi peluang baru dengan kualitas terjamin.</p>
+                    <a href="{{ url('/kategori') }}" class="btn-primary-custom d-inline-block">Mulai Jelajah <i class="bi bi-arrow-right ms-2"></i></a>
+                </div>
+            </div>
+        </section>
+
+        <!-- Kategori Section -->
+        <section class="container">
+            <div class="section-header">
+                <h2 class="section-title">Kategori Populer</h2>
+                <a href="{{ url('/kategori') }}" class="section-link">Lihat Semua <i class="bi bi-arrow-right"></i></a>
+            </div>
+
+            <!-- Swiper Container for Categories -->
+            <div class="swiper category-swiper">
+                <div class="swiper-wrapper">
+                    <!-- Setup Array of Categories to Loop nicely -->
+                    @php
+                        $categories = [
+                            ['id'=>1, 'img'=>'laptop.png', 'name'=>'Elektronik'],
+                            ['id'=>2, 'img'=>'baju.png', 'name'=>'Pakaian'],
+                            ['id'=>3, 'img'=>'sofa.png', 'name'=>'Perabotan'],
+                            ['id'=>4, 'img'=>'tas.png', 'name'=>'Sekolah'],
+                            ['id'=>5, 'img'=>'mainan.png', 'name'=>'Hobi'],
+                            ['id'=>6, 'img'=>'bayi.png', 'name'=>'Anak'],
+                            ['id'=>7, 'img'=>'roda.png', 'name'=>'Otomotif'],
+                            ['id'=>8, 'img'=>'tenda.png', 'name'=>'Outdoor'],
+                            ['id'=>9, 'img'=>'kantor.png', 'name'=>'Industri'],
+                            ['id'=>10, 'img'=>'cermin.png', 'name'=>'Kosmetik'],
+                        ];
+                    @endphp
+
+                    @foreach($categories as $cat)
+                    <div class="swiper-slide">
+                        <a href="{{ url('kategori/'.$cat['id']) }}" class="category-item">
+                            <div class="category-icon-wrapper">
+                                <img src="{{ asset('images/kategori/'.$cat['img']) }}" alt="{{ $cat['name'] }}">
+                            </div>
+                            <h3 class="category-title">{{ $cat['name'] }}</h3>
+                        </a>
+                    </div>
+                    @endforeach
+                </div>
+            </div>
+        </section>
+
+        <!-- Produk Section -->
+        <section class="container" style="margin-top: 20px;">
+            <div class="section-header">
+                <h2 class="section-title">Rekomendasi Terbaru</h2>
+                <a href="{{ url('/kategori') }}" class="section-link">Eksplorasi <i class="bi bi-arrow-right"></i></a>
+            </div>
+
+            <div class="product-grid">
+                @foreach($barangs->take(10) as $barang)
+                <a href="{{ url('product/' . $barang->id_barang) }}" class="product-card">
+                    <div class="product-media">
+                        <div class="status-tag 
+                            {{ strtolower($barang->status_barang) === 'tersedia' ? 'status-tersedia' : '' }}
+                            {{ strtolower($barang->status_barang) === 'terjual' ? 'status-terjual' : '' }}">
+                            {{ $barang->status_barang }}
+                        </div>
+                        <img src="{{ asset('images/barang/' . ($barang->fotoBarang->first()->nama_file ?? 'default.jpg')) }}" alt="{{ $barang->nama_barang }}" loading="lazy">
+                    </div>
+                    
+                    <div class="product-details">
+                        <span class="product-cat-name">{{ $barang->kategori->nama_kategori ?? 'Umum' }}</span>
+                        <h3 class="product-title">{{ $barang->nama_barang }}</h3>
+                        
+                        <div class="product-footer">
+                            <span class="product-price">Rp{{ number_format($barang->harga_jual, 0, ',', '.') }}</span>
+                            
+                            <!-- Beli/Keranjang using object tag trick so the whole card remains clickable -->
+                            <object>
+                                <form action="{{ route('keranjang.tambah') }}" method="POST" style="margin: 0;">
+                                    @csrf
+                                    <input type="hidden" name="id_barang" value="{{ $barang->id_barang }}">
+                                    <button type="submit" class="btn-add-cart" aria-label="Tambahkan ke Keranjang">
+                                        <i class="bi bi-basket3-fill"></i>
+                                    </button>
+                                </form>
+                            </object>
+                        </div>
+                    </div>
+                </a>
                 @endforeach
             </div>
-            <button class="carousel-control-prev" type="button" data-bs-target="#carouselExampleCaptions" data-bs-slide="prev">
-                <span class="carousel-control-prev-icon" aria-hidden="true"></span>
-                <span class="visually-hidden">Previous</span>
-            </button>
-            <button class="carousel-control-next" type="button" data-bs-target="#carouselExampleCaptions" data-bs-slide="next">
-                <span class="carousel-control-next-icon" aria-hidden="true"></span>
-                <span class="visually-hidden">Next</span>
-            </button>
-        </div>
-
-        <div class="carousel-divider"></div>
-
-        <div class="category-title">
-            <h2>Kategori</h2>
-        </div>
-
-        <!-- Featured Categories -->
-        <div class="category-container">
-            <!-- Category 1 -->
-            <a href="{{ url('kategori/1') }}" class="category-card">
-                <img src="{{ asset('images/kategori/laptop.png') }}" alt="Elektronik & Gadget">
-                <h3>Elektronik & Gadget</h3>
-            </a>
-            <!-- Category 2 -->
-            <a href="{{ url('kategori/2') }}" class="category-card">
-                <img src="{{ asset('images/kategori/baju.png') }}" alt="Pakaian & Aksesori">
-                <h3>Pakaian & Aksesori</h3>
-            </a>
-            <!-- Category 3 -->
-            <a href="{{ url('kategori/3') }}" class="category-card">
-                <img src="{{ asset('images/kategori/sofa.png') }}" alt="Perabotan Rumah Tangga">
-                <h3>Perabotan Rumah Tangga</h3>
-            </a>
-            <!-- Category 4 -->
-            <a href="{{ url('kategori/4') }}" class="category-card">
-                <img src="{{ asset('images/kategori/tas.png') }}" alt="Buku & Peralatan Sekolah">
-                <h3>Buku, Alat Tulis, Peralatan Sekolah</h3>
-            </a>
-            <!-- Category 5 -->
-            <a href="{{ url('kategori/5') }}" class="category-card">
-                <img src="{{ asset('images/kategori/mainan.png') }}" alt="Hobi & Mainan">
-                <h3>Hobi, Mainan, Koleksi</h3>
-            </a>
-            <!-- Category 6 -->
-            <a href="{{ url('kategori/6') }}" class="category-card">
-                <img src="{{ asset('images/kategori/bayi.png') }}" alt="Perlengkapan Bayi & Anak">
-                <h3>Perlengkapan Bayi & Anak</h3>
-            </a>
-            <!-- Category 7 -->
-            <a href="{{ url('kategori/7') }}" class="category-card">
-                <img src="{{ asset('images/kategori/roda.png') }}" alt="Otomotif & Aksesori">
-                <h3>Otomotif & Aksesori</h3>
-            </a>
-            <!-- Category 8 -->
-            <a href="{{ url('kategori/8') }}" class="category-card">
-                <img src="{{ asset('images/kategori/tenda.png') }}" alt="Perlengkapan Taman & Outdoor">
-                <h3>Perlengkapan Taman & Outdoor</h3>
-            </a>
-            <!-- Category 9 -->
-            <a href="{{ url('kategori/9') }}" class="category-card">
-                <img src="{{ asset('images/kategori/kantor.png') }}" alt="Peralatan Kantor & Industri">
-                <h3>Peralatan Kantor & Industri</h3>
-            </a>
-            <!-- Category 10 -->
-            <a href="{{ url('kategori/10') }}" class="category-card">
-                <img src="{{ asset('images/kategori/cermin.png') }}" alt="Kosmetik & Perawatan Diri">
-                <h3>Kosmetik & Perawatan Diri</h3>
-            </a>
-        </div>
-
-        <div class="product-container">
-            @foreach($barangs->take(10) as $barang)
-            <a href="{{ url('product/' . $barang->id_barang) }}" class="product-card">
-                <img src="{{ asset('images/barang/' . ($barang->fotoBarang->first()->nama_file ?? 'default.jpg')) }}" alt="Foto Barang" class="img-fluid">
-                <div class="product-info">
-                    <p class="product-category">{{ $barang->kategori->nama_kategori ?? 'Kategori Tidak Ada' }}</p>
-                    <h3 class="product-name">{{ $barang->nama_barang }}</h3>
-                    <!-- <div class="product-rating">
-                        <span>★ ({{ rand(4,5) }}.{{ rand(0,9) }})</span>
-                    </div> -->
-                    <p class="product-status">{{ $barang->status_barang }}</p>
-                </div>
-                <div class="product-price">
-                    <div class="price-container">
-                        <span class="current-price">Rp{{ number_format($barang->harga_jual, 0, ',', '.') }}</span>
-                    </div>
-                    <div class="add-to-cart-container">
-                        <form action="{{ route('keranjang.tambah') }}" method="POST">
-                            @csrf
-                            <input type="hidden" name="id_barang" value="{{ $barang->id_barang }}">
-                            <button type="submit" class="add-to-cart">
-                                <img src="https://img.icons8.com/material/24/007848/shopping-cart.png" alt="Cart">
-                                    Add
-                            </button>
-                        </form>
-                    </div>
-                </div>
-            </a>
-            @endforeach
-        </div>
+        </section>
+        
     </main>
 
-    <!-- Footer Section -->
-    <footer>
-        <div class="footer-container">
-            <div class="footer-left">
-                <p>© 2025 ReUseMart. All rights reserved.</p>
-            </div>
-            <div class="footer-middle">
-                <div class="social-icons">
-                    <a href="#" class="social-icon"><img src="https://img.icons8.com/material/24/000000/facebook.png" alt="Facebook"></a>
-                    <a href="#" class="social-icon"><img src="https://img.icons8.com/material/24/000000/twitter.png" alt="Twitter"></a>
-                    <a href="#" class="social-icon"><img src="https://img.icons8.com/material/24/000000/instagram.png" alt="Instagram"></a>
-                    <a href="#" class="social-icon"><img src="https://img.icons8.com/material/24/000000/pinterest.png" alt="Pinterest"></a>
-                    <a href="#" class="social-icon"><img src="https://img.icons8.com/material/24/000000/youtube.png" alt="YouTube"></a>
+    <!-- Footer -->
+    <footer class="modern-footer">
+        <div class="container">
+            <div class="row gy-5">
+                <div class="col-lg-4 col-md-6">
+                    <div class="footer-brand">
+                        <a href="{{ url('/') }}" class="navbar-brand text-decoration-none">
+                            <img src="{{ asset('images/logo2.png') }}" alt="Logo" class="brand-logo">
+                            <h2 class="brand-text d-inline-block m-0 ms-2">ReUse<span>Mart</span></h2>
+                        </a>
+                        <p class="footer-desc">
+                            Platform modern dan berkelanjutan untuk menjual, membeli, dan mendonasikan barang bekas berkualitas. Mari kurangi limbah bersama.
+                        </p>
+                    </div>
                 </div>
+                
+                <div class="col-lg-2 col-md-6 col-6">
+                    <h4 class="footer-title">Jelajahi</h4>
+                    <ul class="footer-links">
+                        <li><a href="{{ url('/kategori') }}">Koleksi Terbaru</a></li>
+                        <li><a href="#popular">Produk Populer</a></li>
+                        <li><a href="#">Cara Jual Barang</a></li>
+                        <li><a href="#">Bantu Donasi</a></li>
+                    </ul>
+                </div>
+                
+                <div class="col-lg-2 col-md-6 col-6">
+                    <h4 class="footer-title">Perusahaan</h4>
+                    <ul class="footer-links">
+                        <li><a href="/about">Tentang Kami</a></li>
+                        <li><a href="#">Kontak</a></li>
+                        <li><a href="#">Karir</a></li>
+                        <li><a href="#">Kebijakan Privasi</a></li>
+                    </ul>
+                </div>
+
+                <div class="col-lg-4 col-md-6">
+                    <h4 class="footer-title">Ikuti Kami</h4>
+                    <p class="footer-desc mb-4" style="max-width: 100%;">Dapatkan info terbaru tentang promo, perlindungan konsumen, dan kegiatan komunitas ReUseMart.</p>
+                    <div class="social-row">
+                        <a href="#" class="social-circle"><i class="bi bi-instagram"></i></a>
+                        <a href="#" class="social-circle"><i class="bi bi-twitter-x"></i></a>
+                        <a href="#" class="social-circle"><i class="bi bi-facebook"></i></a>
+                        <a href="#" class="social-circle"><i class="bi bi-youtube"></i></a>
+                    </div>
+                </div>
+            </div>
+
+            <div class="footer-bottom">
+                <span>&copy; {{ date('Y') }} ReUseMart Indonesia. All rights reserved.</span>
+                <span>
+                    Made with <i class="bi bi-heart-fill text-danger mx-1"></i> for the Environment
+                </span>
             </div>
         </div>
     </footer>
 
-    <!-- Bootstrap JS and dependencies (Popper.js and Bootstrap JS) -->
-    <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.11.6/dist/umd/popper.min.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.min.js"></script>
+    <!-- Scripts -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/swiper@10/swiper-bundle.min.js"></script>
 
     <script>
-        const toastLive = document.getElementById('liveToast');
-            if (toastLive) {
-                const toast = new bootstrap.Toast(toastLive);
-                toast.show();
-            }
+        document.addEventListener('DOMContentLoaded', function () {
+            // Initialize Bootstrap Toasts
+            const toastElList = [].slice.call(document.querySelectorAll('.toast'));
+            const toastList = toastElList.map(function (toastEl) {
+                return new bootstrap.Toast(toastEl, { delay: 4000 });
+            });
+            toastList.forEach(toast => toast.show());
+
+            // Initialize Swiper for Hero
+            new Swiper('.hero-swiper', {
+                loop: true,
+                effect: 'fade',
+                autoplay: {
+                    delay: 5000,
+                    disableOnInteraction: false,
+                },
+                speed: 1000,
+            });
+
+            // Initialize Swiper for Categories
+            new Swiper('.category-swiper', {
+                slidesPerView: 2,
+                spaceBetween: 15,
+                freeMode: true,
+                breakpoints: {
+                    480: { slidesPerView: 3, spaceBetween: 20 },
+                    768: { slidesPerView: 5, spaceBetween: 20 },
+                    1024: { slidesPerView: 7, spaceBetween: 24 },
+                }
+            });
+
+            // Navbar Blur Effect on Scroll
+            window.addEventListener('scroll', function() {
+                var navbar = document.querySelector('.navbar-glass');
+                if (window.scrollY > 50) {
+                    navbar.style.background = 'rgba(255, 255, 255, 0.95)';
+                    navbar.style.boxShadow = '0 10px 30px rgba(0,0,0,0.05)';
+                } else {
+                    navbar.style.background = 'rgba(255, 255, 255, 0.85)';
+                    navbar.style.boxShadow = '0 4px 30px rgba(0, 0, 0, 0.03)';
+                }
+            });
+        });
     </script>
 </body>
 </html>

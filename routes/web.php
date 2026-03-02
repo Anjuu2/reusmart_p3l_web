@@ -238,7 +238,7 @@ Route::get('/cek-session', function () {
 
 Route::get('/register', function () {
     return view('register');
-});
+})->name('register');
 
 Route::post('/register/pembeli', [PembeliController::class, 'store'])->name('pembeli.register');
 Route::post('/register/organisasi', [OrganisasiController::class, 'store'])->name('organisasi.register');

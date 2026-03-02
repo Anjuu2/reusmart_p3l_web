@@ -1,467 +1,401 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="id">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>ReUseMart - Home</title>
+    <title>Pembayaran | ReUseMart</title>
 
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&family=Outfit:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    
     <!-- Bootstrap CSS -->
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.1/font/bootstrap-icons.css" rel="stylesheet">
 
     <style>
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
+        :root {
+            --color-primary: #10b981; 
+            --color-primary-dark: #059669;
+            --color-secondary: #0f172a; 
+            --color-accent: #f59e0b; 
+            --color-bg: #f8fafc; 
+            --color-surface: #ffffff;
+            --color-text-main: #1e293b;
+            --color-text-light: #64748b;
+            --color-border: #e2e8f0;
+            
+            --gradient-primary: linear-gradient(135deg, #10b981 0%, #059669 100%);
+            --shadow-sm: 0 1px 2px 0 rgb(0 0 0 / 0.05);
+            --shadow-md: 0 4px 6px -1px rgb(0 0 0 / 0.1), 0 2px 4px -2px rgb(0 0 0 / 0.1);
+            --shadow-lg: 0 10px 15px -3px rgb(0 0 0 / 0.1), 0 4px 6px -4px rgb(0 0 0 / 0.1);
+            --radius-md: 12px;
+            --radius-lg: 20px;
+            --radius-pill: 9999px;
         }
-
 
         body {
-            font-family: Arial, sans-serif;
-            color: #333;
-            background-color: rgba(255, 255, 255, 0.8) !important;
-            backdrop-filter: saturate(150%) blur(30px);
-            z-index: 3;
-        }
-
-        .container {
-            padding: 0 20px;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            flex-wrap: nowrap; /* agar tidak melipat */
-        }
-
-        .logo {
-            margin-left: -40px;
-            background-color: rgba(111, 143, 70, 1); /* semi-transparan */
-            padding: 8px 12px;
-            border-radius: 50%;
-        }
-
-        header {
-            background-color: rgba(111, 143, 70, 1);
-            padding: 10px 0;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            position: sticky;
-            top: 0;
-            z-index: 1000;
-            height: 80px; /* atur tinggi navbar */
-            box-shadow: 0 4px 6px -2px rgba(0, 0, 0, 0.1);
-        }
-
-        header .logo img {
-            height: 60px;
-            filter: drop-shadow(2px 2px 4px rgba(0, 0, 0, 0.2)); /* efek bayangan */
-            transition: transform 0.3s ease;
-            border-radius: 50%;
-        }
-
-        header .logo img:hover {
-            transform: scale(1.1); 
-            filter: drop-shadow(6px 6px 12px rgba(0, 0, 0, 0.3));
-            cursor: pointer;
-        }
-
-        nav ul {
-            display: flex;
-            list-style-type: none;
-            margin: 0;
-            padding: 0;
-        }
-
-        nav ul li {
-            margin: 0 20px;
-        }
-
-        nav ul li a {
-            text-decoration: none;
-            color: white
-            font-size: 15px;
-            font-weight: 600;
-        }
-
-        .cart-search {
-            display: flex;
-            align-items: center;
-        }
-
-        .cart-search select,
-        .cart-search input[type="search"] {
-            width: 200px;
-            padding: 8px;
-            border-radius: 20px;
-            border: 1px solid #ccc;
-            margin-right: 10px;
-            outline: none;
-        }
-
-        .cart-search input[type="search"] {
-            width: 200px;
-        }
-
-        .cart-search a img {
-            width: 24px;
-            height: 24px;
-            margin-right: 10px;
-        }
-
-        .cart-search .icons {
-            display: flex;
-            align-items: center;
-        }
-
-        .cart-search .icons a {
-            margin-left: 15px;
-        }
-
-        .navbar-shadow-separator {
-            height: 1px;
-            background-color: #ccc;
-            box-shadow: 0 4px 6px -2px rgba(0, 0, 0, 0.15);
-            margin-bottom: 5px;
-        }
-
-        .category-title h2 {
-            font-size: 28px;
-            font-weight: 600;
-            color: #333;
-        }
-
-        .add-to-cart-container {
-            display: flex;
-            justify-content: flex-end;
-        }
-
-        /* Tombol Add to Cart */
-        .add-to-cart {
-            background-color: #F0FFF0;
-            color: #28a745;
-            padding: 5px 10px;
-            border: 2px solid #F0FFF0;;
-            border-radius: 6px;
-            display: flex;
-            align-items: center;
-            font-size: 11px;
-            cursor: pointer;
-        }
-
-        .add-to-cart img {
-            margin-right: 10px; /* Jarak antara ikon cart dan teks Add */
-        }
-
-        .add-to-cart:hover {
-            background-color: #ACE1AF;
-        }
-
-        footer {
-            background-color: #f4f4f4;
-            padding: 10px 50px;  
-            border-top: 1px solid rgba(111, 143, 70, 1);;
-            font-size: 14px;
-        }
-
-        .footer-container {
-            display: flex;
-            justify-content: space-between;  /* Menempatkan elemen di kiri dan kanan */
-            align-items: center;
-            flex-wrap: wrap;
-            gap: 10px;  
-        }
-
-        .footer-left p {
-            margin: 0;
-            font-size: 14px;
-            font-weight: 600;
-            color: #333;
-        }
-
-        /* Footer Middle - Social Icons */
-        .footer-middle {
-            display: flex;
-            justify-content: right;
-            flex: 1;
-        }
-
-        .social-icons {
-            display: flex;
-            gap: 15px;
-            margin-top: 10px;
-        }
-
-        .social-icon img {
-            width: 21px;
-            height: 21px;
-            transition: transform 0.3s;
-        }
-
-        .social-icon:hover img {
-            transform: scale(1.2);
-        }
-
-        .container-main{
+            font-family: 'Plus Jakarta Sans', sans-serif;
+            color: var(--color-text-main);
+            background-color: var(--color-bg);
+            -webkit-font-smoothing: antialiased;
             display: flex;
             flex-direction: column;
-            justify-content: flex-start;
-            align-items: flex-start;
+            min-height: 100vh;
         }
 
-        /* Responsive Design */
-        @media (max-width: 768px) {
-            .container {
-                flex-direction: row;
-                justify-content: space-between;
-            }
-
-            nav ul {
-                margin-top: 15px;
-                flex-direction: row;
-                align-items: center;
-                gap: 15px;
-            }
-
-            nav ul li {
-                margin: 5px 0;
-            }
-
-            .cart-search input[type="search"] {
-                width: 150px;
-                display: none;
-            }
-
-            .category-container {
-                grid-template-columns: repeat(6, 1fr);
-            }
-
-            .category-card img {
-                width: 65%;
-                height: 45px;
-            }
-
-            .category-card {
-                height: 90px;
-            }
-
-            /* Gambar Produk */
-            .product-image {
-                width: 100%;
-                height: 80px;
-                object-fit: cover;
-            }
-
-            /* Nama Kategori Produk */
-            .product-category {
-                font-size: 6px;
-            }
-
-            /* Nama Produk */
-            .product-name {
-                font-size: 9px;
-            }
-
-            /* Rating Produk */
-            .product-rating {
-                font-size: 9px;
-            }
-
-            /* Nama Merek Produk */
-            .product-brand {
-                font-size: 8px;
-            }
-
-            .current-price {
-                font-size: 6px;
-                flex-direction: column;
-            }
-
-            /* Tombol Add to Cart */
-            .add-to-cart {
-                padding: 2px 4px;
-                font-size: 6px;
-            }
-
-            .add-to-cart img {
-                margin-right: 5px; 
-                width: 8px;
-                height: 8px;
-            }
-
-            .add-to-cart:hover {
-                background-color: #ACE1AF;
-            }
-
-            footer {
-                padding: 5px 40px;  
-            }
-
-            .footer-left p {
-                font-size: 10px;
-            }
-
-            .social-icon img {
-                width: 14px;
-                height: 14px;
-            }
+        h1, h2, h3, h4, h5, h6, .brand-text {
+            font-family: 'Outfit', sans-serif;
+            font-weight: 700;
         }
 
-        .cartList{
-            padding: 30px 150px;
+        a { text-decoration: none; color: inherit; }
+
+        /* HEADER & NAVBAR */
+        .navbar-glass {
+            background: rgba(255, 255, 255, 0.85);
+            backdrop-filter: blur(12px);
+            -webkit-backdrop-filter: blur(12px);
+            border-bottom: 1px solid rgba(255,255,255,0.3);
+            padding: 15px 0;
+            position: sticky;
+            top: 0;
+            z-index: 1030;
+            box-shadow: 0 4px 30px rgba(0, 0, 0, 0.03);
+            transition: all 0.3s ease;
         }
 
-        .product-title:hover {
-            color:rgb(104, 242, 136) !important;
+        .brand-logo { width: 42px; height: 42px; border-radius: 12px; object-fit: cover; box-shadow: var(--shadow-sm); }
+        .brand-text { font-size: 1.5rem; color: var(--color-secondary); margin: 0; letter-spacing: -0.5px;}
+        .brand-text span { color: var(--color-primary); }
+
+        .nav-links { display: flex; gap: 32px; margin: 0; padding: 0; list-style: none; }
+        .nav-links a { font-weight: 600; font-size: 0.95rem; color: var(--color-text-light); transition: color 0.2s; position: relative;}
+        .nav-links a:hover, .nav-links a.active { color: var(--color-secondary); }
+
+        .nav-actions { display: flex; align-items: center; gap: 12px; }
+        .action-btn {
+            width: 44px; height: 44px; border-radius: var(--radius-pill); background: var(--color-surface);
+            display: flex; align-items: center; justify-content: center; color: var(--color-text-main);
+            font-size: 1.2rem; border: 1px solid var(--color-border); transition: all 0.2s ease;
         }
+        .action-btn:hover { background: var(--color-primary); color: white; border-color: var(--color-primary); transform: translateY(-2px); box-shadow: var(--shadow-glow);}
+
+        /* PAGE SPECIFIC */
+        .payment-wrapper {
+            max-width: 600px;
+            margin: 60px auto;
+        }
+
+        .invoice-card {
+            background: var(--color-surface);
+            border-radius: var(--radius-lg);
+            border: 1px solid var(--color-border);
+            padding: 40px;
+            box-shadow: var(--shadow-lg);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .invoice-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 6px;
+            background: var(--gradient-primary);
+        }
+
+        .timer-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            background: #fffbeb;
+            border: 1px solid #fde68a;
+            border-radius: var(--radius-md);
+            padding: 16px 20px;
+            margin-bottom: 30px;
+        }
+        .timer-title h4 { font-size: 1.1rem; color: #b45309; margin: 0; display: flex; align-items: center; gap: 8px;}
+        .timer-title small { font-size: 0.85rem; color: #d97706; font-weight: 600; font-family: 'Plus Jakarta Sans', sans-serif;}
+
+        .countdown-boxes { display: flex; gap: 8px;}
+        .cd-box {
+            background: #ef4444; color: white; padding: 8px 16px; border-radius: 8px; font-weight: 700; font-variant-numeric: tabular-nums;
+            box-shadow: 0 4px 10px rgba(239, 68, 68, 0.3); font-size: 1.1rem; min-width: 60px; text-align: center;
+        }
+
+        .detail-row {
+            margin-bottom: 24px;
+        }
+        .detail-label {
+            font-size: 0.9rem;
+            color: var(--color-text-light);
+            font-weight: 600;
+            margin-bottom: 8px;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+        .va-number {
+            font-family: 'Outfit', sans-serif;
+            font-size: 2rem;
+            font-weight: 800;
+            color: var(--color-secondary);
+            letter-spacing: 2px;
+            background: #f1f5f9;
+            padding: 16px;
+            border-radius: var(--radius-md);
+            text-align: center;
+            border: 2px dashed #cbd5e1;
+            margin: 0;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 15px;
+        }
+        
+        .copy-btn {
+            background: var(--color-surface);
+            border: 1px solid var(--color-border);
+            border-radius: 8px;
+            padding: 6px 12px;
+            font-size: 0.9rem;
+            color: var(--color-text-main);
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+        .copy-btn:hover { background: var(--color-primary); color: white; border-color: var(--color-primary); }
+
+        .total-amount {
+            font-family: 'Outfit', sans-serif;
+            font-size: 2.5rem;
+            font-weight: 800;
+            color: var(--color-primary-dark);
+            margin: 0;
+            text-align: center;
+        }
+
+        hr.dashed {
+            border: none;
+            border-top: 2px dashed var(--color-border);
+            margin: 30px 0;
+        }
+
+        .file-upload-box {
+            border: 2px dashed var(--color-primary);
+            border-radius: var(--radius-md);
+            padding: 30px;
+            text-align: center;
+            background: #f1fdfaa6;
+            transition: all 0.3s ease;
+            cursor: pointer;
+            position: relative;
+        }
+        .file-upload-box:hover { background: #ecfdf5; border-color: var(--color-primary-dark); }
+        .file-upload-input {
+            position: absolute; top: 0; left: 0; width: 100%; height: 100%; opacity: 0; cursor: pointer;
+        }
+        .file-upload-icon { font-size: 2.5rem; color: var(--color-primary); margin-bottom: 10px; }
+        .file-upload-text { font-weight: 600; color: var(--color-primary-dark); margin-bottom: 5px; }
+        .file-upload-help { font-size: 0.85rem; color: var(--color-text-light); margin: 0; }
+
+        .btn-pay {
+            background: var(--gradient-primary);
+            color: white;
+            border: none;
+            width: 100%;
+            padding: 16px;
+            border-radius: var(--radius-md);
+            font-weight: 700;
+            font-size: 1.1rem;
+            margin-top: 20px;
+            transition: all 0.3s ease;
+        }
+        .btn-pay:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 20px rgba(16, 185, 129, 0.3);
+            color: white;
+        }
+
+        /* CUSTOM FOOTER */
+        .footer {
+            background: var(--color-surface);
+            border-top: 1px solid var(--color-border);
+            padding: 40px 0 20px;
+            margin-top: auto;
+        }
+        .footer-brand .brand-logo { width: 36px; height: 36px; }
+        .footer-text { color: var(--color-text-light); font-size: 0.95rem; line-height: 1.6; }
+        .footer-bottom { border-top: 1px solid var(--color-border); margin-top: 30px; padding-top: 20px; display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 15px;}
+        .footer-bottom p { margin: 0; color: var(--color-text-light); font-size: 0.9rem; }
 
     </style>
 </head>
 <body>
-    <!-- Header Section -->
-    <header>
-        <div class="container">
-            <div class="logo">
-                <a href="{{ url('/') }}">
-                    <img src="{{ asset('images/logo2.png') }}" alt="Brand Logo">
+
+    <!-- NAVBAR GLASS -->
+    <nav class="navbar-glass">
+        <div class="container d-flex justify-content-between align-items-center">
+            <a href="{{ url('/') }}" class="d-flex align-items-center gap-2 text-decoration-none">
+                <img src="{{ asset('images/logo2.png') }}" alt="ReUseMart" class="brand-logo">
+                <h1 class="brand-text d-none d-sm-block">ReUse<span>Mart</span></h1>
+            </a>
+
+            <ul class="nav-links">
+                <li><a href="{{ url('/') }}">Beranda</a></li>
+                <li><a href="{{ url('/kategori') }}">Koleksi</a></li>
+                <li><a href="{{ url('/about') }}">Tentang Kami</a></li>
+            </ul>
+
+            <div class="nav-actions">
+                <a href="{{ route('keranjang') }}" class="action-btn text-decoration-none" title="Keranjang">
+                    <i class="bi bi-cart3"></i>
+                </a>
+                <a href="{{ route('diskusi.index') }}" class="action-btn text-decoration-none" title="Pesan">
+                    <i class="bi bi-chat-dots"></i>
+                </a>
+                <a href="{{ route(Auth::guard('penitip')->check() ? 'penitip.profil' : 'pembeli.profil') }}" class="action-btn text-decoration-none" title="Profil Kami">
+                    <i class="bi bi-person"></i>
                 </a>
             </div>
-            <nav>
-                <ul>
-                    <li><a href="{{ url('/kategori') }}" style="color: white;">Collection</a></li>
-                    <li><a href="/about" style="color: white;">About Us</a></li>
-                </ul>
-            </nav>
-            <!-- Cart, Search, and Location -->
-            <div class="cart-search">
-                <!-- Icons -->
-                <div class="icons">
-                    <a href="{{ route('keranjang') }}"><img src="https://img.icons8.com/material/24/ffffff/shopping-cart.png" alt="Cart"></a>
-                    <a href="{{ route('diskusi.index') }}"><img src="https://img.icons8.com/?size=100&id=123773&format=png&color=ffffff" alt="Diskusi"></a>
-                    <a href="{{ route('pembeli.profil') }}"><img src="https://img.icons8.com/material/24/ffffff/user.png" alt="Account"></a>
-                </div>
-            </div>
         </div>
-    </header>
+    </nav>
 
+    <!-- TOAST NOTIFICATIONS -->
     <div class="toast-container position-fixed top-0 end-0 p-3" style="z-index: 1055;">
         @if (session('success'))
-            <div id="liveToast" class="toast fade" role="alert" aria-live="assertive" aria-atomic="true">
-                <div class="toast-header bg-success text-white">
-                    <strong class="me-auto">Sukses</strong>
-                    <button type="button" class="btn-close btn-close-white" data-bs-dismiss="toast" aria-label="Close"></button>
-                </div>
-                <div class="toast-body">
-                    {{ session('success') }}
+            <div id="liveToast" class="toast align-items-center text-bg-success border-0 fade show" role="alert" aria-live="assertive" aria-atomic="true">
+                <div class="d-flex">
+                    <div class="toast-body fw-bold">
+                        <i class="bi bi-check-circle me-2"></i> {{ session('success') }}
+                    </div>
+                    <button type="button" class="btn-close btn-close-white me-2 m-auto" data-bs-dismiss="toast" aria-label="Close"></button>
                 </div>
             </div>
         @endif
 
         @if (session('error'))
-            <div id="liveToast" class="toast fade" role="alert" aria-live="assertive" aria-atomic="true">
-                <div class="toast-header bg-danger text-white">
-                    <strong class="me-auto">Peringatan</strong>
-                    <button type="button" class="btn-close btn-close-white" data-bs-dismiss="toast" aria-label="Close"></button>
-                </div>
-                <div class="toast-body">
-                    {{ session('error') }}
+            <div id="liveToast" class="toast align-items-center text-bg-danger border-0 fade show" role="alert" aria-live="assertive" aria-atomic="true">
+                <div class="d-flex">
+                    <div class="toast-body fw-bold">
+                        <i class="bi bi-exclamation-triangle-fill me-2"></i> {{ session('error') }}
+                    </div>
+                    <button type="button" class="btn-close btn-close-white me-2 m-auto" data-bs-dismiss="toast" aria-label="Close"></button>
                 </div>
             </div>
         @endif
     </div>
 
-    <!-- <div class="navbar-shadow-separator"></div> -->
-    
-    <!-- Main Section -->
-    <main>
-        <div class="cartList mx-auto mt-8">
-                <div class="border rounded-lg p-4 mt-4 mb-4 flex flex-col space-y-2">
-                    <div class="d-flex align-items-center mb-3 justify-content-between w-100">
-                        <!-- kiri: icon + teks -->
-                        <div class="d-flex align-items-center">
-                                <span class="badge bg-warning text-dark me-2" style="font-size:1.5rem">
-                                <i class="bi bi-clock-history"></i>
-                            </span>
-                            <div>
-                                <h4 class="mb-0 fw-bold">Bayar sebelum</h4>
-                                <small class="text-muted">{{ $tanggalTransaksiPlus1Menit->format('d M Y, H:i') }}</small>
-                            </div>
-                        </div>
+    <!-- CONTENT -->
+    <main class="container">
+        <div class="payment-wrapper">
+            
+            <div class="text-center mb-4">
+                <h1 class="page-title">Selesaikan <span>Pembayaran</span></h1>
+                <p class="text-muted mt-2">Segera lakukan pembayaran sebelum batas waktu berakhir.</p>
+            </div>
 
-                        <!-- kanan: countdown menempel di ujung kanan -->
-                        <div class="d-flex gap-2">
-                            <div id="countdown-minutes" class="bg-danger text-white px-3 py-1 rounded text-center" style="min-width:70px">1m</div>
-                            <div id="countdown-seconds" class="bg-danger text-white px-3 py-1 rounded text-center" style="min-width:70px">00s</div>
-                        </div>
+            <div class="invoice-card">
+                
+                <!-- TIMER -->
+                <div class="timer-header">
+                    <div class="timer-title">
+                        <h4><i class="bi bi-clock-history"></i> Bayar Sebelum</h4>
+                        <small>{{ $tanggalTransaksiPlus1Menit->format('d M Y, H:i') }} WIB</small>
                     </div>
-
-                    <!-- Pesan Peringatan -->
-                    <div class="alert alert-warning py-2" role="alert" style="font-size: 0.9rem">
-                        <strong>Tinggal selangkah lagi untuk menyelesaikan pesananmu</strong><br />
-                        Segera bayar biar nggak keduluan dengan pembeli lainnya!
-                    </div>
-
-                    <!-- Nomor Transaksi -->
-                    <div class="mb-3">
-                        <label class="form-label fw-bold">Nomor Virtual Account</label>
-                        <div class="d-flex align-items-center gap-3">
-                            <h5 class="mb-0 text-dark">075048615248</h5>
-                        </div>
-                    </div>
-
-                    <!-- Total Tagihan -->
-                    <div class="mb-3">
-                        <label class="form-label fw-bold">Total Tagihan</label>
-                        <div class="d-flex justify-content-between align-items-center">
-                            <h4 class="text-success mb-0">Rp{{ number_format($totalHarga, 0, ',', '.') }}</h4>
-                        </div>
-                    </div>
-
-                    <!-- Upload Bukti Pembayaran -->
-                    <div class="mb-3">
-                        <label class="form-label fw-bold">Masukkan Bukti Pembayaran</label>
-                        <form action="{{ route('upload.bukti') }}" method="POST" enctype="multipart/form-data">
-                            @csrf
-                            <input type="hidden" name="id_transaksi" value="{{ request('id_transaksi') }}">
-                                <input type="file" id="buktiPembayaran" name="bukti_pembayaran" accept="image/png, image/jpeg, image/jpg" class="form-control"/>
-                            <div id="fileError" class="text-danger mt-1" style="display:none; font-size:0.875rem;">
-                                Format file tidak valid! Harap pilih file gambar (jpg, jpeg, png).
-                            </div>
-                            <div class="mt-3 mb-3">
-                                <img id="previewImage" src="" alt="Preview Gambar" style="max-width: 80%; max-height: 300px; display: none; border-radius: 8px; border: 1px solid #ddd;" />
-                            </div>
-
-                            <div class="d-flex gap-3 mb-4">
-                                <button type="submit" class="btn btn-success flex-fill">Upload Bukti Pembayaran</button>
-                            </div>
-                        </form>
+                    <div class="countdown-boxes">
+                        <div id="countdown-minutes" class="cd-box">1m</div>
+                        <div id="countdown-seconds" class="cd-box">00s</div>
                     </div>
                 </div>
+
+                <!-- VIRTUAL ACCOUNT -->
+                <div class="detail-row">
+                    <div class="detail-label text-center">Nomor Virtual Account Bank BCA</div>
+                    <div class="va-number" id="vaNumber">
+                        075048615248 
+                        <button class="copy-btn" onclick="copyVA()" title="Salin VA">
+                            <i class="bi bi-clipboard"></i>
+                        </button>
+                    </div>
+                </div>
+
+                <!-- TOTAL -->
+                <div class="detail-row mb-0">
+                    <div class="detail-label text-center">Total Tagihan</div>
+                    <div class="total-amount">
+                        Rp{{ number_format($totalHarga, 0, ',', '.') }}
+                    </div>
+                </div>
+
+                <hr class="dashed">
+
+                <!-- UPLOAD BUKTI -->
+                <form action="{{ route('upload.bukti') }}" method="POST" enctype="multipart/form-data">
+                    @csrf
+                    <input type="hidden" name="id_transaksi" value="{{ request('id_transaksi') }}">
+                    
+                    <div class="detail-label text-center mb-3">Upload Bukti Transfer</div>
+                    
+                    <div class="file-upload-box" id="dropArea">
+                        <input type="file" id="buktiPembayaran" name="bukti_pembayaran" accept="image/png, image/jpeg, image/jpg" class="file-upload-input"/>
+                        <div id="uploadPlaceholder">
+                            <i class="bi bi-cloud-arrow-up file-upload-icon"></i>
+                            <p class="file-upload-text">Klik atau seret file ke sini</p>
+                            <p class="file-upload-help">Format JPG/PNG • Maks 2MB</p>
+                        </div>
+                        <img id="previewImage" src="" alt="Preview Bukti" style="max-width: 100%; max-height: 250px; display: none; border-radius: 8px; margin: 0 auto; z-index: 5; position: relative;" />
+                    </div>
+                    
+                    <div id="fileError" class="text-danger mt-2 text-center" style="display:none; font-size:0.85rem; font-weight: 600;">
+                        <i class="bi bi-x-circle me-1"></i>Format file tidak valid! Pilih JPG/PNG.
+                    </div>
+
+                    <button type="submit" class="btn-pay">
+                        <i class="bi bi-check-circle me-2"></i> Konfirmasi Pembayaran
+                    </button>
+                    <p class="text-muted text-center mt-3 mb-0" style="font-size: 0.8rem;">Pesanan akan diproses otomatis setelah pembayaran dikonfirmasi.</p>
+                </form>
+
+            </div>
         </div>
     </main>
 
-    <!-- Footer Section -->
-    <footer>
-        <div class="footer-container">
-            <div class="footer-left">
-                <p>© 2025 ReUseMart. All rights reserved.</p>
+    <!-- FOOTER -->
+    <footer class="footer mt-auto">
+        <div class="container">
+            <div class="row pt-2 pb-4">
+                <div class="col-lg-5">
+                    <div class="footer-brand mb-3">
+                        <a href="{{ url('/') }}" class="d-flex align-items-center gap-2 text-decoration-none">
+                            <img src="{{ asset('images/logo2.png') }}" alt="ReUseMart" class="brand-logo">
+                            <h2 class="brand-text m-0 fs-4">ReUse<span>Mart</span></h2>
+                        </a>
+                    </div>
+                    <p class="footer-text">Platform terpercaya untuk jual beli dan donasi barang bekas berkualitas. Mari ciptakan lingkungan yang lebih aman dan berkelanjutan menggunakan ReUseMart.</p>
+                </div>
             </div>
-            <div class="footer-middle">
-                <div class="social-icons">
-                    <a href="#" class="social-icon"><img src="https://img.icons8.com/material/24/000000/facebook.png" alt="Facebook"></a>
-                    <a href="#" class="social-icon"><img src="https://img.icons8.com/material/24/000000/twitter.png" alt="Twitter"></a>
-                    <a href="#" class="social-icon"><img src="https://img.icons8.com/material/24/000000/instagram.png" alt="Instagram"></a>
-                    <a href="#" class="social-icon"><img src="https://img.icons8.com/material/24/000000/pinterest.png" alt="Pinterest"></a>
-                    <a href="#" class="social-icon"><img src="https://img.icons8.com/material/24/000000/youtube.png" alt="YouTube"></a>
+
+            <div class="footer-bottom">
+                <p>&copy; 2025 ReUseMart. All rights reserved.</p>
+                <div class="d-flex gap-4">
+                    <a href="#" class="text-decoration-none footer-text">Kebijakan Privasi</a>
+                    <a href="#" class="text-decoration-none footer-text">Syarat & Ketentuan</a>
                 </div>
             </div>
         </div>
     </footer>
 
-    <!-- Bootstrap JS and dependencies (Popper.js and Bootstrap JS) -->
-    <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.11.6/dist/umd/popper.min.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.min.js"></script>
+    <!-- Bootstrap JS -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
 
+    <!-- LOGIC SCRIPTS -->
     <script>
+        // COUNTDOWN TIMER LOGIC
+        // Using static countdown here to match original logic but it should ideally use backend time.
+        // The original script set 1 minute from "now".
         let countDownDate = new Date().getTime() + 60 * 1000;
         const idTransaksi = "{{ request('id_transaksi') }}"; // Ambil id_transaksi dari URL
 
@@ -488,7 +422,7 @@
                 .then(response => response.json())
                 .then(data => {
                     if (data.success) {
-                        alert(data.message);
+                        alert("Waktu habis! " + data.message);
                         window.location.href = "{{ route('home') }}"; // Redirect ke home setelah pembatalan
                     } else {
                         console.log(data.message);
@@ -501,58 +435,59 @@
                 return;
             }
 
-            let minutes = Math.floor(distance / (1000 * 60));
+            let minutes = Math.floor((distance % (1000 * 60 * 60)) / (1000 * 60));
             let seconds = Math.floor((distance % (1000 * 60)) / 1000);
 
             document.getElementById("countdown-minutes").textContent = minutes + "m";
-            document.getElementById("countdown-seconds").textContent =
-                (seconds < 10 ? "0" : "") + seconds + "s";
+            document.getElementById("countdown-seconds").textContent = (seconds < 10 ? "0" : "") + seconds + "s";
         }
 
         let interval = setInterval(updateCountdown, 1000);
         updateCountdown();
-    </script>
 
-    <script>
+        // COPY VA LOGIC
+        function copyVA() {
+            navigator.clipboard.writeText("075048615248").then(() => {
+                alert("Nomor Virtual Account berhasil disalin!");
+            });
+        }
+
+        // IMAGE UPLOAD PREVIEW LOGIC
         const inputFile = document.getElementById('buktiPembayaran');
         const fileError = document.getElementById('fileError');
         const previewImage = document.getElementById('previewImage');
+        const uploadPlaceholder = document.getElementById('uploadPlaceholder');
 
         inputFile.addEventListener('change', () => {
             const file = inputFile.files[0];
             if (!file) {
                 fileError.style.display = 'none';
                 previewImage.style.display = 'none';
+                uploadPlaceholder.style.display = 'block';
                 previewImage.src = '';
                 return;
             }
 
-            const validTypes = ['image/jpeg', 'image/png', 'image/jpg', 'image/gif'];
+            const validTypes = ['image/jpeg', 'image/png', 'image/jpg'];
             if (!validTypes.includes(file.type)) {
                 fileError.style.display = 'block';
                 previewImage.style.display = 'none';
+                uploadPlaceholder.style.display = 'block';
                 previewImage.src = '';
-                inputFile.value = ''; // reset input file agar user pilih ulang
+                inputFile.value = ''; // reset input file
             } else {
                 fileError.style.display = 'none';
+                uploadPlaceholder.style.display = 'none'; // hide placeholder text
                 
                 // Tampilkan preview gambar
                 const reader = new FileReader();
                 reader.onload = function(e) {
-                previewImage.src = e.target.result;
-                previewImage.style.display = 'block';
+                    previewImage.src = e.target.result;
+                    previewImage.style.display = 'block';
                 }
                 reader.readAsDataURL(file);
             }
         });
-    </script>
-
-    <script>
-        const toastLive = document.getElementById('liveToast');
-            if (toastLive) {
-                const toast = new bootstrap.Toast(toastLive);
-                toast.show();
-            }
     </script>
 </body>
 </html>
